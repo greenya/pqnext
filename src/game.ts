@@ -305,7 +305,7 @@ function sellJunk(hero: Hero) {
 
 function getQuestTitle(hero: Hero): string {
     // todo: randomize
-    return 'Зменьшити популяцію вовків'
+    return 'Зменшити популяцію вовків'
 }
 
 function acceptQuest(hero: Hero) {
