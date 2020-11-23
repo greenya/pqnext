@@ -8,16 +8,16 @@
 
 ![Screenshot](screenshot.png)
 
-## Debug
-
-```
-deno run debug.ts
-```
-
 ## Bundle
 
 ```
 deno run --unstable --allow-net --allow-read --allow-write bundle.ts
+```
+
+## Debug
+
+```
+deno run debug.ts
 ```
 
 ## Todos and Ideas
@@ -36,7 +36,6 @@ deno run --unstable --allow-net --allow-read --allow-write bundle.ts
 
 - add buy-gear action
 - add quest title randomization
-- add chance to get gear item when passing a quest; item quality should be higher than from mob killing
 - add gear durability and its loss, when < 10% (?) => move-to-town; add need for repair while in town (chance if durability < 50%)
 - add unique/rare mobs with notable loot
 - add spell book
