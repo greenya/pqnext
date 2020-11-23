@@ -230,7 +230,7 @@
     })
 </script>
 
-<template id="app" v-cloak>
+<div id="app" v-cloak>
 
     <div v-if="state == 'load'">
         <section class="hero">
@@ -372,7 +372,7 @@
                 </div>
                 <div class="tile is-parent is-vertical">
                     <div class="tile is-child box">
-                        <app-bag :slots="Object.values(hero.gear).map(i => { return { item: i, count: 1 } })"></app-bag>
+                        <app-bag :slots="Object.values(hero.gear).filter(i => i).map(i => { return { item: i, count: 1 } })"></app-bag>
                     </div>
                     <div class="tile is-child box">
                         <div class="level is-mobile mb-0">
@@ -408,7 +408,7 @@
         </section>
     </div>
 
-</template>
+</div>
 <script>
 
     Vue.filter('capitalize', function (value) {
