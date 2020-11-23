@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>pqnext</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.14.0/js/all.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+    <script src='game.js' type="module"></script>
+    <style>
+
+        :root {
+            --color-poor: #999;
+            --color-common: #fff;
+            --color-uncommon: #2b0;
+            --color-rare: #28e;
+            --color-epic: #b3e;
+            --color-gold: gold;
+            --color-silver: silver;
+            --color-copper: chocolate;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        em {
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        .gold { color: var(--color-gold); }
+        .silver { color: var(--color-silver); }
+        .copper { color: var(--color-copper); }
+
+        .app-progress-bar {
+            position: relative;
+            height: 18px;
+            background: lightcyan;
+            border: 1px solid lightskyblue;
+            /* border-radius: 10px; */
+            overflow: hidden;
+        }
+
+        .app-progress-bar .bar {
+            height: 100%;
+            background: deepskyblue;
+        }
+
+        .app-progress-bar.smooth .bar {
+            transition: width 1s linear;
+        }
+
+        .app-progress-bar .text {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 75%;
+            font-weight: 500;
+            text-shadow: 1px 1px 1px #222;
+            color: white;
+        }
+
+        .app-bag .slot {
+            position: relative;
+            display: inline-block;
+            margin: .2em;
+            padding: .5em;
+            line-height: 1;
+            overflow: visible;
+        }
+
+        .app-bag .slot.poor {
+            border: 1px solid var(--color-poor);
+            background-color: var(--color-poor);
+            color: white;
+        }
+
+        .app-bag .slot.common {
+            border: 1px solid lightgray;
+            background-color: var(--color-common);
+            color: black;
+        }
+
+        .app-bag .slot.uncommon {
+            border: 1px solid var(--color-uncommon);
+            background-color: var(--color-uncommon);
+            color: white;
+        }
+
+        .app-bag .slot.rare {
+            border: 1px solid var(--color-rare);
+            background-color: var(--color-rare);
+            color: white;
+        }
+
+        .app-bag .slot.epic {
+            border: 1px solid var(--color-epic);
+            background-color: var(--color-epic);
+            color: white;
+        }
+
+        .app-bag .slot .tooltip {
+            position: absolute;
+            /* top: 100%; */
+            /* left: 0; */
+            /* right: 0; */
+            padding: 1em;
+            width: calc(100% + 2rem);
+            min-width: 16em;
+            background: white;
+            color: black;
+            border: 1px solid gray;
+            box-shadow: 0 0 16px rgba(0,0,0,.25);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .1s ease-out;
+            z-index: 1;
+        }
+
+        .app-bag .slot:hover .tooltip {
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+<template id="app-progress-bar">
+    <div class="app-progress-bar" :class="{ smooth: value.cur > 0 }" :title="title">
+        <div class="bar" :style="{ width: percent + '%' }"></div>
+        <div v-if="format" class="text">{{ text }}</div>
+    </div>
+</template>
+<script>
+    Vue.component('app-progress-bar', {
+        template: '#app-progress-bar',
+        props: {
+            value: { type: Object, required: true },
+            format: { type: String }
+        },
+        computed: {
+            percent: function () {
+                return Math.floor(this.value.cur * 100 / this.value.max)
+            },
+            text: function () {
+                switch (this.format) {
+                    case 'quest':
+                    case 'exp': return this.percent + '%'
+                    case 'bag': return `${this.value.cur} / ${this.value.max}`
+                    default: return ''
+                }
+            },
+            title: function () {
+                switch (this.format) {
+                    case 'exp': return `${this.value.cur} / ${this.value.max}`
+                    default: return ''
+                }
+            }
+        }
+    })
+</script>
+
+<template id="app-bag">
+    <div class="app-bag">
+        <div v-for="slot in slots" :key="slot.item.title" class="slot" :class="slot.item.quality">
+            <!-- <span v-if="slot.item.gear"><i :class="slotIcon(slot.item.gear.slot)"></i></span> -->
+            <span>{{ slot.item.title | capitalize }}</span>
+            <span v-if="slot.count > 1">({{ slot.count }} шт)</span>
+            <div class="tooltip">
+                <div class="title is-size-6">{{ slot.item.title | capitalize }}</div>
+                <div v-if="slot.item.gear" class="subtitle is-size-7 has-text-weight-medium">{{ level(slot.item) }}</div>
+                <div v-if="slot.item.gear && Object.keys(slot.item.gear.attr).length > 0" class="block">
+                    <div v-for="a in attr(slot.item)" :key="a">{{ a }}</div>
+                </div>
+                <div class="block has-text-right">
+                    <span :inner-html.prop="slot.item.price | coinify"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    Vue.component('app-bag', {
+        template: '#app-bag',
+        props: {
+            slots: { type: Array, required: true }
+        },
+        methods: {
+            level: function (item) {
+                if (item.gear.source == 'quest') {
+                    return 'Винагорода за завдання'
+                } else {
+                    return `${item.gear.level}-го рівня`
+                }
+            },
+            attr: function (item) {
+                const attr = window.game.attributes()
+                return Object.keys(item.gear.attr).map(a => attr.find(e => e.name == a).format.replace('X', item.gear.attr[a]))
+            }
+            // slotIcon: function (slot) {
+            //     switch (slot) {
+            //         case 'mainhand':    return 'fas fa-fist-raised'
+            //         case 'offhand':     return 'fas fa-hand-paper'
+            //         case 'head':        return 'fas fa-hat-cowboy'
+            //         // case 'shoulders':   return 'fas fa-???'
+            //         case 'chest':       return 'fas fa-tshirt'
+            //         // case 'cape':        return 'fas fa-???'
+            //         // case 'wrist':       return 'fas fa-???'
+            //         case 'gloves':      return 'fas fa-mitten'
+            //         // case 'belt':        return 'fas fa-???'
+            //         // case 'legs':        return 'fas fa-???'
+            //         case 'feet':        return 'fas fa-socks'
+            //         // case 'neck':        return 'fas fa-???'
+            //         // case 'finger':      return 'fas fa-???'
+            //         // case 'trinket':     return 'fas fa-???'
+            //         default: return 'fas fa-question-circle'
+            //     }
+            // }
+        }
+    })
+</script>
+
+<template id="app" v-cloak>
+
+    <div v-if="state == 'load'">
+        <section class="hero">
+            <div class="hero-body">
+                <div class="container is-size-4 has-text-centered has-text-grey-light">
+                    <!-- <i class="fas fa-spinner fa-pulse"></i> -->
+                    <span>Завантаження...</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div v-else-if="state == 'menu'">
+        <section class="hero container">
+            <div class="hero-body">
+                <h1 class="title">Пригоди авто-героя</h1>
+                <p class="subtitle is-italic is-size-6">Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a></p>
+                <div class="block">Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу,
+                    небезпечних ворогів та рідкісних предметів.
+                </div>
+                <div class="block buttons">
+                    <a class="button" :class="{ 'is-primary': !hero }" @click="state = 'create'">Новий герой</a>
+                    <a v-if="hero" class="button is-primary" @click="playHero">Продовжити: <b class="pl-2">{{ heroSummaryString() }}</b></a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div v-else-if="state == 'create'">
+        <section class="hero container">
+            <div class="hero-body">
+                <h1 class="title">Новий герой</h1>
+                <article v-if="hero" class="message is-warning">
+                    <div class="message-body">
+                        Попередній герой, <b>{{ heroSummaryString() }}</b>, буде втрачений при створенні нового.
+                    </div>
+                </article>
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <h2 class="title is-size-4">Прізвисько</h2>
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input class="input is-fullwidth" type="text" placeholder="Введіть або згенеруйте..." v-model="newHeroSetup.nickname">
+                            </div>
+                            <div class="control">
+                                <button class="button">
+                                    <span class="icon"><i class="fas fa-dice"></i></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column">
+                        <div class="level is-mobile">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <h2 class="title is-size-4">Атрибути</h2>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <button class="button" @click="newHeroSetup.attr = game.roll()">
+                                        <span class="icon"><i class="fas fa-dice"></i></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="table is-fullwidth">
+                            <tbody>
+                                <tr v-for="a in game.attributes().filter(a => a.primary)" :key="a.name">
+                                    <td class="pl-0">
+                                        <b>{{ a.title }}</b><br>
+                                        <span :inner-html.prop="a.desc | htmlify" class="is-size-6"></span>
+                                    </td>
+                                    <td class="px-0 pr-2 is-size-4 has-text-weight-medium has-text-right">
+                                        {{ newHeroSetup.attr[a.name] }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column">
+                        <h2 class="title is-size-4">Раса</h2>
+                        <div class="buttons has-addons">
+                            <button v-for="r in game.races()" :key="r.name" @click="newHeroSetup.race = r.name" class="button" :class="{ 'is-info is-active': r.name == newHeroSetup.race }">{{ r.title }}</button>
+                        </div>
+                        <div :inner-html.prop="game.races().find(r => r.name == newHeroSetup.race).desc | htmlify"></div>
+                    </div>
+                    <div class="column">
+                        <h2 class="title is-size-4">Клас</h2>
+                        <div class="buttons has-addons">
+                            <button v-for="c in game.classes()" :key="c.name" @click="newHeroSetup.class = c.name" class="button" :class="{ 'is-info is-active': c.name == newHeroSetup.class }">{{ c.title }}</button>
+                        </div>
+                        <div :inner-html.prop="game.classes().find(c => c.name == newHeroSetup.class).desc | htmlify"></div>
+                    </div>
+                </div>
+                <div class="field is-grouped mt-4">
+                    <div class="control">
+                        <a class="button is-primary" @click="createHero" :disabled="!newHeroSetup.nickname">Створити</a>
+                    </div>
+                    <div class="control">
+                        <a class="button" @click="state='menu'">Відміна</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div v-else-if="state == 'game'">
+        <section class="section container">
+            <div class="tile is-ancestor">
+                <div class="tile is-parent is-vertical is-3">
+                    <div class="tile is-child box">
+                        <div class="is-size-4">{{ hero.nickname }}</div>
+                        <div>{{ game.races().find(e => e.name == hero.race).title }}</div>
+                        <div>{{ game.classes().find(e => e.name == hero.class).title }}</div>
+                        <table class="table is-narrow is-fullwidth mt-4">
+                            <tbody>
+                                <tr v-for="{ title, value } in attributes" :key="title">
+                                    <td class="pl-0">{{ title }}</td>
+                                    <td class="px-0 has-text-right">{{ value }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="level is-align-items-baseline is-mobile mb-0">
+                            <div class="level-left">
+                                <div class="level-item">Рівень</div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item is-size-3">{{ hero.level.num }}</div>
+                            </div>
+                        </div>
+                        <app-progress-bar :value="hero.level.progress" format="exp"></app-progress-bar>
+                    </div>
+                    <div class="tile is-child box">
+                        <div class="is-size-7">Може колись будуть закляття...</div>
+                    </div>
+                </div>
+                <div class="tile is-parent is-vertical">
+                    <div class="tile is-child box">
+                        <app-bag :slots="Object.values(hero.gear).map(i => { return { item: i, count: 1 } })"></app-bag>
+                    </div>
+                    <div class="tile is-child box">
+                        <div class="level is-mobile mb-0">
+                            <div class="level-left">
+                                <div class="level-item">Сумка</div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item" :inner-html.prop="hero.gold | coinify"></div>
+                            </div>
+                        </div>
+                        <app-progress-bar class="mb-4" :value="{ cur: hero.bag.length, max: hero.attr.bagCap }" format="bag"></app-progress-bar>
+                        <app-bag :slots="hero.bag"></app-bag>
+                    </div>
+                </div>
+                <div class="tile is-parent is-3">
+                    <div class="tile is-child box">
+                        <div v-if="hero.quest">
+                            <div>{{ hero.quest.title }}</div>
+                            <app-progress-bar :value="hero.quest.progress" format="quest"></app-progress-bar>
+                        </div>
+                        <div class="is-size-7 mt-4">Може колись завдання будуть різіні...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="tile is-ancestor">
+                <div class="tile is-parent">
+                    <div class="tile is-child box">
+                        <div>{{ hero.action.title }}</div>
+                        <app-progress-bar :value="hero.action.progress"></app-progress-bar>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</template>
+<script>
+
+    Vue.filter('capitalize', function (value) {
+        if (value) {
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+        } else {
+            return ''
+        }
+    })
+
+    Vue.filter('coinify', function (value) {
+        if (!value) {
+            value = 0
+        }
+
+        const c = value % 100
+        value -= c
+        value /= 100
+        const s = value % 100
+        value -= s
+        value /= 100
+        const g = value
+
+        const p = []
+        if (g > 0) { p.push(g + '<i class="fas fa-coins mx-1 gold"></i>') }
+        if (s > 0) { p.push(s + '<i class="fas fa-coins mx-1 silver"></i>') }
+        if (c > 0) { p.push(c + '<i class="fas fa-coins mx-1 copper"></i>') }
+
+        return p.length > 0 ? p.join(' ') : '0<i class="fas fa-coins ml-1 copper"></i>'
+    })
+
+    Vue.filter('htmlify', function (value) {
+        if (value) {
+            return value
+                .replace(/([\n\r])/g, '<br>')
+                .replace(/_(.*?)_/g, '<em>$1</em>')
+                // .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                // .replace(/~~(.*?)~~/g, '<em>$1</em>')
+                // .replace(/__(.*?)__/g, '<u>$1</u>')
+                // .replace(/--(.*?)--/g, '<del>$1</del>')
+                // .replace(/<<(.*?)>>/g, '<a href="$1" target="_blank">Link</a>')
+                // .replace(/(\d+)з/g, '$1<i class="fas fa-coins ml-1 gold"></i>')
+                // .replace(/(\d+)с/g, '$1<i class="fas fa-coins ml-1 silver"></i>')
+                // .replace(/(\d+)м/g, '$1<i class="fas fa-coins ml-1 copper"></i>')
+                // .replace(/(\d+)з/g, '$1🟡')
+                // .replace(/(\d+)с/g, '$1⚪')
+                // .replace(/(\d+)м/g, '$1🟠')
+                .replace(/(\[i\])/g, '<i class="fas fa-info-circle mr-1"></i>')
+                .replace(/(\[\?\])/g, '<i class="fas fa-question-circle mr-1"></i>')
+                // .replace(/(\[i\])/g, 'ℹ️')
+                // .replace(/(\[\?\])/g, '❓')
+        } else {
+            return ''
+        }
+    })
+
+    new Vue({
+        el: '#app',
+        data: {
+            state: 'load',
+            game: undefined,
+            hero: undefined,
+            newHeroSetup: { nickname: 'Котигорошко', race: undefined, class: undefined, attr: undefined } // todo: add nickname generation; the dice button should also work
+        },
+        created: function () {
+            const i = setInterval(() => {
+                if (window.game) {
+                    clearInterval(i)
+                    this.game = window.game
+                    this.hero = this.game.load()
+                    this.newHeroSetup.class = this.game.classes()[0].name
+                    this.newHeroSetup.race = this.game.races()[0].name
+                    this.newHeroSetup.attr = this.game.roll()
+                    this.state = 'menu'
+                }
+            }, 200)
+        },
+        computed: {
+            attributes: function () {
+                const attr = this.game.attributes()
+                const result = attr.filter(a => a.primary).map(a => { return {
+                    title: a.title,
+                    value: this.game.format.number(this.hero.attr[a.name])
+                } })
+
+                ;[ 'maxHp', 'maxMp' ].forEach(e => result.push({
+                    title: attr.find(a => a.name == e).title,
+                    value: this.game.format.number(this.hero.attr[e])
+                }))
+
+                return result
+            }
+        },
+        methods: {
+            createHero: function () {
+                this.hero = this.game.create(
+                    this.newHeroSetup.nickname,
+                    this.newHeroSetup.race,
+                    this.newHeroSetup.class,
+                    this.newHeroSetup.attr
+                )
+                this.game.save(this.hero)
+                this.playHero()
+            },
+            playHero: function () {
+                this.game.start(this.hero)
+                this.state = 'game'
+                setInterval(() => { this.game.save(this.hero) }, 10000)
+            },
+            heroSummaryString: function () {
+                const name = this.hero.nickname
+                const level = this.hero.level.num
+                const clazz = this.game.classes().find(e => e.name == this.hero.class).title.toLowerCase()
+                return `${name}, ${clazz} ${level}-го рівня`
+            }
+        }
+    })
+
+</script>
+</body>
+</html>
