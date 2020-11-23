@@ -7,6 +7,6 @@ emit = emit.replace(
 )
 
 console.log('Writing bundle...')
-Deno.writeTextFileSync('./web/game.js', emit)
+Deno.writeTextFileSync('./docs/game.js', emit)
 
 console.log('All done.')

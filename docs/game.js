@@ -162,7 +162,7 @@ const classes = [
                     attr: {
                     },
                     level: 1,
-                    source: ItemSource.Quest
+                    source: ItemSource.Drop
                 },
                 price: 1
             }
@@ -185,7 +185,7 @@ const classes = [
                     attr: {
                     },
                     level: 1,
-                    source: ItemSource.Quest
+                    source: ItemSource.Drop
                 },
                 price: 1
             }
@@ -208,7 +208,7 @@ const classes = [
                     attr: {
                     },
                     level: 1,
-                    source: ItemSource.Quest
+                    source: ItemSource.Drop
                 },
                 price: 1
             }
