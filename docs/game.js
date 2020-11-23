@@ -1160,7 +1160,7 @@ function getMobPreciousItem(hero, mob) {
     );
     const preciousItem = rand.item(hero, preciousItems1);
     const title = rand.text(hero, preciousItem.gen);
-    const quality = ItemQuality.Poor;
+    const quality = ItemQuality.Common;
     const price = getItemPrice(hero, title, quality, undefined, preciousItem.value);
     return {
         title,

@@ -269,7 +269,7 @@ function getMobPreciousItem(hero: Hero, mob: Mob): Item {
     const preciousItems = data.preciousItems.filter(i => (mob.trait & i.trait) == i.trait)
     const preciousItem = rand.item(hero, preciousItems)
     const title = rand.text(hero, preciousItem.gen)
-    const quality = ItemQuality.Poor
+    const quality = ItemQuality.Common
     const price = getItemPrice(hero, title, quality, undefined, preciousItem.value)
     return { title, quality, price }
 }
