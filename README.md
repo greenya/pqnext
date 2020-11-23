@@ -1,5 +1,6 @@
 # Progress Quest Next
 
+- [Demo](https://greenya.github.io/pqnext/)
 - Original idea: [ProgressQuest](http://progressquest.com/)
 - Awesome reincarnation: [pq-cli](https://github.com/rr-/pq-cli)
 
