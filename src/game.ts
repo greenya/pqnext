@@ -125,34 +125,40 @@ const knownHeroActions: HeroAction[] = [
     {
         name: 'sell-junk',
         title: () => 'Продає мотлох...',
-        duration: (hero) => Math.floor(hero.bag.length / 2),
+        duration: (hero) => Math.max(1, Math.floor(hero.bag.length / 2)),
         onFinish: (hero) => {
             sellJunk(hero)
         },
         next: (hero) => {
-            // todo: come up with better condition
-            // maybe generate rare item for current level and use that price x5 as a threshold; so don't spend time if low on gold
-            if (hero.gold > hero.level.num * 40 + 100) {
+            if (haveEnoughGoldToGoShopping(hero)) {
                 return 'buy-gear'
             } else {
-                return rand.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
+                return rand.dice(hero, 4) ? 'afk' : 'move-to-wilderness'
             }
         }
     },
     {
         name: 'buy-gear',
-        title: () => 'Скуповується...',
+        title: () => 'Перевіряє асортимент місцевих крамниць...',
         duration: (hero) => 8,
         onFinish: (hero) => {
-            // todo: buy gear
-            // the buying process can be following:
-            //  - generate 4 items (simple, just like mob drops)
-            //  - pick single one with best hero value
-            //  - buying price is x10 of normal calculated price
+            buyGear(hero)
         },
         next: (hero) => rand.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
     }
 ]
+
+function haveEnoughGoldToGoShopping(hero: Hero): boolean {
+    const bestQualityAvail = Object.values(ItemQuality)
+        .reduce((a, c) => hero.level.num >= data.itemQualities[c].level ? c : a, ItemQuality.Common)
+    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, ItemSlot.MainHand)
+
+    return hero.gold >= priceThreshold
+}
+
+function buyGear(hero: Hero) {
+    rollItemsAndLootSingleBestOne(hero, ItemSource.Vendor)
+}
 
 function getHeroTarget(hero: Hero): HeroTarget {
     const level = hero.level.num
@@ -234,9 +240,9 @@ function getGearItem(hero: Hero, source: ItemSource): Item {
     const slot = rand.item(hero, availSlots)
 
     const roll = rand.int(hero, 1000 - (source == ItemSource.Quest ? 500 : 0))
-    const quality = [ ItemQuality.Epic, ItemQuality.Rare, ItemQuality.Uncommon ].reduce((a, c) => {
+    const quality = Object.values(ItemQuality).reduce((a, c) => {
         const q = data.itemQualities[c]
-        return roll < q.chance && level >= q.level ? c : a
+        return q.chance > 0 && q.chance > roll && q.level <= level ? c : a
     }, ItemQuality.Common)
 
     const title = quality + ' ' + slot // todo: randomize
@@ -324,24 +330,39 @@ function passQuest(hero: Hero) {
     addExp(hero, Math.ceil(hero.level.progress.max / (10 + (level / 10))) + level * 4 + 3, 'quest')
     addGold(hero, rand.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest')
 
+    rollItemsAndLootSingleBestOne(hero, ItemSource.Quest)
+
+    hero.quest = undefined
+    stats.questsPassed++
+}
+
+function rollItemsAndLootSingleBestOne(hero: Hero, source: ItemSource.Quest | ItemSource.Vendor) {
+    const amount =
+        source == ItemSource.Quest ? 3 :
+        source == ItemSource.Vendor ? 5 :
+        0
+
     let bestValue = 0
     let bestItem: Item | undefined = undefined
+    let bestBuyPrice = 0
 
-    for (let i = 0; i < 3; i++) {
-        const choiceItem = getGearItem(hero, ItemSource.Quest)
-        const choiceValue = getGearItemValue(hero, choiceItem)
-        if (bestValue < choiceValue) {
-            bestValue = choiceValue
-            bestItem = choiceItem
+    for (let i = 0; i < amount; i++) {
+        const item = getGearItem(hero, source)
+        const buyPrice = source == ItemSource.Vendor ? item.price * data.itemBuyPriceMult : 0
+        const value = getGearItemValue(hero, item)
+        if (bestValue < value && hero.gold >= buyPrice) {
+            bestValue = value
+            bestItem = item
+            bestBuyPrice = buyPrice
         }
     }
 
     if (bestItem) {
         lootItems(hero, [ bestItem ])
+        if (bestBuyPrice > 0) {
+            removeGold(hero, bestBuyPrice, 'gear')
+        }
     }
-
-    hero.quest = undefined
-    stats.questsPassed++
 }
 
 function updateZone(hero: Hero, newType: ZoneType) {
@@ -410,8 +431,17 @@ function progressQuest(hero: Hero) {
 }
 
 function addGold(hero: Hero, amount: number, source: 'mob' | 'quest' | 'junk') {
-    stats.goldCollected[source] += amount
-    hero.gold += amount
+    if (amount > 0) {
+        stats.goldCollected[source] += amount
+        hero.gold += amount
+    }
+}
+
+function removeGold(hero: Hero, amount: number, source: 'gear') {
+    if (amount > 0) {
+        stats.goldSpent[source] += amount
+        hero.gold -= amount
+    }
 }
 
 function getGearItemValue(hero: Hero, item: Item) {
@@ -496,6 +526,7 @@ function lootItems(hero: Hero, items: Item[]) {
         stats.itemsLootedByQuality[newItem.quality]++
         if (newItem.gear) {
             stats.itemsLootedBySlot[newItem.gear.slot]++
+            stats.itemsLootedBySource[newItem.gear.source]++
         }
     })
 }
@@ -609,9 +640,12 @@ const stats = {
     timeSpent: <Map<number>>{ town: 0, wilderness: 0, traveling: 0, combat: 0, afk: 0, selling: 0, buying: 0, quest: 0 },
     expGained: { mob: 0, quest: 0 },
     goldCollected: { mob: 0, quest: 0, junk: 0 },
+    goldSpent: { gear: 0 },
     itemsLootedByQuality: Object.values(ItemQuality)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
     itemsLootedBySlot: Object.values(ItemSlot)
+        .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
+    itemsLootedBySource: Object.values(ItemSource)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
     itemsEquipped: 0,
     itemsLost: 0,
@@ -630,7 +664,7 @@ function dump(hero: Hero) {
     console.log('#### TIME SPENT BREAKDOWN')
     console.table(Object.keys(stats.timeSpent).map(k => {
         const v = stats.timeSpent[k]
-        return { k, v, '%': format.progress({ cur: v, max: stats.time }) }
+        return { k, v, '%': format.progress({ cur: v, max: stats.time }, 1) }
     }))
     console.log('#### GEAR')
     console.table(hero.gear)

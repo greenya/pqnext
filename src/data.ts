@@ -604,11 +604,14 @@ const itemSlots: Map<{ level: number, priceMult: number }> = {
     }
 }
 
+const itemBuyPriceMult = 10
+
 export default {
     afkMessages,
     attributes,
     biomes,
     classes,
+    itemBuyPriceMult,
     itemQualities,
     itemSlots,
     mobReinforcedPrefixes,
