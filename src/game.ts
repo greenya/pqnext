@@ -653,24 +653,6 @@ function dump(hero: Hero) {
         return [ et, dt, dg ]
     }))
     console.log('====================================================')
-
-    // const a = [0,1]
-    // for (let i = 0; i < 1000; i++) {
-    //     const v = rand.dice(hero, 3)
-    //     a[v?1:0]++
-    // }
-    // console.log(a)
-    // console.log(format.progress({cur: a[0], max: a[0]+a[1]}))
-    // console.log(format.progress({cur: a[1], max: a[0]+a[1]}))
-
-    // console.log(hero.action.title)
-
-    // console.log(rand.text(hero, 'коралі/намисто_з золота/із срібла'))
-
-    // for (let i = 0; i < 10; i++) {
-    //     const t = getHeroTarget(hero)
-    //     console.log(t)
-    // }
 }
 
 export default {
@@ -708,9 +690,6 @@ if (!window.Deno) {
         start: (hero: Hero) => {
             if (!activeIntervalId && hero && hero.ver == version()) {
                 activeIntervalId = setInterval(() => {
-                    // const now = Math.floor(Date.now() / 1000)
-                    // const delta = now - hero.born
-                    // console.log(format.duration(delta)) // !! DEBUG
                     advanceTime(hero)
                 }, 1000)
             }
@@ -723,6 +702,6 @@ if (!window.Deno) {
         },
         playing: () => activeIntervalId > 0,
         format,
-        dump // !! DEBUG
+        dump
     }
 }
