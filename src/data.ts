@@ -521,25 +521,25 @@ const itemQualities: Map<{ level: number, chance: number, attrCount: number, pri
     },
     [ItemQuality.Common]: {
         level: 1,
-        chance: -1,
+        chance: -1, // 87.9% => 1000 (all) - 100 (uncommon) - 20 (rare) - 1 (epic)
         attrCount: 0,
         priceMult: 5
     },
     [ItemQuality.Uncommon]: {
         level: 7,
-        chance: 100,
+        chance: 121, // 10% => 100 (uncommon) + 20 (rare) + 1 (epic)
         attrCount: 1,
         priceMult: 20
     },
     [ItemQuality.Rare]: {
         level: 18,
-        chance: 20,
+        chance: 21, // 2% => 20 (rare) + 1 (epic)
         attrCount: 2,
         priceMult: 150
     },
     [ItemQuality.Epic]: {
         level: 39,
-        chance: 1,
+        chance: 1, // 0.1% => 1 (epic)
         attrCount: 3,
         priceMult: 1800
     }
