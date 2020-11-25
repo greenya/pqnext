@@ -46,7 +46,6 @@ deno run debug.ts
 - add legendary items; unique names and maybe stats/effects; maybe obtainable only from high-end quests (?)
 - add gear item flavor text generation (for rare+ with small chance)
 - maybe add ability to choose geneder (male/female); action texts should be enchanced to support it
-- maybe add limitations so on low levels hero cannot drop specific slot piece; dropping common trinket at level 5 looks weired
 
 - add perks; player can choose one at start when creating hero; each perk has pros and cons, examples:
     - Quest hater (pro: more exp from killing mobs; con: chance to skip getting quest)

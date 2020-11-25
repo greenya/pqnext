@@ -229,7 +229,9 @@ function finishCombat(hero: Hero) {
 
 function getGearItem(hero: Hero, source: ItemSource): Item {
     const level = hero.level.num
-    const slot = rand.item(hero, Object.values(ItemSlot))
+
+    const availSlots = Object.values(ItemSlot).filter(s => level >= data.itemSlots[s].level)
+    const slot = rand.item(hero, availSlots)
 
     const roll = rand.int(hero, 1000 - (source == ItemSource.Quest ? 500 : 0))
     const quality = [ ItemQuality.Epic, ItemQuality.Rare, ItemQuality.Uncommon ].reduce((a, c) => {
