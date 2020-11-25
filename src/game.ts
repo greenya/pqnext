@@ -286,7 +286,7 @@ function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: It
         (quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0)
         + hero.level.num
         * data.itemQualities[quality].priceMult
-        * (slot ? data.itemSlotPriceMult[slot] : 1)
+        * (slot ? data.itemSlots[slot].priceMult : 1)
         * (extraMult ? extraMult : 1)
     )
 }

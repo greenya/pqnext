@@ -545,21 +545,63 @@ const itemQualities: Map<{ level: number, chance: number, attrCount: number, pri
     }
 }
 
-const itemSlotPriceMult: Map<number> = {
-    [ItemSlot.MainHand]:    3.5,
-    [ItemSlot.OffHand]:     3.2,
-    [ItemSlot.Head]:        1.7,
-    [ItemSlot.Shoulders]:   1.9,
-    [ItemSlot.Chest]:       2.0,
-    [ItemSlot.Back]:        1.2,
-    [ItemSlot.Wrist]:       1.3,
-    [ItemSlot.Hands]:       1.6,
-    [ItemSlot.Waist]:       1.4,
-    [ItemSlot.Legs]:        1.8,
-    [ItemSlot.Feet]:        1.5,
-    [ItemSlot.Neck]:        2.4,
-    [ItemSlot.Finger]:      2.2,
-    [ItemSlot.Trinket]:     2.6
+const itemSlots: Map<{ level: number, priceMult: number }> = {
+    [ItemSlot.MainHand]: {
+        level: 1,
+        priceMult: 3.5
+    },
+    [ItemSlot.OffHand]: {
+        level: 1,
+        priceMult: 3.2
+    },
+    [ItemSlot.Head]: {
+        level: 8,
+        priceMult: 1.7
+    },
+    [ItemSlot.Shoulders]: {
+        level: 10,
+        priceMult: 1.9
+    },
+    [ItemSlot.Chest]: {
+        level: 1,
+        priceMult: 2.0
+    },
+    [ItemSlot.Back]: {
+        level: 4,
+        priceMult: 1.2
+    },
+    [ItemSlot.Wrist]: {
+        level: 1,
+        priceMult: 1.3
+    },
+    [ItemSlot.Hands]: {
+        level: 1,
+        priceMult: 1.6
+    },
+    [ItemSlot.Waist]: {
+        level: 2,
+        priceMult: 1.4
+    },
+    [ItemSlot.Legs]: {
+        level: 1,
+        priceMult: 1.8
+    },
+    [ItemSlot.Feet]: {
+        level: 1,
+        priceMult: 1.5
+    },
+    [ItemSlot.Neck]: {
+        level: 15,
+        priceMult: 2.4
+    },
+    [ItemSlot.Finger]: {
+        level: 12,
+        priceMult: 2.2
+    },
+    [ItemSlot.Trinket]: {
+        level: 20,
+        priceMult: 2.6
+    }
 }
 
 export default {
@@ -568,7 +610,7 @@ export default {
     biomes,
     classes,
     itemQualities,
-    itemSlotPriceMult,
+    itemSlots,
     mobReinforcedPrefixes,
     mobs,
     preciousItems,
