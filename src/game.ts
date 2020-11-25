@@ -384,7 +384,7 @@ function attrUpdated(hero: Hero) {
     const level = hero.level.num
     const { str, int, sta } = hero.attr
 
-    hero.attr.bagCap = 8 + Math.floor(str / 10)
+    hero.attr.bagCap = 10 + Math.floor(str / 10)
     hero.attr.maxHp = 20 + level * 8 + sta * 10 + Math.floor(Math.pow(level, 2) / 100) * 40
     hero.attr.maxMp = 20 + level * 2 + int * 10 + Math.floor(Math.pow(level, 2) / 100) * 20
 }

@@ -783,36 +783,105 @@ const afkMessages = [
     '\u{41a}\u{43e}\u{43b}\u{443}\u{43f}\u{430}\u{454}\u{442}\u{44c}\u{441}\u{44f} \u{443} \u{43d}\u{430}\u{43b}\u{430}\u{448}\u{442}\u{443}\u{432}\u{430}\u{43d}\u{43d}\u{44f}\u{445}_\u{433}\u{440}\u{438}/\u{433}\u{440}\u{430}\u{444}\u{456}\u{43a}\u{438}/\u{430}\u{434}\u{434}\u{43e}\u{43d}\u{456}\u{432}/\u{43c}\u{430}\u{43a}\u{440}\u{43e}\u{441}\u{456}\u{432}/\u{432}\u{456}\u{43a}\u{430}\u{443}\u{440}',
     '\u{41e}\u{43d}\u{43e}\u{432}\u{43b}\u{44e}\u{454}_\u{431}\u{430}\u{442}\u{43b}\u{43d}\u{435}\u{442}/\u{433}\u{440}\u{443}/\u{430}\u{434}\u{434}\u{43e}\u{43d}\u{438}/\u{432}\u{456}\u{43a}\u{430}\u{443}\u{440}\u{438}/\u{442}\u{440}\u{430}\u{441}\u{43c}\u{43e}\u{433}'
 ];
-const itemQualityPriceMult = {
-    [ItemQuality.Poor]: 1,
-    [ItemQuality.Common]: 5,
-    [ItemQuality.Uncommon]: 20,
-    [ItemQuality.Rare]: 150,
-    [ItemQuality.Epic]: 1800
+const itemQualities = {
+    [ItemQuality.Poor]: {
+        level: 1,
+        chance: -1,
+        attrCount: 0,
+        priceMult: 1
+    },
+    [ItemQuality.Common]: {
+        level: 1,
+        chance: -1,
+        attrCount: 0,
+        priceMult: 5
+    },
+    [ItemQuality.Uncommon]: {
+        level: 7,
+        chance: 121,
+        attrCount: 1,
+        priceMult: 20
+    },
+    [ItemQuality.Rare]: {
+        level: 18,
+        chance: 21,
+        attrCount: 2,
+        priceMult: 150
+    },
+    [ItemQuality.Epic]: {
+        level: 39,
+        chance: 1,
+        attrCount: 3,
+        priceMult: 1800
+    }
 };
-const itemSlotPriceMult = {
-    [ItemSlot.MainHand]: 3.5,
-    [ItemSlot.OffHand]: 3.2,
-    [ItemSlot.Head]: 1.7,
-    [ItemSlot.Shoulders]: 1.9,
-    [ItemSlot.Chest]: 2,
-    [ItemSlot.Back]: 1.2,
-    [ItemSlot.Wrist]: 1.3,
-    [ItemSlot.Hands]: 1.6,
-    [ItemSlot.Waist]: 1.4,
-    [ItemSlot.Legs]: 1.8,
-    [ItemSlot.Feet]: 1.5,
-    [ItemSlot.Neck]: 2.4,
-    [ItemSlot.Finger]: 2.2,
-    [ItemSlot.Trinket]: 2.6
+const itemSlots = {
+    [ItemSlot.MainHand]: {
+        level: 1,
+        priceMult: 3.5
+    },
+    [ItemSlot.OffHand]: {
+        level: 1,
+        priceMult: 3.2
+    },
+    [ItemSlot.Head]: {
+        level: 8,
+        priceMult: 1.7
+    },
+    [ItemSlot.Shoulders]: {
+        level: 10,
+        priceMult: 1.9
+    },
+    [ItemSlot.Chest]: {
+        level: 1,
+        priceMult: 2
+    },
+    [ItemSlot.Back]: {
+        level: 4,
+        priceMult: 1.2
+    },
+    [ItemSlot.Wrist]: {
+        level: 1,
+        priceMult: 1.3
+    },
+    [ItemSlot.Hands]: {
+        level: 1,
+        priceMult: 1.6
+    },
+    [ItemSlot.Waist]: {
+        level: 2,
+        priceMult: 1.4
+    },
+    [ItemSlot.Legs]: {
+        level: 1,
+        priceMult: 1.8
+    },
+    [ItemSlot.Feet]: {
+        level: 1,
+        priceMult: 1.5
+    },
+    [ItemSlot.Neck]: {
+        level: 15,
+        priceMult: 2.4
+    },
+    [ItemSlot.Finger]: {
+        level: 12,
+        priceMult: 2.2
+    },
+    [ItemSlot.Trinket]: {
+        level: 20,
+        priceMult: 2.6
+    }
 };
+const itemBuyPriceMult = 10;
 const data = {
     afkMessages,
     attributes,
     biomes,
     classes,
-    itemQualityPriceMult,
-    itemSlotPriceMult,
+    itemBuyPriceMult,
+    itemQualities,
+    itemSlots,
     mobReinforcedPrefixes,
     mobs,
     preciousItems,
@@ -1033,30 +1102,40 @@ const knownHeroActions = [
         name: 'sell-junk',
         title: ()=>'\u{41f}\u{440}\u{43e}\u{434}\u{430}\u{454} \u{43c}\u{43e}\u{442}\u{43b}\u{43e}\u{445}...'
         ,
-        duration: (hero)=>Math.floor(hero.bag.length / 2)
+        duration: (hero)=>Math.max(1, Math.floor(hero.bag.length / 2))
         ,
         onFinish: (hero)=>{
             sellJunk(hero);
         },
         next: (hero)=>{
-            if (hero.gold > hero.level.num * 40 + 100) {
+            if (haveEnoughGoldToGoShopping(hero)) {
                 return 'buy-gear';
             } else {
-                return rand.dice(hero, 3) ? 'afk' : 'move-to-wilderness';
+                return rand.dice(hero, 4) ? 'afk' : 'move-to-wilderness';
             }
         }
     },
     {
         name: 'buy-gear',
-        title: ()=>'\u{421}\u{43a}\u{443}\u{43f}\u{43e}\u{432}\u{443}\u{454}\u{442}\u{44c}\u{441}\u{44f}...'
+        title: ()=>'\u{41f}\u{435}\u{440}\u{435}\u{432}\u{456}\u{440}\u{44f}\u{454} \u{430}\u{441}\u{43e}\u{440}\u{442}\u{438}\u{43c}\u{435}\u{43d}\u{442} \u{43c}\u{456}\u{441}\u{446}\u{435}\u{432}\u{438}\u{445} \u{43a}\u{440}\u{430}\u{43c}\u{43d}\u{438}\u{446}\u{44c}...'
         ,
         duration: (hero)=>8
         ,
         onFinish: (hero)=>{
+            buyGear(hero);
         },
         next: (hero)=>rand.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
     }
 ];
+function haveEnoughGoldToGoShopping(hero) {
+    const bestQualityAvail = Object.values(ItemQuality).reduce((a, c)=>hero.level.num >= data.itemQualities[c].level ? c : a
+    , ItemQuality.Common);
+    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, ItemSlot.MainHand);
+    return hero.gold >= priceThreshold;
+}
+function buyGear(hero) {
+    rollItemsAndLootSingleBestOne(hero, ItemSource.Vendor);
+}
 function getHeroTarget(hero) {
     const level = hero.level.num;
     const mobs1 = data.mobs.filter((m)=>(m.trait & hero.zone.biome) == hero.zone.biome && m.level <= level
@@ -1126,12 +1205,16 @@ function finishCombat(hero) {
 }
 function getGearItem(hero, source) {
     const level = hero.level.num;
-    const slot = rand.item(hero, Object.values(ItemSlot));
+    const availSlots = Object.values(ItemSlot).filter((s)=>level >= data.itemSlots[s].level
+    );
+    const slot = rand.item(hero, availSlots);
     const roll = rand.int(hero, 1000 - (source == ItemSource.Quest ? 500 : 0));
-    const quality = roll < 1 && level >= 39 ? ItemQuality.Epic : roll < 20 && level >= 18 ? ItemQuality.Rare : roll < 100 && level >= 7 ? ItemQuality.Uncommon : ItemQuality.Common;
+    const quality = Object.values(ItemQuality).reduce((a, c)=>{
+        const q = data.itemQualities[c];
+        return q.chance > 0 && q.chance > roll && q.level <= level ? c : a;
+    }, ItemQuality.Common);
     const title = quality + ' ' + slot;
     const price = getItemPrice(hero, title, quality, slot);
-    const attrCount = quality == ItemQuality.Epic ? 3 : quality == ItemQuality.Rare ? 2 : quality == ItemQuality.Uncommon ? 1 : 0;
     const item1 = {
         title,
         quality,
@@ -1144,6 +1227,7 @@ function getGearItem(hero, source) {
         },
         price
     };
+    const attrCount = data.itemQualities[quality].attrCount;
     if (attrCount > 0) {
         const bonus = Math.floor(level / 5);
         const stat = rand.shuffle(hero, data.attributes.filter((e)=>e.primary
@@ -1185,7 +1269,7 @@ function getPoorItemPriceDeviation(hero, title) {
     return mod > 0 ? mod : base % hero.level.num * 4;
 }
 function getItemPrice(hero, title, quality, slot, extraMult) {
-    return Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + hero.level.num * data.itemQualityPriceMult[quality] * (slot ? data.itemSlotPriceMult[slot] : 1) * (extraMult ? extraMult : 1));
+    return Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + hero.level.num * data.itemQualities[quality].priceMult * (slot ? data.itemSlots[slot].priceMult : 1) * (extraMult ? extraMult : 1));
 }
 function sellJunk(hero) {
     hero.bag.splice(0).forEach((slot)=>addGold(hero, slot.item.price * slot.count, 'junk')
@@ -1211,23 +1295,33 @@ function passQuest(hero) {
     const level = hero.level.num;
     addExp(hero, Math.ceil(hero.level.progress.max / (10 + level / 10)) + level * 4 + 3, 'quest');
     addGold(hero, rand.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest');
+    rollItemsAndLootSingleBestOne(hero, ItemSource.Quest);
+    hero.quest = undefined;
+    stats.questsPassed++;
+}
+function rollItemsAndLootSingleBestOne(hero, source) {
+    const amount = source == ItemSource.Quest ? 3 : source == ItemSource.Vendor ? 5 : 0;
     let bestValue = 0;
     let bestItem = undefined;
-    for(let i = 0; i < 3; i++){
-        const choiceItem = getGearItem(hero, ItemSource.Quest);
-        const choiceValue = getGearItemValue(hero, choiceItem);
-        if (bestValue < choiceValue) {
-            bestValue = choiceValue;
-            bestItem = choiceItem;
+    let bestBuyPrice = 0;
+    for(let i = 0; i < amount; i++){
+        const item1 = getGearItem(hero, source);
+        const buyPrice = source == ItemSource.Vendor ? item1.price * data.itemBuyPriceMult : 0;
+        const value = getGearItemValue(hero, item1);
+        if (bestValue < value && hero.gold >= buyPrice) {
+            bestValue = value;
+            bestItem = item1;
+            bestBuyPrice = buyPrice;
         }
     }
     if (bestItem) {
         lootItems(hero, [
             bestItem
         ]);
+        if (bestBuyPrice > 0) {
+            removeGold(hero, bestBuyPrice, 'gear');
+        }
     }
-    hero.quest = undefined;
-    stats.questsPassed++;
 }
 function updateZone(hero, newType) {
     hero.zone.type = newType;
@@ -1244,7 +1338,7 @@ function addExp(hero, value, source) {
 function attrUpdated(hero) {
     const level = hero.level.num;
     const { str , int: int1 , sta  } = hero.attr;
-    hero.attr.bagCap = 8 + Math.floor(str / 10);
+    hero.attr.bagCap = 10 + Math.floor(str / 10);
     hero.attr.maxHp = 20 + level * 8 + sta * 10 + Math.floor(Math.pow(level, 2) / 100) * 40;
     hero.attr.maxMp = 20 + level * 2 + int1 * 10 + Math.floor(Math.pow(level, 2) / 100) * 20;
 }
@@ -1294,8 +1388,16 @@ function progressQuest(hero) {
     }
 }
 function addGold(hero, amount, source) {
-    stats.goldCollected[source] += amount;
-    hero.gold += amount;
+    if (amount > 0) {
+        stats.goldCollected[source] += amount;
+        hero.gold += amount;
+    }
+}
+function removeGold(hero, amount, source) {
+    if (amount > 0) {
+        stats.goldSpent[source] += amount;
+        hero.gold -= amount;
+    }
 }
 function getGearItemValue(hero, item1) {
     if (item1.gear) {
@@ -1370,6 +1472,7 @@ function lootItems(hero, items) {
         stats.itemsLootedByQuality[newItem.quality]++;
         if (newItem.gear) {
             stats.itemsLootedBySlot[newItem.gear.slot]++;
+            stats.itemsLootedBySource[newItem.gear.source]++;
         }
     });
 }
@@ -1527,12 +1630,20 @@ const stats = {
         quest: 0,
         junk: 0
     },
+    goldSpent: {
+        gear: 0
+    },
     itemsLootedByQuality: Object.values(ItemQuality).reduce((a, c)=>{
         a[c] = 0;
         return a;
     }, {
     }),
     itemsLootedBySlot: Object.values(ItemSlot).reduce((a, c)=>{
+        a[c] = 0;
+        return a;
+    }, {
+    }),
+    itemsLootedBySource: Object.values(ItemSource).reduce((a, c)=>{
         a[c] = 0;
         return a;
     }, {
@@ -1566,7 +1677,7 @@ function dump(hero) {
             '%': format.progress({
                 cur: v,
                 max: stats.time
-            })
+            }, 1)
         };
     }));
     console.log('#### GEAR');
@@ -1608,7 +1719,7 @@ export default {
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-201123`,
+        version: `pqnext-${version()}-201125`,
         races: ()=>data.races.map(({ name , title , desc  })=>{
                 return {
                     name,
