@@ -512,13 +512,37 @@ const afkMessages: string[] = [
     'Оновлює_батлнет/гру/аддони/вікаури/трасмог'
 ]
 
-const itemQualityPriceMult: Map<number> = {
-    [ItemQuality.Poor]:     1,
-    [ItemQuality.Common]:   5,
-    [ItemQuality.Uncommon]: 20,
-    [ItemQuality.Rare]:     150,
-    [ItemQuality.Epic]:     1800
-    // [ItemQuality.Legendary]: 999999999999 8-)
+const itemQualities: Map<{ level: number, chance: number, attrCount: number, priceMult: number }> = {
+    [ItemQuality.Poor]: {
+        level: 1,
+        chance: -1,
+        attrCount: 0,
+        priceMult: 1
+    },
+    [ItemQuality.Common]: {
+        level: 1,
+        chance: -1,
+        attrCount: 0,
+        priceMult: 5
+    },
+    [ItemQuality.Uncommon]: {
+        level: 7,
+        chance: 100,
+        attrCount: 1,
+        priceMult: 20
+    },
+    [ItemQuality.Rare]: {
+        level: 18,
+        chance: 20,
+        attrCount: 2,
+        priceMult: 150
+    },
+    [ItemQuality.Epic]: {
+        level: 39,
+        chance: 1,
+        attrCount: 3,
+        priceMult: 1800
+    }
 }
 
 const itemSlotPriceMult: Map<number> = {
@@ -543,7 +567,7 @@ export default {
     attributes,
     biomes,
     classes,
-    itemQualityPriceMult,
+    itemQualities,
     itemSlotPriceMult,
     mobReinforcedPrefixes,
     mobs,

@@ -232,20 +232,13 @@ function getGearItem(hero: Hero, source: ItemSource): Item {
     const slot = rand.item(hero, Object.values(ItemSlot))
 
     const roll = rand.int(hero, 1000 - (source == ItemSource.Quest ? 500 : 0))
-    const quality =
-        (roll < 1 && level >= 39) ? ItemQuality.Epic :
-        (roll < 20 && level >= 18) ? ItemQuality.Rare :
-        (roll < 100 && level >= 7) ? ItemQuality.Uncommon :
-        ItemQuality.Common
+    const quality = [ ItemQuality.Epic, ItemQuality.Rare, ItemQuality.Uncommon ].reduce((a, c) => {
+        const q = data.itemQualities[c]
+        return roll < q.chance && level >= q.level ? c : a
+    }, ItemQuality.Common)
 
     const title = quality + ' ' + slot // todo: randomize
     const price = getItemPrice(hero, title, quality, slot)
-
-    const attrCount =
-        quality == ItemQuality.Epic ? 3 :
-        quality == ItemQuality.Rare ? 2 :
-        quality == ItemQuality.Uncommon ? 1 :
-        0
 
     const item: Item = {
         title,
@@ -254,6 +247,7 @@ function getGearItem(hero: Hero, source: ItemSource): Item {
         price
     }
 
+    const attrCount = data.itemQualities[quality].attrCount
     if (attrCount > 0) {
         const bonus = Math.floor(level / 5)
         const stat = rand.shuffle(hero, data.attributes.filter(e => e.primary).map(e => e.name))
@@ -291,7 +285,7 @@ function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: It
     return Math.floor(
         (quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0)
         + hero.level.num
-        * data.itemQualityPriceMult[quality]
+        * data.itemQualities[quality].priceMult
         * (slot ? data.itemSlotPriceMult[slot] : 1)
         * (extraMult ? extraMult : 1)
     )
