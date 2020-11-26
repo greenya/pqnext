@@ -7,30 +7,30 @@ var ItemQuality;
     ItemQuality1["Epic"] = 'epic';
 })(ItemQuality || (ItemQuality = {
 }));
-var ItemSlot;
-(function(ItemSlot1) {
-    ItemSlot1["MainHand"] = 'mainhand';
-    ItemSlot1["OffHand"] = 'offhand';
-    ItemSlot1["Head"] = 'head';
-    ItemSlot1["Shoulders"] = 'shoulders';
-    ItemSlot1["Chest"] = 'chest';
-    ItemSlot1["Back"] = 'back';
-    ItemSlot1["Wrist"] = 'wrist';
-    ItemSlot1["Hands"] = 'hands';
-    ItemSlot1["Waist"] = 'waist';
-    ItemSlot1["Legs"] = 'legs';
-    ItemSlot1["Feet"] = 'feet';
-    ItemSlot1["Neck"] = 'neck';
-    ItemSlot1["Finger"] = 'finger';
-    ItemSlot1["Trinket"] = 'trinket';
-})(ItemSlot || (ItemSlot = {
+var GearSlot;
+(function(GearSlot1) {
+    GearSlot1["MainHand"] = 'mainhand';
+    GearSlot1["OffHand"] = 'offhand';
+    GearSlot1["Head"] = 'head';
+    GearSlot1["Shoulders"] = 'shoulders';
+    GearSlot1["Chest"] = 'chest';
+    GearSlot1["Back"] = 'back';
+    GearSlot1["Wrist"] = 'wrist';
+    GearSlot1["Hands"] = 'hands';
+    GearSlot1["Waist"] = 'waist';
+    GearSlot1["Legs"] = 'legs';
+    GearSlot1["Feet"] = 'feet';
+    GearSlot1["Neck"] = 'neck';
+    GearSlot1["Finger"] = 'finger';
+    GearSlot1["Trinket"] = 'trinket';
+})(GearSlot || (GearSlot = {
 }));
-var ItemSource;
-(function(ItemSource1) {
-    ItemSource1["Drop"] = 'drop';
-    ItemSource1["Vendor"] = 'vendor';
-    ItemSource1["Quest"] = 'quest';
-})(ItemSource || (ItemSource = {
+var GearSource;
+(function(GearSource1) {
+    GearSource1["Drop"] = 'drop';
+    GearSource1["Vendor"] = 'vendor';
+    GearSource1["Quest"] = 'quest';
+})(GearSource || (GearSource = {
 }));
 var ZoneType;
 (function(ZoneType1) {
@@ -158,11 +158,11 @@ const classes = [
                 title: '\u{456}\u{440}\u{436}\u{430}\u{432}\u{438}\u{439} \u{434}\u{440}\u{438}\u{43d}',
                 quality: ItemQuality.Poor,
                 gear: {
-                    slot: ItemSlot.MainHand,
+                    slot: GearSlot.MainHand,
                     attr: {
                     },
                     level: 1,
-                    source: ItemSource.Drop
+                    source: GearSource.Drop
                 },
                 price: 1
             }
@@ -181,11 +181,11 @@ const classes = [
                 title: '\u{43a}\u{443}\u{445}\u{43e}\u{43d}\u{43d}\u{438}\u{439} \u{43d}\u{456}\u{436}',
                 quality: ItemQuality.Poor,
                 gear: {
-                    slot: ItemSlot.MainHand,
+                    slot: GearSlot.MainHand,
                     attr: {
                     },
                     level: 1,
-                    source: ItemSource.Drop
+                    source: GearSource.Drop
                 },
                 price: 1
             }
@@ -204,11 +204,11 @@ const classes = [
                 title: '\u{434}\u{435}\u{440}\u{435}\u{432}\'\u{44f}\u{43d}\u{430} \u{43f}\u{430}\u{43b}\u{438}\u{447}\u{43a}\u{430}',
                 quality: ItemQuality.Poor,
                 gear: {
-                    slot: ItemSlot.MainHand,
+                    slot: GearSlot.MainHand,
                     attr: {
                     },
                     level: 1,
-                    source: ItemSource.Drop
+                    source: GearSource.Drop
                 },
                 price: 1
             }
@@ -783,105 +783,141 @@ const afkMessages = [
     '\u{41a}\u{43e}\u{43b}\u{443}\u{43f}\u{430}\u{454}\u{442}\u{44c}\u{441}\u{44f} \u{443} \u{43d}\u{430}\u{43b}\u{430}\u{448}\u{442}\u{443}\u{432}\u{430}\u{43d}\u{43d}\u{44f}\u{445}_\u{433}\u{440}\u{438}/\u{433}\u{440}\u{430}\u{444}\u{456}\u{43a}\u{438}/\u{430}\u{434}\u{434}\u{43e}\u{43d}\u{456}\u{432}/\u{43c}\u{430}\u{43a}\u{440}\u{43e}\u{441}\u{456}\u{432}/\u{432}\u{456}\u{43a}\u{430}\u{443}\u{440}',
     '\u{41e}\u{43d}\u{43e}\u{432}\u{43b}\u{44e}\u{454}_\u{431}\u{430}\u{442}\u{43b}\u{43d}\u{435}\u{442}/\u{433}\u{440}\u{443}/\u{430}\u{434}\u{434}\u{43e}\u{43d}\u{438}/\u{432}\u{456}\u{43a}\u{430}\u{443}\u{440}\u{438}/\u{442}\u{440}\u{430}\u{441}\u{43c}\u{43e}\u{433}'
 ];
-const itemQualities = {
-    [ItemQuality.Poor]: {
+const itemQualities = [
+    {
+        name: ItemQuality.Poor,
+        title: '\u{41a}\u{435}\u{43f}\u{441}\u{44c}\u{43a}\u{438}\u{439}',
         level: 1,
         chance: -1,
-        attrCount: 0,
         priceMult: 1
     },
-    [ItemQuality.Common]: {
+    {
+        name: ItemQuality.Common,
+        title: '\u{417}\u{432}\u{438}\u{447}\u{430}\u{439}\u{43d}\u{438}\u{439}',
         level: 1,
         chance: -1,
-        attrCount: 0,
         priceMult: 5
     },
-    [ItemQuality.Uncommon]: {
+    {
+        name: ItemQuality.Uncommon,
+        title: '\u{41d}\u{435}\u{437}\u{432}\u{438}\u{447}\u{430}\u{439}\u{43d}\u{438}\u{439}',
         level: 7,
         chance: 121,
-        attrCount: 1,
-        priceMult: 20
+        priceMult: 20,
+        attrCount: 1
     },
-    [ItemQuality.Rare]: {
+    {
+        name: ItemQuality.Rare,
+        title: '\u{420}\u{456}\u{434}\u{43a}\u{456}\u{441}\u{43d}\u{438}\u{439}',
         level: 18,
         chance: 21,
-        attrCount: 2,
-        priceMult: 150
+        priceMult: 150,
+        attrCount: 2
     },
-    [ItemQuality.Epic]: {
+    {
+        name: ItemQuality.Epic,
+        title: '\u{415}\u{43f}\u{456}\u{447}\u{43d}\u{438}\u{439}',
         level: 39,
         chance: 1,
-        attrCount: 3,
-        priceMult: 1800
+        priceMult: 1800,
+        attrCount: 3
     }
-};
-const itemSlots = {
-    [ItemSlot.MainHand]: {
+];
+const gearSlots = [
+    {
+        name: GearSlot.MainHand,
+        title: '\u{41f}\u{440}\u{430}\u{432}\u{430} \u{440}\u{443}\u{43a}\u{430}',
         level: 1,
         priceMult: 3.5
     },
-    [ItemSlot.OffHand]: {
+    {
+        name: GearSlot.OffHand,
+        title: '\u{41b}\u{456}\u{432}\u{430} \u{440}\u{443}\u{43a}\u{430}',
         level: 1,
         priceMult: 3.2
     },
-    [ItemSlot.Head]: {
+    {
+        name: GearSlot.Head,
+        title: '\u{413}\u{43e}\u{43b}\u{43e}\u{432}\u{430}',
         level: 8,
         priceMult: 1.7
     },
-    [ItemSlot.Shoulders]: {
+    {
+        name: GearSlot.Shoulders,
+        title: '\u{41f}\u{43b}\u{435}\u{447}\u{456}',
         level: 10,
         priceMult: 1.9
     },
-    [ItemSlot.Chest]: {
+    {
+        name: GearSlot.Chest,
+        title: '\u{413}\u{440}\u{443}\u{434}\u{438}',
         level: 1,
         priceMult: 2
     },
-    [ItemSlot.Back]: {
+    {
+        name: GearSlot.Back,
+        title: '\u{421}\u{43f}\u{438}\u{43d}\u{430}',
         level: 4,
         priceMult: 1.2
     },
-    [ItemSlot.Wrist]: {
+    {
+        name: GearSlot.Wrist,
+        title: '\u{417}\u{430}\u{43f}\'\u{44f}\u{441}\u{442}\u{44f}',
         level: 1,
         priceMult: 1.3
     },
-    [ItemSlot.Hands]: {
+    {
+        name: GearSlot.Hands,
+        title: '\u{420}\u{443}\u{43a}\u{438}',
         level: 1,
         priceMult: 1.6
     },
-    [ItemSlot.Waist]: {
+    {
+        name: GearSlot.Waist,
+        title: '\u{41f}\u{43e}\u{44f}\u{441}',
         level: 2,
         priceMult: 1.4
     },
-    [ItemSlot.Legs]: {
+    {
+        name: GearSlot.Legs,
+        title: '\u{41d}\u{43e}\u{433}\u{438}',
         level: 1,
         priceMult: 1.8
     },
-    [ItemSlot.Feet]: {
+    {
+        name: GearSlot.Feet,
+        title: '\u{421}\u{442}\u{443}\u{43f}\u{43d}\u{456}',
         level: 1,
         priceMult: 1.5
     },
-    [ItemSlot.Neck]: {
+    {
+        name: GearSlot.Neck,
+        title: '\u{428}\u{438}\u{44f}',
         level: 15,
         priceMult: 2.4
     },
-    [ItemSlot.Finger]: {
+    {
+        name: GearSlot.Finger,
+        title: '\u{41f}\u{430}\u{43b}\u{435}\u{446}\u{44c}',
         level: 12,
         priceMult: 2.2
     },
-    [ItemSlot.Trinket]: {
+    {
+        name: GearSlot.Trinket,
+        title: '\u{414}\u{440}\u{456}\u{431}\u{43d}\u{438}\u{447}\u{43a}\u{430}',
         level: 20,
         priceMult: 2.6
     }
-};
+];
 const itemBuyPriceMult = 10;
 const data = {
     afkMessages,
     attributes,
     biomes,
     classes,
+    gearSlots,
     itemBuyPriceMult,
     itemQualities,
-    itemSlots,
     mobReinforcedPrefixes,
     mobs,
     preciousItems,
@@ -974,7 +1010,7 @@ const rand = {
     shuffle,
     text
 };
-const version = ()=>1
+const version = ()=>2
 ;
 const knownHeroActions = [
     {
@@ -1128,13 +1164,13 @@ const knownHeroActions = [
     }
 ];
 function haveEnoughGoldToGoShopping(hero) {
-    const bestQualityAvail = Object.values(ItemQuality).reduce((a, c)=>hero.level.num >= data.itemQualities[c].level ? c : a
-    , ItemQuality.Common);
-    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, ItemSlot.MainHand);
+    const bestQualityAvail = data.itemQualities.slice().reverse().find((q)=>q.level <= hero.level.num
+    ).name;
+    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, GearSlot.MainHand);
     return hero.gold >= priceThreshold;
 }
 function buyGear(hero) {
-    rollItemsAndLootSingleBestOne(hero, ItemSource.Vendor);
+    rollItemsAndLootSingleBestOne(hero, GearSource.Vendor);
 }
 function getHeroTarget(hero) {
     const level = hero.level.num;
@@ -1189,7 +1225,7 @@ function finishCombat(hero) {
     }
     const items = [];
     if (rand.dice(hero, 14)) {
-        items.push(getGearItem(hero, ItemSource.Drop));
+        items.push(getGearItem(hero, GearSource.Drop));
     } else {
         if (reinforced) {
             items.push(getMobPreciousItem(hero, mob));
@@ -1205,14 +1241,13 @@ function finishCombat(hero) {
 }
 function getGearItem(hero, source) {
     const level = hero.level.num;
-    const availSlots = Object.values(ItemSlot).filter((s)=>level >= data.itemSlots[s].level
+    const availSlots = data.gearSlots.filter((s)=>s.level <= level
+    ).map((s)=>s.name
     );
     const slot = rand.item(hero, availSlots);
-    const roll = rand.int(hero, 1000 - (source == ItemSource.Quest ? 500 : 0));
-    const quality = Object.values(ItemQuality).reduce((a, c)=>{
-        const q = data.itemQualities[c];
-        return q.chance > 0 && q.chance > roll && q.level <= level ? c : a;
-    }, ItemQuality.Common);
+    const roll = rand.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0));
+    const quality = data.itemQualities.reduce((a, c)=>c.chance > 0 && c.chance > roll && c.level <= level ? c.name : a
+    , ItemQuality.Common);
     const title = quality + ' ' + slot;
     const price = getItemPrice(hero, title, quality, slot);
     const item1 = {
@@ -1227,14 +1262,15 @@ function getGearItem(hero, source) {
         },
         price
     };
-    const attrCount = data.itemQualities[quality].attrCount;
-    if (attrCount > 0) {
+    const attrCount = data.itemQualities.find((q)=>q.name == quality
+    ).attrCount;
+    if (attrCount) {
         const bonus = Math.floor(level / 5);
         const stat = rand.shuffle(hero, data.attributes.filter((e)=>e.primary
         ).map((e)=>e.name
         ));
         for(let i = 0; i < attrCount; i++){
-            item1.gear.attr[stat[i]] = bonus + (i == 0 && source == ItemSource.Quest ? 1 : 0);
+            item1.gear.attr[stat[i]] = bonus + (i == 0 && source == GearSource.Quest ? 1 : 0);
         }
     }
     return item1;
@@ -1269,7 +1305,9 @@ function getPoorItemPriceDeviation(hero, title) {
     return mod > 0 ? mod : base % hero.level.num * 4;
 }
 function getItemPrice(hero, title, quality, slot, extraMult) {
-    return Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + hero.level.num * data.itemQualities[quality].priceMult * (slot ? data.itemSlots[slot].priceMult : 1) * (extraMult ? extraMult : 1));
+    return Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + hero.level.num * data.itemQualities.find((q)=>q.name == quality
+    ).priceMult * (slot ? data.gearSlots.find((s)=>s.name == slot
+    ).priceMult : 1) * (extraMult ? extraMult : 1));
 }
 function sellJunk(hero) {
     hero.bag.splice(0).forEach((slot)=>addGold(hero, slot.item.price * slot.count, 'junk')
@@ -1295,18 +1333,18 @@ function passQuest(hero) {
     const level = hero.level.num;
     addExp(hero, Math.ceil(hero.level.progress.max / (10 + level / 10)) + level * 4 + 3, 'quest');
     addGold(hero, rand.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest');
-    rollItemsAndLootSingleBestOne(hero, ItemSource.Quest);
+    rollItemsAndLootSingleBestOne(hero, GearSource.Quest);
     hero.quest = undefined;
     stats.questsPassed++;
 }
 function rollItemsAndLootSingleBestOne(hero, source) {
-    const amount = source == ItemSource.Quest ? 3 : source == ItemSource.Vendor ? 5 : 0;
+    const amount = source == GearSource.Quest ? 3 : source == GearSource.Vendor ? 5 : 0;
     let bestValue = 0;
     let bestItem = undefined;
     let bestBuyPrice = 0;
     for(let i = 0; i < amount; i++){
         const item1 = getGearItem(hero, source);
-        const buyPrice = source == ItemSource.Vendor ? item1.price * data.itemBuyPriceMult : 0;
+        const buyPrice = source == GearSource.Vendor ? item1.price * data.itemBuyPriceMult : 0;
         const value = getGearItemValue(hero, item1);
         if (bestValue < value && hero.gold >= buyPrice) {
             bestValue = value;
@@ -1417,8 +1455,11 @@ function equipItem(hero, newItem) {
             done: false
         };
     }
-    const oldItem = hero.gear[newItem.gear.slot];
-    if (oldItem) {
+    const oldItemIndex = hero.gear.findIndex((i)=>i.gear.slot == newItem.gear.slot
+    );
+    let oldItem = undefined;
+    if (oldItemIndex >= 0) {
+        oldItem = hero.gear[oldItemIndex];
         const oldValue = getGearItemValue(hero, oldItem);
         const newValue = getGearItemValue(hero, newItem);
         if (newValue <= oldValue) {
@@ -1426,11 +1467,11 @@ function equipItem(hero, newItem) {
                 done: false
             };
         }
-    }
-    if (oldItem) {
         removeAttr(hero, oldItem.gear.attr);
+        hero.gear = hero.gear.filter((i)=>i != oldItem
+        );
     }
-    hero.gear[newItem.gear.slot] = newItem;
+    hero.gear.push(newItem);
     addAttr(hero, newItem.gear.attr);
     stats.itemsEquipped++;
     return {
@@ -1596,11 +1637,7 @@ function createHero(nickname, raceName, className, attrRoll) {
             biome: Trait.None
         },
         gold: 0,
-        gear: Object.values(ItemSlot).reduce((a, c)=>{
-            a[c] = undefined;
-            return a;
-        }, {
-        }),
+        gear: [],
         bag: []
     };
     levelUp(hero);
@@ -1638,12 +1675,12 @@ const stats = {
         return a;
     }, {
     }),
-    itemsLootedBySlot: Object.values(ItemSlot).reduce((a, c)=>{
+    itemsLootedBySlot: Object.values(GearSlot).reduce((a, c)=>{
         a[c] = 0;
         return a;
     }, {
     }),
-    itemsLootedBySource: Object.values(ItemSource).reduce((a, c)=>{
+    itemsLootedBySource: Object.values(GearSource).reduce((a, c)=>{
         a[c] = 0;
         return a;
     }, {
@@ -1716,10 +1753,18 @@ export default {
     advanceTime,
     dump
 };
+function migrate(obj) {
+    if (obj.ver == 1) {
+        obj.gear = Object.values(obj.gear);
+        obj.ver = 2;
+        return true;
+    }
+    return false;
+}
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-201125`,
+        version: `pqnext-${version()}-201126`,
         races: ()=>data.races.map(({ name , title , desc  })=>{
                 return {
                     name,
@@ -1746,6 +1791,13 @@ if (!window.Deno) {
                 };
             })
         ,
+        gearSlots: ()=>data.gearSlots.map(({ name , title  })=>{
+                return {
+                    name,
+                    title
+                };
+            })
+        ,
         roll: rollAttr,
         create: createHero,
         save: (hero)=>{
@@ -1755,8 +1807,20 @@ if (!window.Deno) {
         },
         load: ()=>{
             if (window.localStorage.hero) {
-                const hero = JSON.parse(window.localStorage.hero);
-                return hero.ver == version() ? hero : undefined;
+                const obj = JSON.parse(window.localStorage.hero);
+                if (obj.ver == version()) {
+                    return obj;
+                } else {
+                    console.log(`Saved hero version mismatch. Migrating from v${obj.ver} to v${version()}...`);
+                    while(migrate(obj) && obj.ver != version()){
+                    }
+                    if (obj.ver == version()) {
+                        console.log('Success.');
+                        return obj;
+                    } else {
+                        console.log('Failure. Probably the hero cannot be restored ._. Please create new one');
+                    }
+                }
             }
         },
         start: (hero)=>{
@@ -1774,7 +1838,6 @@ if (!window.Deno) {
         },
         playing: ()=>activeIntervalId > 0
         ,
-        format: format,
         dump
     };
 }
