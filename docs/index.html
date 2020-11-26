@@ -69,6 +69,21 @@
             color: white;
         }
 
+        .app-item-tooltip {
+            position: absolute;
+            padding: 1em;
+            width: calc(100% + 2rem);
+            min-width: 16em;
+            background: white;
+            color: black;
+            border: 1px solid gray;
+            box-shadow: 0 0 16px rgba(0,0,0,.25);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .1s ease-out;
+            z-index: 1;
+        }
+
         .app-bag .slot {
             position: relative;
             display: inline-block;
@@ -109,22 +124,7 @@
             color: white;
         }
 
-        .app-bag .slot .tooltip {
-            position: absolute;
-            padding: 1em;
-            width: calc(100% + 2rem);
-            min-width: 16em;
-            background: white;
-            color: black;
-            border: 1px solid gray;
-            box-shadow: 0 0 16px rgba(0,0,0,.25);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity .1s ease-out;
-            z-index: 1;
-        }
-
-        .app-bag .slot:hover .tooltip {
+        .app-bag .slot:hover .app-item-tooltip {
             opacity: 1;
         }
 
@@ -167,25 +167,45 @@
     })
 </script>
 
+<template id="app-item-tooltip">
+    <div class="app-item-tooltip">
+        <div class="title is-size-6">{{ item.title | capitalize }}</div>
+            <div v-if="item.gear" class="subtitle is-size-7 has-text-weight-medium">
+                <div v-if="item.gear.source == 'quest'" >Винагорода за завдання</div>
+                <div>{{ item.gear.level }}-го рівня</div>
+            </div>
+            <div v-if="item.gear && Object.keys(item.gear.attr).length > 0" class="block">
+                <div v-for="a in attrs" :key="a">{{ a }}</div>
+            </div>
+            <div class="block has-text-right">
+                <span :inner-html.prop="item.price | coinify"></span>
+        </div>
+    </div>
+</template>
+<script>
+    Vue.component('app-item-tooltip', {
+        template: '#app-item-tooltip',
+        props: {
+            item: { type: Object, required: true }
+        },
+        computed: {
+            attrs: function () {
+                const attr = window.game.attributes()
+                return Object.keys(this.item.gear.attr).map(
+                    a => attr.find(e => e.name == a)
+                        .format.replace('X', this.item.gear.attr[a])
+                )
+            }
+        }
+    })
+</script>
+
 <template id="app-bag">
     <div class="app-bag">
         <div v-for="slot in slots" :key="slot.item.title" class="slot" :class="slot.item.quality">
-            <!-- <span v-if="slot.item.gear"><i :class="slotIcon(slot.item.gear.slot)"></i></span> -->
             <span>{{ slot.item.title | capitalize }}</span>
             <span v-if="slot.count > 1">({{ slot.count }} шт)</span>
-            <div class="tooltip">
-                <div class="title is-size-6">{{ slot.item.title | capitalize }}</div>
-                <div v-if="slot.item.gear" class="subtitle is-size-7 has-text-weight-medium">
-                    <div v-if="slot.item.gear.source == 'quest'" >Винагорода за завдання</div>
-                    <div>{{ slot.item.gear.level }}-го рівня</div>
-                </div>
-                <div v-if="slot.item.gear && Object.keys(slot.item.gear.attr).length > 0" class="block">
-                    <div v-for="a in attr(slot.item)" :key="a">{{ a }}</div>
-                </div>
-                <div class="block has-text-right">
-                    <span :inner-html.prop="slot.item.price | coinify"></span>
-                </div>
-            </div>
+            <app-item-tooltip :item="slot.item"></app-item-tooltip>
         </div>
     </div>
 </template>
@@ -194,31 +214,6 @@
         template: '#app-bag',
         props: {
             slots: { type: Array, required: true }
-        },
-        methods: {
-            attr: function (item) {
-                const attr = window.game.attributes()
-                return Object.keys(item.gear.attr).map(a => attr.find(e => e.name == a).format.replace('X', item.gear.attr[a]))
-            }
-            // slotIcon: function (slot) {
-            //     switch (slot) {
-            //         case 'mainhand':    return 'fas fa-fist-raised'
-            //         case 'offhand':     return 'fas fa-hand-paper'
-            //         case 'head':        return 'fas fa-hat-cowboy'
-            //         // case 'shoulders':   return 'fas fa-???'
-            //         case 'chest':       return 'fas fa-tshirt'
-            //         // case 'cape':        return 'fas fa-???'
-            //         // case 'wrist':       return 'fas fa-???'
-            //         case 'gloves':      return 'fas fa-mitten'
-            //         // case 'belt':        return 'fas fa-???'
-            //         // case 'legs':        return 'fas fa-???'
-            //         case 'feet':        return 'fas fa-socks'
-            //         // case 'neck':        return 'fas fa-???'
-            //         // case 'finger':      return 'fas fa-???'
-            //         // case 'trinket':     return 'fas fa-???'
-            //         default: return 'fas fa-question-circle'
-            //     }
-            // }
         }
     })
 </script>
