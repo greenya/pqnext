@@ -1,16 +1,16 @@
 import {
     Attribute,
     Class,
-    ItemSlot,
+    GearSlot,
+    GearSource,
     ItemQuality,
     Map,
     Mob,
     Race,
-    Trait,
-    ItemSource
+    Trait
 } from './type.ts'
 
-const attributes: Attribute[] = [
+const attributes: readonly Attribute[] = [
     {
         name: 'str',
         title: 'Сила',
@@ -56,7 +56,7 @@ const attributes: Attribute[] = [
     }
 ]
 
-const races: Race[] = [
+const races: readonly Race[] = [
     {
         name: 'human',
         title: 'Людина',
@@ -77,7 +77,7 @@ const races: Race[] = [
     }
 ]
 
-const classes: Class[] = [
+const classes: readonly Class[] = [
     {
         name: 'warrior',
         title: 'Воїн',
@@ -88,10 +88,10 @@ const classes: Class[] = [
                 title: 'іржавий дрин',
                 quality: ItemQuality.Poor,
                 gear: {
-                    slot: ItemSlot.MainHand,
+                    slot: GearSlot.MainHand,
                     attr: {},
                     level: 1,
-                    source: ItemSource.Drop
+                    source: GearSource.Drop
                 },
                 price: 1
             }
@@ -107,10 +107,10 @@ const classes: Class[] = [
                 title: 'кухонний ніж',
                 quality: ItemQuality.Poor,
                 gear: {
-                    slot: ItemSlot.MainHand,
+                    slot: GearSlot.MainHand,
                     attr: {},
                     level: 1,
-                    source: ItemSource.Drop
+                    source: GearSource.Drop
                 },
                 price: 1
             }
@@ -126,10 +126,10 @@ const classes: Class[] = [
                 title: 'дерев\'яна паличка',
                 quality: ItemQuality.Poor,
                 gear: {
-                    slot: ItemSlot.MainHand,
+                    slot: GearSlot.MainHand,
                     attr: {},
                     level: 1,
-                    source: ItemSource.Drop
+                    source: GearSource.Drop
                 },
                 price: 1
             }
@@ -137,7 +137,7 @@ const classes: Class[] = [
     }
 ]
 
-const biomes = [
+const biomes: readonly { level: number, biome: Trait }[] = [
     { level: 1, biome: Trait.Forest },
     { level: 10, biome: Trait.Desert },
     { level: 20, biome: Trait.Tundra },
@@ -145,7 +145,7 @@ const biomes = [
     { level: 40, biome: Trait.Water }
 ]
 
-const mobs: Mob[] = [
+const mobs: readonly Mob[] = [
     {
         name: 'ape',
         level: 18,
@@ -425,7 +425,7 @@ const mobs: Mob[] = [
     },
 ]
 
-const mobReinforcedPrefixes: { gen: string, trait: Trait }[] = [
+const mobReinforcedPrefixes: readonly { gen: string, trait: Trait }[] = [
     // experienced
     { gen: 'понюхавший пороху/понюхавша пороху/понюхавше пороху', trait: Trait.Human },
     { gen: 'досвідчений/досвідчена/досвідчене', trait: Trait.Human },
@@ -464,7 +464,7 @@ const mobReinforcedPrefixes: { gen: string, trait: Trait }[] = [
     { gen: 'титанічний/титанічна/титанічне', trait: Trait.Magic }
 ]
 
-const preciousItems: { gen: string, trait: Trait, value: number }[] = [
+const preciousItems: readonly { gen: string, trait: Trait, value: number }[] = [
     // human
     { gen: 'розірваний чобіт_42-го/44-го/46-го/48-го_розміру', trait: Trait.Human, value: 2 },
     { gen: 'випрана_біла/синя/зелена/червона/чорна/смугаста_шкарпетка', trait: Trait.Human, value: 3 },
@@ -496,7 +496,7 @@ const preciousItems: { gen: string, trait: Trait, value: number }[] = [
     { gen: 'фіал із_прозорою/мутною/чистою_сумішшю', trait: Trait.Water, value: 10 }
 ]
 
-const afkMessages: string[] = [
+const afkMessages: readonly string[] = [
     'Біо афк',
     'Секунду/Хвилинку/Хвильку',
     `Відійшов на_одну/дві/три/чотири/п\'ять_хв`,
@@ -512,97 +512,133 @@ const afkMessages: string[] = [
     'Оновлює_батлнет/гру/аддони/вікаури/трасмог'
 ]
 
-const itemQualities: Map<{ level: number, chance: number, attrCount: number, priceMult: number }> = {
-    [ItemQuality.Poor]: {
+const itemQualities: readonly { name: ItemQuality, title: string, level: number, chance: number, priceMult: number, attrCount?: number }[] = [
+    {
+        name: ItemQuality.Poor,
+        title: 'Кепський',
         level: 1,
         chance: -1,
-        attrCount: 0,
         priceMult: 1
     },
-    [ItemQuality.Common]: {
+    {
+        name: ItemQuality.Common,
+        title: 'Звичайний',
         level: 1,
         chance: -1, // 87.9% => 1000 (all) - 100 (uncommon) - 20 (rare) - 1 (epic)
-        attrCount: 0,
         priceMult: 5
     },
-    [ItemQuality.Uncommon]: {
+    {
+        name: ItemQuality.Uncommon,
+        title: 'Незвичайний',
         level: 7,
         chance: 121, // 10% => 100 (uncommon) + 20 (rare) + 1 (epic)
-        attrCount: 1,
-        priceMult: 20
+        priceMult: 20,
+        attrCount: 1
     },
-    [ItemQuality.Rare]: {
+    {
+        name: ItemQuality.Rare,
+        title: 'Рідкісний',
         level: 18,
         chance: 21, // 2% => 20 (rare) + 1 (epic)
-        attrCount: 2,
-        priceMult: 150
+        priceMult: 150,
+        attrCount: 2
     },
-    [ItemQuality.Epic]: {
+    {
+        name: ItemQuality.Epic,
+        title: 'Епічний',
         level: 39,
         chance: 1, // 0.1% => 1 (epic)
-        attrCount: 3,
-        priceMult: 1800
+        priceMult: 1800,
+        attrCount: 3
     }
-}
+]
 
-const itemSlots: Map<{ level: number, priceMult: number }> = {
-    [ItemSlot.MainHand]: {
+const gearSlots: readonly { name: GearSlot, title: string, level: number, priceMult: number }[] = [
+    {
+        name: GearSlot.MainHand,
+        title: 'Права рука',
         level: 1,
         priceMult: 3.5
     },
-    [ItemSlot.OffHand]: {
+    {
+        name: GearSlot.OffHand,
+        title: 'Ліва рука',
         level: 1,
         priceMult: 3.2
     },
-    [ItemSlot.Head]: {
+    {
+        name: GearSlot.Head,
+        title: 'Голова',
         level: 8,
         priceMult: 1.7
     },
-    [ItemSlot.Shoulders]: {
+    {
+        name: GearSlot.Shoulders,
+        title: 'Плечі',
         level: 10,
         priceMult: 1.9
     },
-    [ItemSlot.Chest]: {
+    {
+        name: GearSlot.Chest,
+        title: 'Груди',
         level: 1,
         priceMult: 2.0
     },
-    [ItemSlot.Back]: {
+    {
+        name: GearSlot.Back,
+        title: 'Спина',
         level: 4,
         priceMult: 1.2
     },
-    [ItemSlot.Wrist]: {
+    {
+        name: GearSlot.Wrist,
+        title: 'Зап\'ястя',
         level: 1,
         priceMult: 1.3
     },
-    [ItemSlot.Hands]: {
+    {
+        name: GearSlot.Hands,
+        title: 'Руки',
         level: 1,
         priceMult: 1.6
     },
-    [ItemSlot.Waist]: {
+    {
+        name: GearSlot.Waist,
+        title: 'Пояс',
         level: 2,
         priceMult: 1.4
     },
-    [ItemSlot.Legs]: {
+    {
+        name: GearSlot.Legs,
+        title: 'Ноги',
         level: 1,
         priceMult: 1.8
     },
-    [ItemSlot.Feet]: {
+    {
+        name: GearSlot.Feet,
+        title: 'Ступні',
         level: 1,
         priceMult: 1.5
     },
-    [ItemSlot.Neck]: {
+    {
+        name: GearSlot.Neck,
+        title: 'Шия',
         level: 15,
         priceMult: 2.4
     },
-    [ItemSlot.Finger]: {
+    {
+        name: GearSlot.Finger,
+        title: 'Палець',
         level: 12,
         priceMult: 2.2
     },
-    [ItemSlot.Trinket]: {
+    {
+        name: GearSlot.Trinket,
+        title: 'Дрібничка',
         level: 20,
         priceMult: 2.6
     }
-}
+]
 
 const itemBuyPriceMult = 10
 
@@ -611,9 +647,9 @@ export default {
     attributes,
     biomes,
     classes,
+    gearSlots,
     itemBuyPriceMult,
     itemQualities,
-    itemSlots,
     mobReinforcedPrefixes,
     mobs,
     preciousItems,

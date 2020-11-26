@@ -8,7 +8,7 @@ function dice(state: { seed: number }, faceCount: number, targetCap = 1): boolea
     return targetCap >= i
 }
 
-function item<T>(state: { seed: number }, arr: T[]): T {
+function item<T>(state: { seed: number }, arr: readonly T[]): T {
     const i = int(state, arr.length)
     return arr[i]
 }

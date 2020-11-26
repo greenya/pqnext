@@ -44,13 +44,13 @@
             position: relative;
             height: 18px;
             background: lightcyan;
-            border: 1px solid lightskyblue;
+            border: 1px solid lightblue;
             overflow: hidden;
         }
 
         .app-progress-bar .bar {
             height: 100%;
-            background: deepskyblue;
+            background: lightblue;
         }
 
         .app-progress-bar.smooth .bar {
@@ -59,14 +59,11 @@
 
         .app-progress-bar .text {
             position: absolute;
-            top: 0;
-            bottom: 0;
+            top: 50%;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 75%;
-            font-weight: 500;
-            text-shadow: 1px 1px 1px #222;
-            color: white;
+            font-size: 85%;
+            line-height: 0;
         }
 
         .app-item-tooltip {
@@ -84,9 +81,8 @@
             z-index: 1;
         }
 
-        .app-bag .slot {
+        .app-item {
             position: relative;
-            display: inline-block;
             margin: .2em;
             padding: .5em;
             line-height: 1;
@@ -94,38 +90,42 @@
             cursor: default;
         }
 
-        .app-bag .slot.poor {
+        .app-item.poor {
             border: 1px solid var(--color-poor);
             background-color: var(--color-poor);
             color: white;
         }
 
-        .app-bag .slot.common {
+        .app-item.common {
             border: 1px solid lightgray;
             background-color: var(--color-common);
             color: black;
         }
 
-        .app-bag .slot.uncommon {
+        .app-item.uncommon {
             border: 1px solid var(--color-uncommon);
             background-color: var(--color-uncommon);
             color: white;
         }
 
-        .app-bag .slot.rare {
+        .app-item.rare {
             border: 1px solid var(--color-rare);
             background-color: var(--color-rare);
             color: white;
         }
 
-        .app-bag .slot.epic {
+        .app-item.epic {
             border: 1px solid var(--color-epic);
             background-color: var(--color-epic);
             color: white;
         }
 
-        .app-bag .slot:hover .app-item-tooltip {
+        .app-item:hover .app-item-tooltip {
             opacity: 1;
+        }
+
+        .app-gear table td {
+            border: 0;
         }
 
     </style>
@@ -159,7 +159,7 @@
             },
             title: function () {
                 switch (this.format) {
-                    case 'exp': return `${this.value.cur} / ${this.value.max}`
+                    case 'exp': return `${Number(this.value.cur).toLocaleString()} / ${Number(this.value.max).toLocaleString()}`
                     default: return ''
                 }
             }
@@ -200,13 +200,56 @@
     })
 </script>
 
+<template id="app-item">
+    <div class="app-item" :class="item.quality">
+        <span>{{ item.title | capitalize }}</span>
+        <span v-if="count > 1">({{ count }} шт)</span>
+        <app-item-tooltip :item="item"></app-item-tooltip>
+    </div>
+</template>
+<script>
+    Vue.component('app-item', {
+        template: '#app-item',
+        props: {
+            item: { type: Object, required: true },
+            count: { type: Number, default: 1 }
+        }
+    })
+</script>
+
+<template id="app-gear">
+    <div class="app-gear">
+        <table class="table is-narrow is-fullwidth">
+            <tbody>
+                <tr v-for="{ title, item } in items" :key="title">
+                    <td class="pl-0 is-vcentered has-text-right">{{ title }}</td>
+                    <td class="pr-0">
+                        <app-item v-if="item" :item="item" class="is-inline-block"></app-item>
+                        <div v-if="!item" class="has-text-grey-light">&mdash;</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script>
+    Vue.component('app-gear', {
+        template: '#app-gear',
+        props: {
+            gear: { type: Array, required: true }
+        },
+        computed: {
+            items: function () {
+                return window.game.gearSlots()
+                    .map(s => { return { title: s.title, item: this.gear[s.name] } })
+            }
+        }
+    })
+</script>
+
 <template id="app-bag">
     <div class="app-bag">
-        <div v-for="slot in slots" :key="slot.item.title" class="slot" :class="slot.item.quality">
-            <span>{{ slot.item.title | capitalize }}</span>
-            <span v-if="slot.count > 1">({{ slot.count }} шт)</span>
-            <app-item-tooltip :item="slot.item"></app-item-tooltip>
-        </div>
+        <app-item v-for="{ item, count } in slots" :key="item.title" :item="item" :count="count" class="is-inline-block"></app-item>
     </div>
 </template>
 <script>
@@ -332,7 +375,7 @@
         <section class="section container">
             <div class="tile is-ancestor">
                 <div class="tile is-parent is-vertical is-3">
-                    <div class="tile is-child box">
+                    <div class="tile is-child">
                         <div class="is-size-4">{{ hero.nickname }}</div>
                         <div>{{ game.races().find(e => e.name == hero.race).title }}</div>
                         <div>{{ game.classes().find(e => e.name == hero.class).title }}</div>
@@ -354,15 +397,24 @@
                         </div>
                         <app-progress-bar :value="hero.level.progress" format="exp"></app-progress-bar>
                     </div>
-                    <div class="tile is-child box">
+                    <div class="tile is-child">
+                        <div v-if="hero.quest">
+                            <div>{{ hero.quest.title }}</div>
+                            <app-progress-bar :value="hero.quest.progress" format="quest"></app-progress-bar>
+                        </div>
+                        <div class="is-size-7 mt-4">Може колись завдання будуть різіні...</div>
+                    </div>
+                    <div class="tile is-child">
                         <div class="is-size-7">Може колись будуть закляття...</div>
                     </div>
                 </div>
-                <div class="tile is-parent is-vertical">
-                    <div class="tile is-child box">
-                        <app-bag :slots="Object.values(hero.gear).filter(i => i).map(i => { return { item: i, count: 1 } })"></app-bag>
+                <div class="tile is-parent is-4">
+                    <div class="tile is-child">
+                        <app-gear :gear="hero.gear"></app-gear>
                     </div>
-                    <div class="tile is-child box">
+                </div>
+                <div class="tile is-parent is-5">
+                    <div class="tile is-child">
                         <div class="level is-mobile mb-0">
                             <div class="level-left">
                                 <div class="level-item">Сумка</div>
@@ -375,19 +427,10 @@
                         <app-bag :slots="hero.bag"></app-bag>
                     </div>
                 </div>
-                <div class="tile is-parent is-3">
-                    <div class="tile is-child box">
-                        <div v-if="hero.quest">
-                            <div>{{ hero.quest.title }}</div>
-                            <app-progress-bar :value="hero.quest.progress" format="quest"></app-progress-bar>
-                        </div>
-                        <div class="is-size-7 mt-4">Може колись завдання будуть різіні...</div>
-                    </div>
-                </div>
             </div>
             <div class="tile is-ancestor">
                 <div class="tile is-parent">
-                    <div class="tile is-child box">
+                    <div class="tile is-child">
                         <div>{{ hero.action.title }}</div>
                         <app-progress-bar :value="hero.action.progress"></app-progress-bar>
                     </div>
@@ -480,12 +523,12 @@
                 const attr = this.game.attributes()
                 const result = attr.filter(a => a.primary).map(a => { return {
                     title: a.title,
-                    value: this.game.format.number(this.hero.attr[a.name])
+                    value: Number(this.hero.attr[a.name]).toLocaleString()
                 } })
 
                 ;[ 'maxHp', 'maxMp' ].forEach(e => result.push({
                     title: attr.find(a => a.name == e).title,
-                    value: this.game.format.number(this.hero.attr[e])
+                    value: Number(this.hero.attr[e]).toLocaleString()
                 }))
 
                 return result

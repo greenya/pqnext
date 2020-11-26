@@ -24,7 +24,7 @@ export enum ItemQuality {
     // Legendary
 }
 
-export enum ItemSlot {
+export enum GearSlot {
     MainHand    = 'mainhand',
     OffHand     = 'offhand',
     Head        = 'head',
@@ -41,7 +41,7 @@ export enum ItemSlot {
     Trinket     = 'trinket'
 }
 
-export enum ItemSource {
+export enum GearSource {
     Drop    = 'drop',
     Vendor  = 'vendor',
     Quest   = 'quest'
@@ -51,10 +51,10 @@ export interface Item {
     title: string,
     quality: ItemQuality,
     gear?: {
-        slot: ItemSlot,
+        slot: GearSlot,
         attr: Map<number>,
         level: number,
-        source: ItemSource
+        source: GearSource
     },
     price: number
 }
@@ -152,7 +152,7 @@ export interface Hero {
     target?: HeroTarget,
     zone: { type: ZoneType, biome: Trait },
     gold: number,
-    gear: Map<Item | undefined>,
+    gear: Map<Item>,
     bag: BagSlot[],
     seed: number,
     born: number,

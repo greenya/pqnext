@@ -1,11 +1,11 @@
 import {
+    GearSlot,
+    GearSource,
     Hero,
     HeroAction,
     HeroTarget,
     Item,
     ItemQuality,
-    ItemSlot,
-    ItemSource,
     Map,
     Mob,
     MobMight,
@@ -19,7 +19,7 @@ import rand from './rand.ts'
 
 const version = () => 1
 
-const knownHeroActions: HeroAction[] = [
+const knownHeroActions: readonly HeroAction[] = [
     {
         name: '?',
         title: () => '?',
@@ -149,15 +149,13 @@ const knownHeroActions: HeroAction[] = [
 ]
 
 function haveEnoughGoldToGoShopping(hero: Hero): boolean {
-    const bestQualityAvail = Object.values(ItemQuality)
-        .reduce((a, c) => hero.level.num >= data.itemQualities[c].level ? c : a, ItemQuality.Common)
-    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, ItemSlot.MainHand)
-
+    const bestQualityAvail = data.itemQualities.slice().reverse().find(q => q.level <= hero.level.num)!.name
+    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, GearSlot.MainHand)
     return hero.gold >= priceThreshold
 }
 
 function buyGear(hero: Hero) {
-    rollItemsAndLootSingleBestOne(hero, ItemSource.Vendor)
+    rollItemsAndLootSingleBestOne(hero, GearSource.Vendor)
 }
 
 function getHeroTarget(hero: Hero): HeroTarget {
@@ -216,7 +214,7 @@ function finishCombat(hero: Hero) {
     const items: Item[] = []
 
     if (rand.dice(hero, 14)) {
-        items.push(getGearItem(hero, ItemSource.Drop))
+        items.push(getGearItem(hero, GearSource.Drop))
     } else {
         if (reinforced) {
             items.push(getMobPreciousItem(hero, mob))
@@ -233,17 +231,17 @@ function finishCombat(hero: Hero) {
     stats.mobsKilled[target.might]++
 }
 
-function getGearItem(hero: Hero, source: ItemSource): Item {
+function getGearItem(hero: Hero, source: GearSource): Item {
     const level = hero.level.num
 
-    const availSlots = Object.values(ItemSlot).filter(s => level >= data.itemSlots[s].level)
+    const availSlots = data.gearSlots.filter(s => s.level <= level).map(s => s.name)
     const slot = rand.item(hero, availSlots)
 
-    const roll = rand.int(hero, 1000 - (source == ItemSource.Quest ? 500 : 0))
-    const quality = Object.values(ItemQuality).reduce((a, c) => {
-        const q = data.itemQualities[c]
-        return q.chance > 0 && q.chance > roll && q.level <= level ? c : a
-    }, ItemQuality.Common)
+    const roll = rand.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0))
+    const quality = data.itemQualities.reduce(
+        (a, c) => c.chance > 0 && c.chance > roll && c.level <= level ? c.name : a,
+        ItemQuality.Common
+    )
 
     const title = quality + ' ' + slot // todo: randomize
     const price = getItemPrice(hero, title, quality, slot)
@@ -255,12 +253,12 @@ function getGearItem(hero: Hero, source: ItemSource): Item {
         price
     }
 
-    const attrCount = data.itemQualities[quality].attrCount
-    if (attrCount > 0) {
+    const attrCount = data.itemQualities.find(q => q.name == quality)!.attrCount
+    if (attrCount) {
         const bonus = Math.floor(level / 5)
         const stat = rand.shuffle(hero, data.attributes.filter(e => e.primary).map(e => e.name))
         for (let i = 0; i < attrCount; i++) {
-            item.gear!.attr[stat[i]] = bonus + (i == 0 && source == ItemSource.Quest ? 1 : 0)
+            item.gear!.attr[stat[i]] = bonus + (i == 0 && source == GearSource.Quest ? 1 : 0)
         }
     }
 
@@ -289,12 +287,12 @@ function getPoorItemPriceDeviation(hero: Hero, title: string): number {
     return mod > 0 ? mod : base % hero.level.num * 4
 }
 
-function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: ItemSlot, extraMult?: number): number {
+function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: GearSlot, extraMult?: number): number {
     return Math.floor(
         (quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0)
         + hero.level.num
-        * data.itemQualities[quality].priceMult
-        * (slot ? data.itemSlots[slot].priceMult : 1)
+        * data.itemQualities.find(q => q.name == quality)!.priceMult
+        * (slot ? data.gearSlots.find(s => s.name == slot)!.priceMult : 1)
         * (extraMult ? extraMult : 1)
     )
 }
@@ -330,16 +328,21 @@ function passQuest(hero: Hero) {
     addExp(hero, Math.ceil(hero.level.progress.max / (10 + (level / 10))) + level * 4 + 3, 'quest')
     addGold(hero, rand.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest')
 
-    rollItemsAndLootSingleBestOne(hero, ItemSource.Quest)
+    rollItemsAndLootSingleBestOne(hero, GearSource.Quest)
 
     hero.quest = undefined
     stats.questsPassed++
 }
 
-function rollItemsAndLootSingleBestOne(hero: Hero, source: ItemSource.Quest | ItemSource.Vendor) {
+// TODO: issues:
+// 1) it should not just pick best item by value, but best delta value (compare with existing one)
+// 2) when buying gear (not quest reward), it should skip buying if there is no better item
+//    (now it picks best and spend money, even if the item is no upgrade and goes to the bag :-)
+
+function rollItemsAndLootSingleBestOne(hero: Hero, source: GearSource.Quest | GearSource.Vendor) {
     const amount =
-        source == ItemSource.Quest ? 3 :
-        source == ItemSource.Vendor ? 5 :
+        source == GearSource.Quest ? 3 :
+        source == GearSource.Vendor ? 5 :
         0
 
     let bestValue = 0
@@ -348,7 +351,7 @@ function rollItemsAndLootSingleBestOne(hero: Hero, source: ItemSource.Quest | It
 
     for (let i = 0; i < amount; i++) {
         const item = getGearItem(hero, source)
-        const buyPrice = source == ItemSource.Vendor ? item.price * data.itemBuyPriceMult : 0
+        const buyPrice = source == GearSource.Vendor ? item.price * data.itemBuyPriceMult : 0
         const value = getGearItemValue(hero, item)
         if (bestValue < value && hero.gold >= buyPrice) {
             bestValue = value
@@ -622,8 +625,7 @@ function createHero(nickname: string, raceName: string, className: string, attrR
         action: { name: knownHeroActions[0].name, title: '?', progress: { cur: 0, max: 0 } },
         zone: { type: ZoneType.Town, biome: Trait.None },
         gold: 0,
-        gear: Object.values(ItemSlot)
-            .reduce<Map<undefined>>((a, c) => { a[c] = undefined; return a }, {}),
+        gear: {},
         bag: []
     }
 
@@ -643,9 +645,9 @@ const stats = {
     goldSpent: { gear: 0 },
     itemsLootedByQuality: Object.values(ItemQuality)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
-    itemsLootedBySlot: Object.values(ItemSlot)
+    itemsLootedBySlot: Object.values(GearSlot)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
-    itemsLootedBySource: Object.values(ItemSource)
+    itemsLootedBySource: Object.values(GearSource)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
     itemsEquipped: 0,
     itemsLost: 0,
@@ -704,6 +706,7 @@ if (!window.Deno) {
         races: () => data.races.map(({ name, title, desc }) => { return { name, title, desc } }),
         classes: () => data.classes.map(({ name, title, desc }) => { return { name, title, desc } }),
         attributes: () => data.attributes.map(({ name, title, desc, format, primary }) => { return { name, title, desc, format, primary } }),
+        gearSlots: () => data.gearSlots.map(({ name, title }) => { return { name, title } }),
         roll: rollAttr,
         create: createHero,
         save: (hero: Hero) => {
@@ -731,7 +734,6 @@ if (!window.Deno) {
             }
         },
         playing: () => activeIntervalId > 0,
-        format,
         dump
     }
 }
