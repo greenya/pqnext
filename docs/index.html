@@ -241,7 +241,7 @@
         computed: {
             items: function () {
                 return window.game.gearSlots()
-                    .map(s => { return { title: s.title, item: this.gear[s.name] } })
+                    .map(s => { return { title: s.title, item: this.gear.find(i => i.gear.slot == s.name) } })
             }
         }
     })

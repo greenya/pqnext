@@ -17,7 +17,7 @@ import data from './data.ts'
 import format from './format.ts'
 import rand from './rand.ts'
 
-const version = () => 1
+const version = () => 2
 
 const knownHeroActions: readonly HeroAction[] = [
     {
@@ -465,20 +465,22 @@ function equipItem(hero: Hero, newItem: Item): { done: boolean, oldItem?: Item }
         return { done: false }
     }
 
-    const oldItem = hero.gear[newItem.gear.slot]
-    if (oldItem) {
+    const oldItemIndex = hero.gear.findIndex(i => i.gear!.slot == newItem.gear!.slot)
+    let oldItem: Item | undefined = undefined
+
+    if (oldItemIndex >= 0) {
+        oldItem = hero.gear[oldItemIndex]
         const oldValue = getGearItemValue(hero, oldItem)
         const newValue = getGearItemValue(hero, newItem)
         if (newValue <= oldValue) {
             return { done: false }
         }
-    }
 
-    if (oldItem) {
         removeAttr(hero, oldItem.gear!.attr)
+        hero.gear = hero.gear.filter(i => i != oldItem)
     }
 
-    hero.gear[newItem.gear.slot] = newItem
+    hero.gear.push(newItem)
     addAttr(hero, newItem.gear.attr)
 
     stats.itemsEquipped++
@@ -625,7 +627,7 @@ function createHero(nickname: string, raceName: string, className: string, attrR
         action: { name: knownHeroActions[0].name, title: '?', progress: { cur: 0, max: 0 } },
         zone: { type: ZoneType.Town, biome: Trait.None },
         gold: 0,
-        gear: {},
+        gear: [],
         bag: []
     }
 
@@ -694,6 +696,16 @@ export default {
     dump
 }
 
+// deno-lint-ignore no-explicit-any
+function migrate(obj: any): boolean {
+    if (obj.ver == 1) { // v1 => v2 // 201126
+        obj.gear = Object.values(obj.gear)
+        obj.ver = 2
+        return true
+    }
+    return false
+}
+
 declare global {
     // deno-lint-ignore no-explicit-any
     interface Window { game: any, localStorage: { hero: any } }
@@ -716,8 +728,19 @@ if (!window.Deno) {
         },
         load: (): Hero | undefined => {
             if (window.localStorage.hero) {
-                const hero: Hero = JSON.parse(window.localStorage.hero)
-                return hero.ver == version() ? hero : undefined
+                const obj = JSON.parse(window.localStorage.hero)
+                if (obj.ver == version()) {
+                    return <Hero> obj
+                } else {
+                    console.log(`Saved hero version mismatch. Migrating from v${obj.ver} to v${version()}...`)
+                    while (migrate(obj) && obj.ver != version()) { /* empty */ }
+                    if (obj.ver == version()) {
+                        console.log('Success.')
+                        return <Hero> obj
+                    } else {
+                        console.log('Failure. Probably the hero cannot be restored ._. Please create new one')
+                    }
+                }
             }
         },
         start: (hero: Hero) => {

@@ -152,7 +152,7 @@ export interface Hero {
     target?: HeroTarget,
     zone: { type: ZoneType, biome: Trait },
     gold: number,
-    gear: Map<Item>,
+    gear: Item[],
     bag: BagSlot[],
     seed: number,
     born: number,
