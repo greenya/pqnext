@@ -334,33 +334,36 @@ function passQuest(hero: Hero) {
     stats.questsPassed++
 }
 
-// TODO: issues:
-// 1) it should not just pick best item by value, but best delta value (compare with existing one)
-// 2) when buying gear (not quest reward), it should skip buying if there is no better item
-//    (now it picks best and spend money, even if the item is no upgrade and goes to the bag :-)
-
 function rollItemsAndLootSingleBestOne(hero: Hero, source: GearSource.Quest | GearSource.Vendor) {
     const amount =
         source == GearSource.Quest ? 3 :
         source == GearSource.Vendor ? 5 :
         0
 
-    let bestValue = 0
     let bestItem: Item | undefined = undefined
+    let bestDeltaValue = 0
     let bestBuyPrice = 0
 
     for (let i = 0; i < amount; i++) {
         const item = getGearItem(hero, source)
         const buyPrice = source == GearSource.Vendor ? item.price * data.itemBuyPriceMult : 0
+        if (hero.gold < buyPrice) {
+            continue
+        }
+
         const value = getGearItemValue(hero, item)
-        if (bestValue < value && hero.gold >= buyPrice) {
-            bestValue = value
+        const equippedItem = hero.gear.find(i => i.gear!.slot == item.gear!.slot)
+        const equippedValue = equippedItem ? getGearItemValue(hero, equippedItem) : 0
+        const delta = value - equippedValue
+
+        if (!bestItem || bestDeltaValue < delta) {
             bestItem = item
+            bestDeltaValue = delta
             bestBuyPrice = buyPrice
         }
     }
 
-    if (bestItem) {
+    if (bestItem && (bestBuyPrice == 0 || bestDeltaValue > 0)) {
         lootItems(hero, [ bestItem ])
         if (bestBuyPrice > 0) {
             removeGold(hero, bestBuyPrice, 'gear')
