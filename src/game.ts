@@ -488,6 +488,18 @@ function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldI
     return { equipped: true, oldItem }
 }
 
+function ensureBagHasFreeSlots(hero: Hero, target: number) {
+    while (hero.bag.length > 0 && hero.bag.length > hero.attr.bagCap - target) {
+        const slot = hero.bag.reduce(
+            (a, c) => c.item.price * c.count < a.item.price * a.count ? c : a,
+            hero.bag[0]
+        )
+
+        hero.bag = hero.bag.filter(s => s != slot)
+        stats.itemsLostInGold += slot.item.price * slot.count
+    }
+}
+
 function moveItemToBag(hero: Hero, item: Item) {
     const stackSize = item.gear ? 1 : data.itemStackSize
     const slot = hero.bag.find(s =>
@@ -500,26 +512,17 @@ function moveItemToBag(hero: Hero, item: Item) {
     if (slot) {
         slot.count++
     } else {
-        if (hero.bag.length < hero.attr.bagCap) {
-            hero.bag.push({ item, count: 1 })
-        } else {
-            // in rare cases item can actually get lost:
-            // when changing gear, str might become lower => lower bag cap => fail to place item in bag
-            // (the item that was equipped moment ago with str giving more bag cap)
-            // todo: maybe do somthing about it? maybe search for lowest slot cost and drop it, because
-            // its obvious there will be some stack of junk that is much lower cost than gear item
-            stats.itemsLost++
-            stats.itemsLostInGold += item.price
-        }
+        ensureBagHasFreeSlots(hero, 1)
+        hero.bag.push({ item, count: 1 })
     }
 }
 
 function lootItems(hero: Hero, items: Item[]) {
     items.forEach(newItem => {
-        const equip = equipItemIfBetter(hero, newItem)
-        if (equip.equipped) {
-            if (equip.oldItem) {
-                moveItemToBag(hero, equip.oldItem)
+        const r = equipItemIfBetter(hero, newItem)
+        if (r.equipped) {
+            if (r.oldItem) {
+                moveItemToBag(hero, r.oldItem)
             }
         } else {
             moveItemToBag(hero, newItem)
@@ -649,7 +652,6 @@ const stats = {
     itemsLootedBySource: Object.values(GearSource)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
     itemsEquipped: 0,
-    itemsLost: 0,
     itemsLostInGold: 0,
     mobsKilled: Object.values(MobMight)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
