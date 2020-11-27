@@ -910,6 +910,7 @@ const gearSlots = [
     }
 ];
 const itemBuyPriceMult = 10;
+const itemStackSize = 10;
 const data = {
     afkMessages,
     attributes,
@@ -918,6 +919,7 @@ const data = {
     gearSlots,
     itemBuyPriceMult,
     itemQualities,
+    itemStackSize,
     mobReinforcedPrefixes,
     mobs,
     preciousItems,
@@ -1339,20 +1341,27 @@ function passQuest(hero) {
 }
 function rollItemsAndLootSingleBestOne(hero, source) {
     const amount = source == GearSource.Quest ? 3 : source == GearSource.Vendor ? 5 : 0;
-    let bestValue = 0;
     let bestItem = undefined;
+    let bestDeltaValue = 0;
     let bestBuyPrice = 0;
     for(let i = 0; i < amount; i++){
         const item1 = getGearItem(hero, source);
         const buyPrice = source == GearSource.Vendor ? item1.price * data.itemBuyPriceMult : 0;
+        if (hero.gold < buyPrice) {
+            continue;
+        }
         const value = getGearItemValue(hero, item1);
-        if (bestValue < value && hero.gold >= buyPrice) {
-            bestValue = value;
+        const equippedItem = hero.gear.find((i1)=>i1.gear.slot == item1.gear.slot
+        );
+        const equippedValue = equippedItem ? getGearItemValue(hero, equippedItem) : 0;
+        const delta = value - equippedValue;
+        if (!bestItem || bestDeltaValue < delta) {
             bestItem = item1;
+            bestDeltaValue = delta;
             bestBuyPrice = buyPrice;
         }
     }
-    if (bestItem) {
+    if (bestItem && (bestBuyPrice == 0 || bestDeltaValue > 0)) {
         lootItems(hero, [
             bestItem
         ]);
@@ -1449,10 +1458,10 @@ function getGearItemValue(hero, item1) {
         return 1;
     }
 }
-function equipItem(hero, newItem) {
+function equipItemIfBetter(hero, newItem) {
     if (!newItem.gear) {
         return {
-            done: false
+            equipped: false
         };
     }
     const oldItemIndex = hero.gear.findIndex((i)=>i.gear.slot == newItem.gear.slot
@@ -1464,48 +1473,51 @@ function equipItem(hero, newItem) {
         const newValue = getGearItemValue(hero, newItem);
         if (newValue <= oldValue) {
             return {
-                done: false
+                equipped: false
             };
         }
         removeAttr(hero, oldItem.gear.attr);
-        hero.gear = hero.gear.filter((i)=>i != oldItem
-        );
+        addAttr(hero, newItem.gear.attr);
+        hero.gear[oldItemIndex] = newItem;
+    } else {
+        addAttr(hero, newItem.gear.attr);
+        hero.gear.push(newItem);
     }
-    hero.gear.push(newItem);
-    addAttr(hero, newItem.gear.attr);
     stats.itemsEquipped++;
     return {
-        done: true,
+        equipped: true,
         oldItem
     };
 }
-function getItemStackSize(item1) {
-    return item1.gear ? 1 : 10;
+function ensureBagHasFreeSlots(hero, target) {
+    while(hero.bag.length > 0 && hero.bag.length > hero.attr.bagCap - target){
+        const slot = hero.bag.reduce((a, c)=>c.item.price * c.count < a.item.price * a.count ? c : a
+        , hero.bag[0]);
+        hero.bag = hero.bag.filter((s)=>s != slot
+        );
+        stats.itemsLostInGold += slot.item.price * slot.count;
+    }
 }
 function moveItemToBag(hero, item1) {
-    const stackSize = getItemStackSize(item1);
+    const stackSize = item1.gear ? 1 : data.itemStackSize;
     const slot = hero.bag.find((s)=>s.item.title == item1.title && s.item.price == item1.price && !s.item.gear && s.count < stackSize
     );
     if (slot) {
         slot.count++;
     } else {
-        if (hero.bag.length < hero.attr.bagCap) {
-            hero.bag.push({
-                item: item1,
-                count: 1
-            });
-        } else {
-            stats.itemsLost++;
-            stats.itemsLostInGold += item1.price;
-        }
+        ensureBagHasFreeSlots(hero, 1);
+        hero.bag.push({
+            item: item1,
+            count: 1
+        });
     }
 }
 function lootItems(hero, items) {
     items.forEach((newItem)=>{
-        const equip = equipItem(hero, newItem);
-        if (equip.done) {
-            if (equip.oldItem) {
-                moveItemToBag(hero, equip.oldItem);
+        const r = equipItemIfBetter(hero, newItem);
+        if (r.equipped) {
+            if (r.oldItem) {
+                moveItemToBag(hero, r.oldItem);
             }
         } else {
             moveItemToBag(hero, newItem);
@@ -1686,7 +1698,6 @@ const stats = {
     }, {
     }),
     itemsEquipped: 0,
-    itemsLost: 0,
     itemsLostInGold: 0,
     mobsKilled: Object.values(MobMight).reduce((a, c)=>{
         a[c] = 0;
@@ -1764,7 +1775,7 @@ function migrate(obj) {
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-201126`,
+        version: `pqnext-${version()}-201127`,
         races: ()=>data.races.map(({ name , title , desc  })=>{
                 return {
                     name,
