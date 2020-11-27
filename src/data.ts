@@ -641,6 +641,7 @@ const gearSlots: readonly { name: GearSlot, title: string, level: number, priceM
 ]
 
 const itemBuyPriceMult = 10
+const itemStackSize = 10
 
 export default {
     afkMessages,
@@ -650,6 +651,7 @@ export default {
     gearSlots,
     itemBuyPriceMult,
     itemQualities,
+    itemStackSize,
     mobReinforcedPrefixes,
     mobs,
     preciousItems,

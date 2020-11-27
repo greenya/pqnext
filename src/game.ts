@@ -488,12 +488,8 @@ function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldI
     return { equipped: true, oldItem }
 }
 
-function getItemStackSize(item: Item) {
-    return item.gear ? 1 : 10
-}
-
 function moveItemToBag(hero: Hero, item: Item) {
-    const stackSize = getItemStackSize(item)
+    const stackSize = item.gear ? 1 : data.itemStackSize
     const slot = hero.bag.find(s =>
         s.item.title == item.title &&
         s.item.price == item.price &&
