@@ -52,7 +52,7 @@ export interface Item {
     quality: ItemQuality,
     gear?: {
         slot: GearSlot,
-        attr: Map<number>,
+        attr: Map<number>, // todo: rework into array
         level: number,
         source: GearSource
     },

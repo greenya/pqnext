@@ -460,9 +460,9 @@ function getGearItemValue(hero: Hero, item: Item) {
     }
 }
 
-function equipItem(hero: Hero, newItem: Item): { done: boolean, oldItem?: Item } {
+function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldItem?: Item } {
     if (!newItem.gear) {
-        return { done: false }
+        return { equipped: false }
     }
 
     const oldItemIndex = hero.gear.findIndex(i => i.gear!.slot == newItem.gear!.slot)
@@ -473,18 +473,19 @@ function equipItem(hero: Hero, newItem: Item): { done: boolean, oldItem?: Item }
         const oldValue = getGearItemValue(hero, oldItem)
         const newValue = getGearItemValue(hero, newItem)
         if (newValue <= oldValue) {
-            return { done: false }
+            return { equipped: false }
         }
 
         removeAttr(hero, oldItem.gear!.attr)
-        hero.gear = hero.gear.filter(i => i != oldItem)
+        addAttr(hero, newItem.gear.attr)
+        hero.gear[oldItemIndex] = newItem
+    } else {
+        addAttr(hero, newItem.gear.attr)
+        hero.gear.push(newItem)
     }
 
-    hero.gear.push(newItem)
-    addAttr(hero, newItem.gear.attr)
-
     stats.itemsEquipped++
-    return { done: true, oldItem }
+    return { equipped: true, oldItem }
 }
 
 function getItemStackSize(item: Item) {
@@ -519,8 +520,8 @@ function moveItemToBag(hero: Hero, item: Item) {
 
 function lootItems(hero: Hero, items: Item[]) {
     items.forEach(newItem => {
-        const equip = equipItem(hero, newItem)
-        if (equip.done) {
+        const equip = equipItemIfBetter(hero, newItem)
+        if (equip.equipped) {
             if (equip.oldItem) {
                 moveItemToBag(hero, equip.oldItem)
             }
