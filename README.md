@@ -46,6 +46,8 @@ deno run debug.ts
 - add gear item flavor text generation (for rare+ with small chance)
 - maybe add ability to choose geneder (male/female); action texts should be enchanced to support it
 
+- web: fix item attributes order in the tooltip; should be consistent; maybe use array (for item.gear.attr), not an object
+
 - add perks; player can choose one at start when creating hero; each perk has pros and cons, examples:
     - Quest hater (pro: more exp from killing mobs; con: chance to skip getting quest)
     - Quest lover (pro: higher chance progressing quest on mob kill; con: higher chance to die from mobs)

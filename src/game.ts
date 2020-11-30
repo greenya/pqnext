@@ -150,7 +150,7 @@ const knownHeroActions: readonly HeroAction[] = [
 
 function haveEnoughGoldToGoShopping(hero: Hero): boolean {
     const bestQualityAvail = data.itemQualities.slice().reverse().find(q => q.level <= hero.level.num)!.name
-    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, GearSlot.MainHand)
+    const priceThreshold = data.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, GearSlot.Chest)
     return hero.gold >= priceThreshold
 }
 
