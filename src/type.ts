@@ -24,6 +24,18 @@ export enum ItemQuality {
     // Legendary
 }
 
+export interface ItemQualityMeta {
+    name: ItemQuality,
+    title: { m: string, f: string, n: string, x: string }, // [m]asculine, [f]eminine, [n]euter, [x] for multiple
+    templates: string[],
+    prefix?: { m: string, f: string, n: string, x: string },
+    suffix?: string,
+    level: number,
+    chance: number,
+    priceMult: number,
+    attrCount?: number
+}
+
 export enum GearSlot {
     MainHand    = 'mainhand',
     OffHand     = 'offhand',
@@ -39,6 +51,21 @@ export enum GearSlot {
     Neck        = 'neck',
     Finger      = 'finger',
     Trinket     = 'trinket'
+}
+
+export interface GearSlotMeta {
+    name: GearSlot,
+    title: string,
+    level: number,
+    priceMult: number,
+    items: {
+        title: string,
+        level: number,
+        ggm?: boolean,
+        ggf?: boolean,
+        ggn?: boolean,
+        ggx?: boolean
+    }[]
 }
 
 export enum GearSource {

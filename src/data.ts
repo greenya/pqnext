@@ -2,8 +2,10 @@ import {
     Attribute,
     Class,
     GearSlot,
+    GearSlotMeta,
     GearSource,
     ItemQuality,
+    ItemQualityMeta,
     Map,
     Mob,
     Race,
@@ -567,24 +569,57 @@ const questTitles: readonly string[] = [
     '{precious-item-ggf} має бути_знайдена/повернута/відновлена/знищена'
 ]
 
-const itemQualities: readonly { name: ItemQuality, title: string, level: number, chance: number, priceMult: number, attrCount?: number }[] = [
+const itemQualities: readonly ItemQualityMeta[] = [
     {
         name: ItemQuality.Poor,
-        title: 'Кепський',
+        title: {
+            m: 'кепський/жахливий/зламаний/убитий/розірваний/поганий/неладний/ніякий/казна-який/такий-сякий/неважний/недоброякісний/миршавий',
+            f: 'кепська/жахлива/зламана/убита/розірвана/погана/неладна/ніяка/казна-яка/така-сяка/неважна/недоброякісна/миршава',
+            n: 'кепське/жахливе/зламане/убите/розірване/погане/неладне/ніяке/казна-яке/таке-сяке/неважне/недоброякісне/миршаве',
+            x: 'кепські/жахливі/зламані/убиті/розірвані/погані/неладні/ніякі/казна-які/такі-сякі/неважні/недоброякісні/миршаві'
+        },
+        templates: [
+            '{quality-title} {item-title}'
+        ],
         level: 1,
         chance: -1,
         priceMult: 1
     },
     {
         name: ItemQuality.Common,
-        title: 'Звичайний',
+        title: {
+            m: 'звичайний/простий/простецький/повсякденний/стандартний/непоганий/нескладний/нехитрий/скромний',
+            f: 'звичайна/проста/простецька/повсякденна/стандартна/непогана/нескладна/нехитра/скромна',
+            n: 'звичайне/просте/простецьке/повсякденне/стандартне/непогане/нескладне/нехитре/скромне',
+            x: 'звичайні/прості/простецькі/повсякденні/стандартні/непогані/нескладні/нехитрі/скромні'
+        },
+        templates: [
+            '{item-title}',
+            '{quality-title} {item-title}'
+        ],
         level: 1,
         chance: -1, // 87.9% => 1000 (all) - 100 (uncommon) - 20 (rare) - 1 (epic)
         priceMult: 5
     },
     {
         name: ItemQuality.Uncommon,
-        title: 'Незвичайний',
+        title: {
+            m: 'незвичайний/непростий/неабиякий/неординарний/особливий/неправдоподібний/славний/гожий/файний',
+            f: 'незвичайна/непроста/неабияка/неординарна/особлива/неправдоподібна/славна/гожа/файна',
+            n: 'незвичайне/непросте/неабияке/неординарне/особливе/неправдоподібне/славне/гоже/файне',
+            x: 'незвичайні/непрості/неабиякі/неординарні/особливі/неправдоподібні/славні/гожі/файні'
+        },
+        templates: [
+            '{quality-title} {item-title}',
+            '{uncommon-prefix} {item-title}',
+            '{uncommon-prefix} {quality-title} {item-title}'
+        ],
+        prefix: {
+            m: 'магічний/зачарований/очищений/блискучий/сяйливий/сяючий/променистий/розкішний/ясний/шикарний/ефектний/палкий/палахкий/ярий/інтенсивний/завзятий/подвійний/потрійний/рясний',
+            f: 'магічна/зачарована/очищена/блискуча/сяйлива/сяюча/промениста/розкішна/ясна/шикарна/ефектна/палка/палахка/яра/інтенсивна/завзята/подвійна/потрійна/рясна',
+            n: 'магічне/зачароване/очищене/блискуче/сяйливе/сяюче/променисте/розкішне/ясне/шикарне/ефектне/палке/палахке/яре/інтенсивне/завзяте/подвійне/потрійне/рясне',
+            x: 'магічні/зачаровані/очищені/блискучі/сяйливі/сяючі/променисті/розкішні/ясні/шикарні/ефектні/палкі/палахкі/ярі/інтенсивні/завзяті/подвійні/потрійні/рясні'
+        },
         level: 7,
         chance: 121, // 10% => 100 (uncommon) + 20 (rare) + 1 (epic)
         priceMult: 20,
@@ -592,7 +627,22 @@ const itemQualities: readonly { name: ItemQuality, title: string, level: number,
     },
     {
         name: ItemQuality.Rare,
-        title: 'Рідкісний',
+        title: {
+            m: 'рідкісний/дивний/дивовижний/неймовірний/винятковий/немислимий/невидимий/небачений/нечуваний/незрівняний/неперевершений/чудовий',
+            f: 'рідкісна/дивна/дивовижна/неймовірна/виняткова/немислима/невидима/небачена/нечувана/незрівняна/неперевершена/чудова',
+            n: 'рідкісне/дивне/дивовижне/неймовірне/виняткове/немислиме/невидиме/небачене/нечуване/незрівняне/неперевершене/чудове',
+            x: 'рідкісні/дивні/дивовижні/неймовірні/виняткові/немислимі/невидимі/небачені/нечувані/незрівняні/неперевершені/чудові'
+        },
+        templates: [
+            '{quality-title} {item-title}',
+            '{rare-prefix} {quality-title} {item-title}'
+        ],
+        prefix: {
+            m: 'зоряний/сонячний/місячний/сліпучий/вогняний/полум\'яний/вітровий/водяний/іскристий/ангельский/небесний/божественний/досконалий/ідеальний/безкрайній/бездонний',
+            f: 'зоряна/сонячна/місячна/сліпуча/вогняна/полум\'яна/вітрова/водяна/іскриста/ангельска/небесна/божественна/досконала/ідеальна/безкрайня/бездонна',
+            n: 'зоряне/сонячне/місячне/сліпуче/вогняне/полум\'яне/вітрове/водяне/іскристе/ангельске/небесне/божественне/досконале/ідеальне/безкрайнє/бездонне',
+            x: 'зоряні/сонячні/місячні/сліпучі/вогняні/полум\'яні/вітрові/водяні/іскристі/ангельскі/небесні/божественні/досконалі/ідеальні/безкрайні/бездонні'
+        },
         level: 18,
         chance: 21, // 2% => 20 (rare) + 1 (epic)
         priceMult: 150,
@@ -600,7 +650,23 @@ const itemQualities: readonly { name: ItemQuality, title: string, level: number,
     },
     {
         name: ItemQuality.Epic,
-        title: 'Епічний',
+        title: {
+            m: 'епічний/фантастичний/казковий/міфічний/феєричний/аномальний/парадоксальний/пречудовий/чудесний/екзотичний/чудернацький',
+            f: 'епічна/фантастична/казкова/міфічна/феєрична/аномальна/парадоксальна/пречудова/чудесна/екзотична/чудернацька',
+            n: 'епічне/фантастичне/казкове/міфічне/феєричне/аномальне/парадоксальне/пречудове/чудесне/екзотичне/чудернацьке',
+            x: 'епічні/фантастичні/казкові/міфічні/феєричні/аномальні/парадоксальні/пречудові/чудесні/екзотичні/чудернацькі'
+        },
+        templates: [
+            '{quality-title} {item-title} {epic-suffix}',
+            '{rare-prefix} {item-title} {epic-suffix}',
+            '{rare-prefix} {quality-title} {item-title} {epic-suffix}'
+        ],
+        suffix: 'ангела/архангела/зірок/космосу/неба/полум\'я'
+            + '/бійця/воїна/мага/мисливця/паладіна/монаха/друїда/чорнокнижника/шамана/гладіатора/поборника/мародера/вбивці'
+            + '/монстра/чудовиська/страховиська/примари/потвори/демона/елементаля/велетня/хижака'
+            + '/природи/життя/дикості/тиранії/руйнування/знищення/стихій/вихрів/торнадо/хвиль/водовороту'
+            + '/сповільнення/прискорення/висушення/затоплення/випалювання/елементів/знань/вмінь/свідомості'
+            + '/мисливця за скарбами/грабіжника гробниць/внутрішнього вогню/сили дворфів/мудрості ельфів',
         level: 39,
         chance: 1, // 0.1% => 1 (epic)
         priceMult: 1800,
@@ -608,90 +674,171 @@ const itemQualities: readonly { name: ItemQuality, title: string, level: number,
     }
 ]
 
-const gearSlots: readonly { name: GearSlot, title: string, level: number, priceMult: number }[] = [
+const gearSlots: readonly GearSlotMeta[] = [
     {
         name: GearSlot.MainHand,
         title: 'Права рука',
         level: 1,
-        priceMult: 3.5
+        priceMult: 3.5,
+        items: [
+            // todo: add moarrrr!
+            { title: 'меч', level: 1, ggm: true }
+        ]
     },
     {
         name: GearSlot.OffHand,
         title: 'Ліва рука',
         level: 1,
-        priceMult: 3.2
+        priceMult: 3.2,
+        items: [
+            // todo: add moarrrr!
+            { title: 'щит', level: 1, ggm: true }
+        ]
     },
     {
         name: GearSlot.Head,
         title: 'Голова',
         level: 8,
-        priceMult: 1.7
+        priceMult: 1.7,
+        items: [
+            { title: 'пов\'язка', level: 1, ggf: true },
+            { title: 'вінок', level: 1, ggm: true },
+            { title: 'панама', level: 1, ggf: true },
+            { title: 'шапка', level: 2, ggf: true },
+            { title: 'бриль', level: 2, ggm: true },
+            { title: 'капюшон', level: 4, ggm: true },
+            { title: 'кепка', level: 4, ggf: true },
+            { title: 'окуляри', level: 6, ggx: true },
+            { title: 'берет', level: 6, ggm: true },
+            { title: 'кучма', level: 8, ggf: true },
+            { title: 'зюйдвестка', level: 8, ggf: true },
+            { title: 'бейсболка', level: 10, ggf: true },
+            { title: 'котелок', level: 12, ggm: true },
+            { title: 'циліндр', level: 14, ggm: true },
+            { title: 'сомбреро', level: 16, ggn: true },
+            { title: 'коло', level: 18, ggn: true },
+            { title: 'ковпак', level: 20, ggm: true },
+            { title: 'лінза', level: 22, ggf: true },
+            { title: 'монокль', level: 24, ggm: true },
+            { title: 'башлик', level: 26, ggm: true },
+            { title: 'стетсон', level: 28, ggm: true },
+            { title: 'шолом', level: 30, ggm: true },
+            { title: 'мисюрка', level: 32, ggf: true },
+            { title: 'топхельм', level: 34, ggm: true },
+            { title: 'митра', level: 36, ggf: true },
+            { title: 'діадема', level: 38, ggf: true },
+            { title: 'тіара', level: 40, ggf: true }
+        ]
     },
     {
         name: GearSlot.Shoulders,
         title: 'Плечі',
         level: 10,
-        priceMult: 1.9
+        priceMult: 1.9,
+        items: [
+            // todo: add moarrrr!
+            { title: 'наплічники', level: 1, ggx: true }
+        ]
     },
     {
         name: GearSlot.Chest,
         title: 'Груди',
         level: 1,
-        priceMult: 2.0
+        priceMult: 2.0,
+        items: [
+            // todo: add moarrrr!
+            { title: 'кираса', level: 1, ggf: true }
+        ]
     },
     {
         name: GearSlot.Back,
         title: 'Спина',
         level: 4,
-        priceMult: 1.2
+        priceMult: 1.2,
+        items: [
+            // todo: add moarrrr!
+            { title: 'накидка', level: 1, ggf: true }
+        ]
     },
     {
         name: GearSlot.Wrist,
         title: 'Зап\'ястя',
         level: 1,
-        priceMult: 1.3
+        priceMult: 1.3,
+        items: [
+            // todo: add moarrrr!
+            { title: 'браслет', level: 1, ggm: true }
+        ]
     },
     {
         name: GearSlot.Hands,
         title: 'Руки',
         level: 1,
-        priceMult: 1.6
+        priceMult: 1.6,
+        items: [
+            // todo: add moarrrr!
+            { title: 'рукавиці', level: 1, ggx: true }
+        ]
     },
     {
         name: GearSlot.Waist,
         title: 'Пояс',
         level: 2,
-        priceMult: 1.4
+        priceMult: 1.4,
+        items: [
+            // todo: add moarrrr!
+            { title: 'ремінь', level: 1, ggm: true }
+        ]
     },
     {
         name: GearSlot.Legs,
         title: 'Ноги',
         level: 1,
-        priceMult: 1.8
+        priceMult: 1.8,
+        items: [
+            // todo: add moarrrr!
+            { title: 'штани', level: 1, ggx: true }
+        ]
     },
     {
         name: GearSlot.Feet,
         title: 'Ступні',
         level: 1,
-        priceMult: 1.5
+        priceMult: 1.5,
+        items: [
+            // todo: add moarrrr!
+            { title: 'чоботи', level: 1, ggx: true }
+        ]
     },
     {
         name: GearSlot.Neck,
         title: 'Шия',
         level: 15,
-        priceMult: 2.4
+        priceMult: 2.4,
+        items: [
+            // todo: add moarrrr!
+            { title: 'коралі', level: 1, ggx: true }
+        ]
     },
     {
         name: GearSlot.Finger,
         title: 'Палець',
         level: 12,
-        priceMult: 2.2
+        priceMult: 2.2,
+        items: [
+            // todo: add moarrrr!
+            { title: 'кільце', level: 1, ggn: true }
+        ]
     },
     {
         name: GearSlot.Trinket,
         title: 'Дрібничка',
         level: 20,
-        priceMult: 2.6
+        priceMult: 2.6,
+        items: [
+            // todo: add moarrrr!
+            { title: 'медальйон', level: 1, ggm: true }
+        ]
     }
 ]
 

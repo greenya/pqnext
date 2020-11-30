@@ -231,6 +231,19 @@ function finishCombat(hero: Hero) {
     stats.mobsKilled[target.might]++
 }
 
+function getGearItemTitle(hero: Hero, slot: GearSlot, quality: ItemQuality): string {
+    const items = data.gearSlots.find(s => s.name == slot)!.items
+    const item = rand.item(hero, items.filter(i => i.level <= hero.level.num))
+    const ggKey = item.ggm ? 'm' : item.ggf ? 'f' : item.ggn ? 'n' : 'x'
+    const qMeta = data.itemQualities.find(q => q.name == quality)!
+    return rand.item(hero, qMeta.templates)
+        .replace('{item-title}', item.title)
+        .replace('{quality-title}', rand.text(hero, qMeta.title[ggKey]))
+        .replace('{uncommon-prefix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Uncommon)!.prefix![ggKey]))
+        .replace('{rare-prefix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Rare)!.prefix![ggKey]))
+        .replace('{epic-suffix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Epic)!.suffix!))
+}
+
 function getGearItem(hero: Hero, source: GearSource): Item {
     const level = hero.level.num
 
@@ -243,7 +256,7 @@ function getGearItem(hero: Hero, source: GearSource): Item {
         ItemQuality.Common
     )
 
-    const title = quality + ' ' + slot // todo: randomize
+    const title = getGearItemTitle(hero, slot, quality)
     const price = getItemPrice(hero, title, quality, slot)
 
     const item: Item = {
