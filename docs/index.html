@@ -40,6 +40,8 @@
         .silver { color: var(--color-silver); }
         .copper { color: var(--color-copper); }
 
+        .white-space-nowrap { white-space: nowrap; }
+
         .app-progress-bar {
             position: relative;
             height: 18px;
@@ -70,7 +72,7 @@
             position: absolute;
             padding: 1em;
             width: calc(100% + 2rem);
-            min-width: 16em;
+            min-width: 18em;
             background: white;
             color: black;
             border: 1px solid gray;
@@ -170,9 +172,14 @@
 <template id="app-item-tooltip">
     <div class="app-item-tooltip">
         <div class="title is-size-6">{{ item.title | capitalize }}</div>
-            <div v-if="item.gear" class="subtitle is-size-7 has-text-weight-medium">
-                <div v-if="item.gear.source == 'quest'" >Винагорода за завдання</div>
-                <div>{{ item.gear.level }}-го рівня</div>
+            <div v-if="item.gear" class="subtitle is-flex is-justify-content-space-between is-size-7 has-text-weight-medium">
+                <div>
+                    <div v-if="item.gear.source == 'quest'" class="white-space-nowrap">Винагорода за завдання</div>
+                    <div class="white-space-nowrap">{{ item.gear.level }}-го рівня</div>
+                </div>
+                <div>
+                    <div class="white-space-nowrap">{{ slot }}</div>
+                </div>
             </div>
             <div v-if="item.gear && Object.keys(item.gear.attr).length > 0" class="block">
                 <div v-for="a in attrs" :key="a">{{ a }}</div>
@@ -189,6 +196,10 @@
             item: { type: Object, required: true }
         },
         computed: {
+            slot: function() {
+                const slot = window.game.gearSlots().find(s => s.name == this.item.gear.slot)
+                return slot && slot.title ? slot.title : this.item.gear.slot
+            },
             attrs: function () {
                 const attr = window.game.attributes()
                 return Object.keys(this.item.gear.attr).map(
