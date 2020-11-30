@@ -174,7 +174,7 @@ const mobs: readonly Mob[] = [
     {
         name: 'bee',
         level: 6,
-        trait: Trait.Beast | Trait.Forest | Trait.Swamp,
+        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp,
         feminine: 'яра/смугаста/лісова/польова/болотна_бджола',
         junk: 'вусик/жало/око/райдужне крило_бджоли',
         gcm: { n: 'бджоли', r: 'бджіл' }
@@ -404,11 +404,11 @@ const mobs: readonly Mob[] = [
     {
         name: 'spider',
         level: 12,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Desert | Trait.Tundra | Trait.Swamp,
+        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Desert | Trait.Tundra | Trait.Swamp,
         masculine: 'біснуватий/лісовий/чорний/маскований/велетенський/отруйний_павук',
         feminine: 'біснувата/лісова/чорна/маскована/велетенська/отруйна_павучиха',
         junk: 'зламана лапка/довгий вусик/отруйна залоза_павука',
-        gcm: { n: 'отруйні павуки', r: 'отруйних павуків' }
+        gcm: { n: 'павуки', r: 'павуків' }
     },
     {
         name: 'steppe-lion',
@@ -456,7 +456,7 @@ const mobs: readonly Mob[] = [
     {
         name: 'wood-lurker',
         level: 14,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Swamp,
+        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp,
         masculine: 'розлючений/темнолапий/приозерний/прихований_лісовий скрадач',
         junk: 'павутина/око/сукровиця_лісового скрадача',
         gcm: { n: 'лісові скрадачі', r: 'лісових скрадачів' }
@@ -504,35 +504,43 @@ const mobReinforcedPrefixes: readonly { gen: string, trait: Trait }[] = [
 
 const preciousItems: readonly { gen: string, trait: Trait, value: number, ggm?: boolean, ggf?: boolean, ggn?: boolean }[] = [
     // human
-    { gen: 'розірваний чобіт_42-го/44-го/46-го/48-го_розміру', trait: Trait.Human, value: 2, ggm: true },
+    { gen: 'лівий/правий_чобіт_42-го/44-го/46-го/48-го_розміру', trait: Trait.Human, value: 2, ggm: true },
     { gen: 'випрана_біла/синя/зелена/червона/чорна/смугаста_шкарпетка', trait: Trait.Human, value: 3, ggf: true },
     { gen: 'шматок/комір/рукав_брудної/чистої/заляпаної кров\'ю_сорочки', trait: Trait.Human, value: 4, ggm: true },
     { gen: 'міцна_червона/зелена/блакитна_мотузка', trait: Trait.Human, value: 5, ggf: true },
     { gen: 'рулон_щільної/тонкої/шовкової/бавовняної_тканини', trait: Trait.Human, value: 8, ggm: true },
-    { gen: 'старий наручний_годинник/браслет', trait: Trait.Human, value: 10, ggm: true },
-    { gen: 'пляшка_білого/червоного_сухого/солодкого/напівсухого/напівсолодкого_вина', trait: Trait.Human, value: 12, ggf: true },
-    { gen: 'коралі/намисто_з золота/із срібла', trait: Trait.Human, value: 20, ggn: true },
-    { gen: 'кулко_з діамантом/з рубіном/зі смарагдом/з сапфіром', trait: Trait.Human, value: 25, ggn: true },
+    { gen: 'старий/подертий/вицвілий_наручний_годинник/браслет', trait: Trait.Human, value: 12, ggm: true },
+    { gen: 'пляшка_білого/червоного_сухого/солодкого/напівсухого/напівсолодкого_вина', trait: Trait.Human, value: 18, ggf: true },
+    { gen: 'коралі/намисто_з золота/із срібла/із зубів', trait: Trait.Human, value: 26, ggn: true },
+    { gen: 'кулко_з діамантом/з рубіном/зі смарагдом/з сапфіром', trait: Trait.Human, value: 38, ggn: true },
     // flesh
     { gen: 'свіже_сире/знекровлене_м\'ясо_без запаху/з запахом', trait: Trait.Flesh, value: 4, ggn: true },
     { gen: 'ідеально/досконало/чудово/прекрасно_оброблена шкіра', trait: Trait.Flesh, value: 8, ggf: true },
-    { gen: 'бездоганно ампутований_знебарвлений/знекровлений/пожухлий_язик', trait: Trait.Flesh, value: 12, ggm: true },
+    { gen: 'бездоганно_ампутований/вирізаний_знебарвлений/знекровлений/пожухлий_язик', trait: Trait.Flesh, value: 12, ggm: true },
     { gen: 'блискучий/білий_неушкоджений/міцний_передній/верхній/кутній_зуб', trait: Trait.Flesh, value: 15, ggm: true },
-    { gen: 'досконале/бездоганне/ідеально нагострене/майстерно видалене_ікло', trait: Trait.Flesh, value: 18, ggn: true },
+    { gen: 'досконале/бездоганне/ідеально нагострене/майстерно видалене_ікло', trait: Trait.Flesh, value: 21, ggn: true },
+    // insect
+    { gen: 'ідеально відрізана/бездоганно відтята/вціліла/неушкоджена/міцна_чорна/сіра/жовта/темна_лапка', trait: Trait.Insect, value: 3, ggf: true },
+    { gen: 'довгий_вцілілий/неушкоджений/міцний/тривкий_чутливий вусик', trait: Trait.Insect, value: 6, ggm: true },
+    { gen: 'вціліле/неушкоджене/міцне_чорне/сіре_жало', trait: Trait.Insect, value: 9, ggn: true },
+    { gen: 'обережно відібрана_чиста/свіжа/тепла/прозора/густа/слизоподібна_сукровиця', trait: Trait.Insect, value: 14, ggf: true },
+    { gen: 'неушкоджена/велетенська_отруйна залоза', trait: Trait.Insect, value: 22, ggf: true },
     // bone
-    { gen: 'кістяний пил', trait: Trait.Bone, value: 3, ggm: true },
-    { gen: 'кістяна сіль', trait: Trait.Bone, value: 3, ggf: true },
-    { gen: 'біла/зламана/порожниста_кістка', trait: Trait.Bone, value: 6, ggf: true },
-    { gen: 'скалка/уламок_черепа/гомілки/ребра/тазової кістки_правильної форми', trait: Trait.Bone, value: 8, ggf: true },
-    { gen: 'бездоганний прах', trait: Trait.Bone, value: 15, ggm: true },
+    { gen: 'перетерта/дрібна/груба_кістяна сіль', trait: Trait.Bone, value: 3, ggf: true },
+    { gen: 'білий/сірий/темний/чорний_кістяний пил', trait: Trait.Bone, value: 5, ggm: true },
+    { gen: 'біла/зламана/порожниста_кістка', trait: Trait.Bone, value: 7, ggf: true },
+    { gen: 'скалка/уламок_черепа/гомілки/ребра/тазової кістки_правильної форми', trait: Trait.Bone, value: 9, ggf: true },
+    { gen: 'бездоганний/очищений_прах', trait: Trait.Bone, value: 15, ggm: true },
     // magic
     { gen: 'чиста магічна есенція', trait: Trait.Magic, value: 12, ggf: true },
     { gen: 'прозора магічна субстанція', trait: Trait.Magic, value: 16, ggf: true },
     { gen: 'крихітний/малий/великий_магічний камінь', trait: Trait.Magic, value: 24, ggm: true },
     { gen: 'кришталевий фіал з арканічною есенцією', trait: Trait.Magic, value: 36, ggm: true },
     // water
-    { gen: 'міцний_знебарвлений/пожухлий/закам\'янілий_хітин', trait: Trait.Water, value: 5, ggm: true },
-    { gen: 'фіал із_прозорою/мутною/чистою_сумішшю', trait: Trait.Water, value: 10, ggm: true }
+    { gen: 'міцний_знебарвлений/пожухлий/закам\'янілий_хітин', trait: Trait.Water, value: 8, ggm: true },
+    { gen: 'міцний/вцілілий/неушкоджений_гострокістковий хребет', trait: Trait.Water, value: 12, ggm: true },
+    { gen: 'товста_міцна/блискуча/неушкоджена_луска', trait: Trait.Water, value: 16, ggf: true },
+    { gen: 'фіал із_прозорою/мутною/чистою/слизоподібною_сумішшю', trait: Trait.Water, value: 25, ggm: true }
 ]
 
 const afkMessages: readonly string[] = [
@@ -553,10 +561,10 @@ const afkMessages: readonly string[] = [
 
 const questTitles: readonly string[] = [
     'зменшити/уменьшити/знизити/вбавити_популяцію {mob-gcm-r}',
-    '{mob-gcm-n}_занадто розплодилися/загрожують врожаю/несуть небезпеку поселенню/перекрили торговий шлях',
+    '{mob-gcm-n}_занадто розплодилися/загрожують нашому врожаю/несуть небезпеку поселенню/перекрили торговий шлях',
     'принести/зібрати/добути_{number-5-20}_шкур/кликів/ікол/шлунків/нирок/сердець/есенцій_{mob-flesh-gcm-r}',
     'принести/дістати/добути/знайти/відшукати_{precious-item-ggmn}',
-    '{precious-item-ggf} має бути_знайдена/повернута/відновлена'
+    '{precious-item-ggf} має бути_знайдена/повернута/відновлена/знищена'
 ]
 
 const itemQualities: readonly { name: ItemQuality, title: string, level: number, chance: number, priceMult: number, attrCount?: number }[] = [

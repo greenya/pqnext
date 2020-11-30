@@ -85,11 +85,12 @@ export enum Trait {
     Magic       = 1 << 2,
     // content
     Flesh       = 1 << 10,
-    Bone        = 1 << 11,
-    Mech        = 1 << 12,
-    Fire        = 1 << 13,
-    Ice         = 1 << 14,
-    Air         = 1 << 15,
+    Insect      = 1 << 11,
+    Bone        = 1 << 12,
+    Mech        = 1 << 13,
+    Fire        = 1 << 14,
+    Ice         = 1 << 15,
+    Air         = 1 << 16,
     // biome
     Forest      = 1 << 20,
     Desert      = 1 << 21,

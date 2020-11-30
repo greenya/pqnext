@@ -25,7 +25,6 @@ deno run debug.ts
 - remove "giants"
 - add human mobs
 - add more mobs to swamp and water biomes
-- add more precious loot to water mobs
 
 - add value to attributes:
     + str (more bag slots),
