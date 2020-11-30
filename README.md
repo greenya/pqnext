@@ -34,7 +34,6 @@ deno run debug.ts
 - add dying; on death -> run to corpse (50% of town distance) -> eat-and-drink
 - add chance to fail when fighting mob; removes a lot of gear durability and takes time to run to corpse
 
-- add quest title randomization
 - add gear durability and its loss, when < 10% (?) => move-to-town; add need for repair while in town (chance if durability < 50%)
 - add unique/rare mobs with notable loot
 - add spell book

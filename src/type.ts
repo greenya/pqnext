@@ -105,7 +105,8 @@ export interface Mob {
     masculine?: string,
     feminine?: string,
     neuter?: string,
-    junk: string
+    junk: string,
+    gcm: { n: string, r: string } // grammar case: multiple
 }
 
 export interface Race {
