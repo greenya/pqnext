@@ -508,7 +508,7 @@ function getGearItemValue(hero: Hero, item: Item) {
             .map(e => e.name)
             .reduce((a, c) => a + prio[c] * (attr[c] ?? 0), 0)
     } else {
-        return 1
+        return data.itemQualities.findIndex(q => q.name == item.quality)
     }
 }
 
