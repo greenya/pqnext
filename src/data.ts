@@ -573,10 +573,10 @@ const itemQualities: readonly ItemQualityMeta[] = [
     {
         name: ItemQuality.Poor,
         title: {
-            m: 'кепський/жахливий/зламаний/убитий/розірваний/розтрощений/поганий/неладний/ніякий/казна-який/такий-сякий/неважний/неякісний/миршавий/стертий/порепаний',
-            f: 'кепська/жахлива/зламана/убита/розірвана/розтрощена/погана/неладна/ніяка/казна-яка/така-сяка/неважна/неякісна/миршава/стерта/порепана',
-            n: 'кепське/жахливе/зламане/убите/розірване/розтрощене/погане/неладне/ніяке/казна-яке/таке-сяке/неважне/неякісне/миршаве/стерте/порепане',
-            x: 'кепські/жахливі/зламані/убиті/розірвані/розтрощені/погані/неладні/ніякі/казна-які/такі-сякі/неважні/неякісні/миршаві/стерті/порепані'
+            m: 'кепський/жахливий/зламаний/убитий/розірваний/розтрощений/поганий/неладний/ніякий/казна-який/такий-сякий/неважний/неякісний/миршавий/стертий/порепаний/дірявий/драний',
+            f: 'кепська/жахлива/зламана/убита/розірвана/розтрощена/погана/неладна/ніяка/казна-яка/така-сяка/неважна/неякісна/миршава/стерта/порепана/дірява/драна',
+            n: 'кепське/жахливе/зламане/убите/розірване/розтрощене/погане/неладне/ніяке/казна-яке/таке-сяке/неважне/неякісне/миршаве/стерте/порепане/діряве/дране',
+            x: 'кепські/жахливі/зламані/убиті/розірвані/розтрощені/погані/неладні/ніякі/казна-які/такі-сякі/неважні/неякісні/миршаві/стерті/порепані/діряві/драні'
         },
         templates: [
             '{quality-title} {item-title}'
@@ -680,7 +680,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 3.5,
         items: [
             // todo: add moarrrr!
-            { title: 'меч', level: 1, ggm: true }
+            { title: 'меч', level: 0, ggm: true }
         ]
     },
     {
@@ -690,7 +690,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 3.2,
         items: [
             // todo: add moarrrr!
-            { title: 'щит', level: 1, ggm: true }
+            { title: 'щит', level: 0, ggm: true }
         ]
     },
     {
@@ -699,9 +699,9 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 8,
         priceMult: 1.7,
         items: [
-            { title: 'пов\'язка', level: 1, ggf: true },
-            { title: 'вінок', level: 1, ggm: true },
-            { title: 'панама', level: 1, ggf: true },
+            { title: 'пов\'язка', level: 0, ggf: true },
+            { title: 'вінок', level: 0, ggm: true },
+            { title: 'панама', level: 0, ggf: true },
             { title: 'шапка', level: 2, ggf: true },
             { title: 'бриль', level: 2, ggm: true },
             { title: 'капюшон', level: 4, ggm: true },
@@ -745,7 +745,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 2.0,
         items: [
             // todo: add moarrrr!
-            { title: 'кираса', level: 1, ggf: true }
+            { title: 'кираса', level: 0, ggf: true }
         ]
     },
     {
@@ -755,7 +755,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.2,
         items: [
             // todo: add moarrrr!
-            { title: 'накидка', level: 1, ggf: true }
+            { title: 'накидка', level: 0, ggf: true }
         ]
     },
     {
@@ -765,7 +765,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.3,
         items: [
             // todo: add moarrrr!
-            { title: 'браслет', level: 1, ggm: true }
+            { title: 'браслет', level: 0, ggm: true }
         ]
     },
     {
@@ -775,7 +775,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.6,
         items: [
             // todo: add moarrrr!
-            { title: 'рукавиці', level: 1, ggx: true }
+            { title: 'рукавиці', level: 0, ggx: true }
         ]
     },
     {
@@ -785,7 +785,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.4,
         items: [
             // todo: add moarrrr!
-            { title: 'ремінь', level: 1, ggm: true }
+            { title: 'ремінь', level: 0, ggm: true }
         ]
     },
     {
@@ -795,7 +795,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.8,
         items: [
             // todo: add moarrrr!
-            { title: 'штани', level: 1, ggx: true }
+            { title: 'штани', level: 0, ggx: true }
         ]
     },
     {
@@ -805,7 +805,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.5,
         items: [
             // todo: add moarrrr!
-            { title: 'чоботи', level: 1, ggx: true }
+            { title: 'чоботи', level: 0, ggx: true }
         ]
     },
     {
@@ -815,7 +815,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 2.4,
         items: [
             // todo: add moarrrr!
-            { title: 'коралі', level: 1, ggx: true }
+            { title: 'коралі', level: 0, ggx: true }
         ]
     },
     {
@@ -825,7 +825,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 2.2,
         items: [
             // todo: add moarrrr!
-            { title: 'кільце', level: 1, ggn: true }
+            { title: 'кільце', level: 0, ggn: true }
         ]
     },
     {
@@ -835,7 +835,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 2.6,
         items: [
             // todo: add moarrrr!
-            { title: 'медальйон', level: 1, ggm: true }
+            { title: 'медальйон', level: 0, ggm: true }
         ]
     }
 ]

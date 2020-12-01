@@ -232,13 +232,23 @@ function finishCombat(hero: Hero) {
 }
 
 function getGearItemTitle(hero: Hero, slot: GearSlot, quality: ItemQuality): string {
-    const items = data.gearSlots.find(s => s.name == slot)!.items
-    const item = rand.item(hero, items.filter(i => i.level <= hero.level.num))
+    const slotMeta = data.gearSlots.find(s => s.name == slot)!
+    const availItems = slotMeta.items.filter(i => i.level + slotMeta.level <= hero.level.num)
+    if (availItems.length == 0) {
+        if (slotMeta.items.length > 0) {
+            availItems.push(slotMeta.items[0])
+        } else {
+            return `${quality} ${slot}`
+        }
+    }
+
+    const item = rand.item(hero, availItems)
     const ggKey = item.ggm ? 'm' : item.ggf ? 'f' : item.ggn ? 'n' : 'x'
-    const qMeta = data.itemQualities.find(q => q.name == quality)!
-    return rand.item(hero, qMeta.templates)
+    const qualityMeta = data.itemQualities.find(q => q.name == quality)!
+
+    return rand.item(hero, qualityMeta.templates)
         .replace('{item-title}', item.title)
-        .replace('{quality-title}', rand.text(hero, qMeta.title[ggKey]))
+        .replace('{quality-title}', rand.text(hero, qualityMeta.title[ggKey]))
         .replace('{uncommon-prefix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Uncommon)!.prefix![ggKey]))
         .replace('{rare-prefix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Rare)!.prefix![ggKey]))
         .replace('{epic-suffix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Epic)!.suffix!))
