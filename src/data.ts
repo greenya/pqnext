@@ -573,10 +573,10 @@ const itemQualities: readonly ItemQualityMeta[] = [
     {
         name: ItemQuality.Poor,
         title: {
-            m: 'кепський/жахливий/зламаний/убитий/розірваний/розтрощений/поганий/неладний/ніякий/казна-який/такий-сякий/неважний/неякісний/миршавий/стертий/порепаний/дірявий/драний',
-            f: 'кепська/жахлива/зламана/убита/розірвана/розтрощена/погана/неладна/ніяка/казна-яка/така-сяка/неважна/неякісна/миршава/стерта/порепана/дірява/драна',
-            n: 'кепське/жахливе/зламане/убите/розірване/розтрощене/погане/неладне/ніяке/казна-яке/таке-сяке/неважне/неякісне/миршаве/стерте/порепане/діряве/дране',
-            x: 'кепські/жахливі/зламані/убиті/розірвані/розтрощені/погані/неладні/ніякі/казна-які/такі-сякі/неважні/неякісні/миршаві/стерті/порепані/діряві/драні'
+            m: 'кепський/жахливий/зламаний/жебрацький/розірваний/розтрощений/поганий/неладний/ніякий/казна-який/такий-сякий/неважний/неякісний/миршавий/стертий/порепаний/дірявий/драний/жалюгідний/убогий/мізерний/нікчемний',
+            f: 'кепська/жахлива/зламана/жебрацька/розірвана/розтрощена/погана/неладна/ніяка/казна-яка/така-сяка/неважна/неякісна/миршава/стерта/порепана/дірява/драна/жалюгідна/убога/мізерна/нікчемна',
+            n: 'кепське/жахливе/зламане/жебрацьке/розірване/розтрощене/погане/неладне/ніяке/казна-яке/таке-сяке/неважне/неякісне/миршаве/стерте/порепане/діряве/дране/жалюгідне/убоге/мізерне/нікчемне',
+            x: 'кепські/жахливі/зламані/жебрацькі/розірвані/розтрощені/погані/неладні/ніякі/казна-які/такі-сякі/неважні/неякісні/миршаві/стерті/порепані/діряві/драні/жалюгідні/убогі/мізерні/нікчемні'
         },
         templates: [
             '{quality-title} {item-title}'
@@ -771,7 +771,9 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.3,
         items: [
             // todo: add moarrrr!
-            { title: 'браслет', ggm: true }
+            { title: 'браслет', ggm: true },
+            { title: 'бранзолета', ggf: true },
+            { title: 'наруччя', ggn: true }
         ]
     },
     {
@@ -791,6 +793,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.4,
         items: [
             // todo: add moarrrr!
+            { title: 'пояс', ggm: true },
             { title: 'ремінь', ggm: true }
         ]
     },
@@ -812,11 +815,13 @@ const gearSlots: readonly GearSlotMeta[] = [
         items: [
             { title: 'бахили', ggx: true },
             { title: 'личаки', ggx: true },
+            { title: 'калоші', ggx: true },
             { title: 'босоніжки', ggx: true },
             { title: 'трескури', ggx: true },
             { title: 'повстяники', ggx: true },
             { title: 'мокасини', ggx: true },
             { title: 'сандалі', ggx: true },
+            { title: 'ходаки', ggx: true },
             { title: 'царухи', ggx: true },
             { title: 'капці', ggx: true },
             { title: 'опанці', ggx: true },
@@ -841,9 +846,19 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 15,
         priceMult: 2.4,
         items: [
-            // todo: add moarrrr!
+            { title: 'ланцюжок', ggm: true },
             { title: 'коралі', ggx: true },
-            { title: 'намисто', ggn: true }
+            { title: 'намисто', ggn: true },
+            { title: 'кольє', ggn: true },
+            { title: 'амулет', ggm: true },
+            { title: 'кулон', ggm: true },
+            { title: 'ґердан', ggm: true },
+            { title: 'підвіска', ggf: true },
+            { title: 'медальйон', ggm: true },
+            { title: 'талісман', ggm: true },
+            { title: 'гривна', ggf: true },
+            { title: 'торквес', ggm: true },
+            { title: 'пектораль', ggf: true }
         ]
     },
     {
@@ -852,9 +867,12 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 12,
         priceMult: 2.2,
         items: [
-            // todo: add moarrrr!
+            { title: 'обідок', ggm: true },
             { title: 'кільце', ggn: true },
-            { title: 'печатка', ggf: true }
+            { title: 'перстень', ggm: true },
+            { title: 'каблучка', ggf: true },
+            { title: 'печатка', ggf: true },
+            { title: 'сигнет', ggm: true }
         ]
     },
     {
@@ -863,10 +881,27 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 20,
         priceMult: 2.6,
         items: [
-            // todo: add moarrrr!
-            { title: 'медальйон', ggm: true },
-            { title: 'кулон', ggm: true },
-            { title: 'пов\'язка', ggm: true }
+            { title: 'пов\'язка', ggm: true },
+            { title: 'сережка', ggm: true },
+            { title: 'шпилька', ggf: true },
+            { title: 'брошка', ggf: true },
+            { title: 'брелок', ggm: true },
+            { title: 'значок', ggm: true },
+            { title: 'бляха', ggf: true },
+            { title: 'орден', ggm: true },
+            { title: 'ґудзик', ggm: true },
+            { title: 'фібула', ggf: true },
+            { title: 'запонки', ggx: true },
+            { title: 'кліпси', ggx: true },
+            { title: 'кульчики', ggx: true },
+            { title: 'емблема', ggf: true },
+            { title: 'знамено', ggf: true },
+            { title: 'прикраса', ggf: true },
+            { title: 'аксесуар', ggm: true },
+            { title: 'атрибут', ggm: true },
+            { title: 'відзнака', ggf: true },
+            { title: 'символ', ggm: true },
+            { title: 'оберег', ggm: true }
         ]
     }
 ]
