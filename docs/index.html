@@ -101,7 +101,7 @@
         .app-item.common {
             border: 1px solid lightgray;
             background-color: var(--color-common);
-            color: black;
+            color: #444;
         }
 
         .app-item.uncommon {
@@ -213,7 +213,7 @@
 
 <template id="app-item">
     <div class="app-item" :class="item.quality">
-        <span>{{ item.title | capitalize }}</span>
+        <span class="has-text-weight-medium">{{ item.title | capitalize }}</span>
         <span v-if="count > 1">({{ count }} шт)</span>
         <app-item-tooltip :item="item"></app-item-tooltip>
     </div>
