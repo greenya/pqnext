@@ -402,7 +402,7 @@ function rollItemsAndLootSingleBestOne(hero: Hero, source: GearSource.Quest | Ge
 
         const value = getGearItemValue(hero, item)
         const equippedItem = hero.gear.find(i => i.gear!.slot == item.gear!.slot)
-        const equippedValue = equippedItem ? getGearItemValue(hero, equippedItem) : 0
+        const equippedValue = equippedItem ? getGearItemValue(hero, equippedItem) : -1
         const delta = value - equippedValue
 
         if (!bestItem || bestDeltaValue < delta) {
@@ -500,16 +500,22 @@ function removeGold(hero: Hero, amount: number, source: 'gear') {
 }
 
 function getGearItemValue(hero: Hero, item: Item) {
+    let value = 0
+
     if (item.gear) {
         const attr = item.gear.attr
         const prio = hero.attrPrio
-        return data.attributes
+        value = data.attributes
             .filter(e => e.primary)
             .map(e => e.name)
             .reduce((a, c) => a + prio[c] * (attr[c] ?? 0), 0)
-    } else {
-        return data.itemQualities.findIndex(q => q.name == item.quality)
     }
+
+    if (value < 1) {
+        value = data.itemQualities.findIndex(q => q.name == item.quality)
+    }
+
+    return value
 }
 
 function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldItem?: Item } {
