@@ -244,38 +244,48 @@ function getGearItemTitle(hero: Hero, slot: GearSlot, quality: ItemQuality): str
         .replace('{epic-suffix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Epic)!.suffix!))
 }
 
-function getGearItem(hero: Hero, source: GearSource): Item {
+function getItemQuality(hero: Hero, source: GearSource): ItemQuality {
     const level = hero.level.num
-
-    const availSlots = data.gearSlots.filter(s => s.level <= level).map(s => s.name)
-    const slot = rand.item(hero, availSlots)
-
     const roll = rand.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0))
     const quality = data.itemQualities.reduce(
         (a, c) => c.chance > 0 && c.chance > roll && c.level <= level ? c.name : a,
-        ItemQuality.Common
+        level < 20 && rand.dice(hero, 1 + Math.floor(level / 4)) ? ItemQuality.Poor : ItemQuality.Common
     )
+    return quality
+}
 
-    const title = getGearItemTitle(hero, slot, quality)
-    const price = getItemPrice(hero, title, quality, slot)
+function getGearItemAttributes(hero: Hero, quality: ItemQuality, source: GearSource): Map<number> {
+    const level = hero.level.num
+    const attr: Map<number> = {}
 
-    const item: Item = {
-        title,
-        quality,
-        gear: { slot, attr: {}, level, source },
-        price
-    }
-
-    const attrCount = data.itemQualities.find(q => q.name == quality)!.attrCount
-    if (attrCount) {
+    const count = data.itemQualities.find(q => q.name == quality)!.attrCount
+    if (count) {
         const bonus = Math.floor(level / 5)
         const stat = rand.shuffle(hero, data.attributes.filter(e => e.primary).map(e => e.name))
-        for (let i = 0; i < attrCount; i++) {
-            item.gear!.attr[stat[i]] = bonus + (i == 0 && source == GearSource.Quest ? 1 : 0)
+        for (let i = 0; i < count; i++) {
+            attr[stat[i]] = bonus + (i == 0 && source == GearSource.Quest ? 1 : 0)
         }
     }
 
-    return item
+    return attr
+}
+
+function getGearItem(hero: Hero, source: GearSource): Item {
+    const level = hero.level.num
+    const availSlots = data.gearSlots.filter(s => s.level <= level).map(s => s.name)
+
+    const slot = rand.item(hero, availSlots)
+    const quality = getItemQuality(hero, source)
+    const title = getGearItemTitle(hero, slot, quality)
+    const price = getItemPrice(hero, title, quality, slot)
+    const attr = getGearItemAttributes(hero, quality, source)
+
+    return {
+        title,
+        quality,
+        gear: { slot, attr, level, source },
+        price
+    }
 }
 
 function getMobPreciousItem(hero: Hero, mob: Mob): Item {
@@ -295,9 +305,10 @@ function getMobJunkItem(hero: Hero, mob: Mob): Item {
 }
 
 function getPoorItemPriceDeviation(hero: Hero, title: string): number {
+    const level = hero.level.num
     const base = title.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
-    const mod = base % 8
-    return mod > 0 ? mod : base % hero.level.num * 4
+    const mod = (base % 5) * Math.ceil(level / 3)
+    return mod > 0 ? mod : (base % level) * 7
 }
 
 function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: GearSlot, extraMult?: number): number {
@@ -525,7 +536,7 @@ function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldI
         hero.gear.push(newItem)
     }
 
-    stats.itemsEquipped++
+    stats.gearItemsEquipped++
     return { equipped: true, oldItem }
 }
 
@@ -571,8 +582,9 @@ function lootItems(hero: Hero, items: Item[]) {
 
         stats.itemsLootedByQuality[newItem.quality]++
         if (newItem.gear) {
-            stats.itemsLootedBySlot[newItem.gear.slot]++
-            stats.itemsLootedBySource[newItem.gear.source]++
+            stats.gearItemsLootedByQuality[newItem.quality]++
+            stats.gearItemsLootedBySlot[newItem.gear.slot]++
+            stats.gearItemsLootedBySource[newItem.gear.source]++
         }
     })
 }
@@ -688,11 +700,13 @@ const stats = {
     goldSpent: { gear: 0 },
     itemsLootedByQuality: Object.values(ItemQuality)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
-    itemsLootedBySlot: Object.values(GearSlot)
+    gearItemsLootedByQuality: Object.values(ItemQuality)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
-    itemsLootedBySource: Object.values(GearSource)
+    gearItemsLootedBySlot: Object.values(GearSlot)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
-    itemsEquipped: 0,
+    gearItemsLootedBySource: Object.values(GearSource)
+        .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
+    gearItemsEquipped: 0,
     itemsLostInGold: 0,
     mobsKilled: Object.values(MobMight)
         .reduce<Map<number>>((a, c) => { a[c] = 0; return a }, {}),
