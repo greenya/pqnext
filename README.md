@@ -33,6 +33,13 @@ deno run debug.ts
 - add dying; on death -> run to corpse (50% of town distance) -> eat-and-drink
 - add chance to fail when fighting mob; removes a lot of gear durability and takes time to run to corpse
 
+- add gear slot items limit when generating name; should be a window of 6-8 items that moves down the list; so at high levels we generate random name from last 6-8 item names (or maybe add optional properly "level-limit" so it is posible to manually limit some weak titles for high levels) (or maybe allow optionally define rarities for gear slot item titles; so no rare and epic weak titles generated)
+
+- add weapon depth (mainhand and offhand slots)
+    - melee/ranged weapons; hero class defines what type of weapon can be used (for example: hypothetical "archer" class might be able to use ranged weapon only)
+    - hero class limited weapon types (for example: 2h hammer can only be used by warriors; wand can only be used mage etc.)
+    - 1h/2h weapons; so offhand cannot be equipped with 2h weapons
+
 - add gear durability and its loss, when < 10% (?) => move-to-town; add need for repair while in town (chance if durability < 50%)
 - add unique/rare mobs with notable loot
 - add spell book
