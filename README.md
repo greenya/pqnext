@@ -22,8 +22,6 @@ deno run debug.ts
 
 ## Todos and Ideas
 
-- make poor items to drop at very low levels; extend ItemQualityMeta to hold max level (so max for Poor is 10, max for Common is 40; maybe just hardcode it)
-
 - remove "giants"
 - add human mobs
 - add more mobs to swamp and water biomes

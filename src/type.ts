@@ -27,7 +27,7 @@ export enum ItemQuality {
 export interface ItemQualityMeta {
     name: ItemQuality,
     title: { m: string, f: string, n: string, x: string }, // [m]asculine, [f]eminine, [n]euter, [x] for multiple
-    templates: string[],
+    templates: readonly string[],
     prefix?: { m: string, f: string, n: string, x: string },
     suffix?: string,
     level: number,
@@ -58,9 +58,8 @@ export interface GearSlotMeta {
     title: string,
     level: number,
     priceMult: number,
-    items: {
+    items: readonly {
         title: string,
-        level: number,
         ggm?: boolean,
         ggf?: boolean,
         ggn?: boolean,
@@ -151,7 +150,7 @@ export interface Class {
     attrPrio: Map<number>,
     // useableWeaponTypes
     // useableArmorTypes
-    startItems: Item[]
+    startItems: readonly Item[]
 }
 
 export interface HeroTarget {

@@ -233,7 +233,7 @@ function finishCombat(hero: Hero) {
 
 function getGearItemTitle(hero: Hero, slot: GearSlot, quality: ItemQuality): string {
     const slotMeta = data.gearSlots.find(s => s.name == slot)!
-    const availItems = slotMeta.items.filter(i => i.level + slotMeta.level <= hero.level.num)
+    const availItems = slotMeta.items.filter((i, index) => slotMeta.level + (index * 2) <= hero.level.num)
     if (availItems.length == 0) {
         if (slotMeta.items.length > 0) {
             availItems.push(slotMeta.items[0])
@@ -581,7 +581,7 @@ function moveItemToBag(hero: Hero, item: Item) {
     }
 }
 
-function lootItems(hero: Hero, items: Item[]) {
+function lootItems(hero: Hero, items: readonly Item[]) {
     items.forEach(newItem => {
         const r = equipItemIfBetter(hero, newItem)
         if (r.equipped) {
