@@ -523,11 +523,8 @@ function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldI
         return { equipped: false }
     }
 
-    const oldItemIndex = hero.gear.findIndex(i => i.gear!.slot == newItem.gear!.slot)
-    let oldItem: Item | undefined = undefined
-
-    if (oldItemIndex >= 0) {
-        oldItem = hero.gear[oldItemIndex]
+    const oldItem = hero.gear.find(i => i.gear!.slot == newItem.gear!.slot)
+    if (oldItem) {
         const oldValue = getGearItemValue(hero, oldItem)
         const newValue = getGearItemValue(hero, newItem)
         if (newValue <= oldValue) {
@@ -535,12 +532,11 @@ function equipItemIfBetter(hero: Hero, newItem: Item): { equipped: boolean, oldI
         }
 
         removeAttr(hero, oldItem.gear!.attr)
-        addAttr(hero, newItem.gear.attr)
-        hero.gear[oldItemIndex] = newItem
-    } else {
-        addAttr(hero, newItem.gear.attr)
-        hero.gear.push(newItem)
+        hero.gear = hero.gear.filter(i => i != oldItem)
     }
+
+    addAttr(hero, newItem.gear.attr)
+    hero.gear.push(newItem)
 
     stats.gearItemsEquipped++
     return { equipped: true, oldItem }
