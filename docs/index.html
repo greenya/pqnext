@@ -201,11 +201,13 @@
                 return slot && slot.title ? slot.title : this.item.gear.slot
             },
             attrs: function () {
-                const attr = window.game.attributes()
-                return Object.keys(this.item.gear.attr).map(
-                    a => attr.find(e => e.name == a)
-                        .format.replace('X', this.item.gear.attr[a])
-                )
+                return window.game.attributes().reduce((a, c) => {
+                    const attr = this.item.gear.attr[c.name]
+                    if (attr) {
+                        a.push(c.format.replace('X', attr))
+                    }
+                    return a
+                }, [])
             }
         }
     })
