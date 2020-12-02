@@ -714,6 +714,7 @@ const gearSlots: readonly GearSlotMeta[] = [
             { title: 'спатіон', ggm: true },
             { title: 'гладіус', ggm: true },
             { title: 'буздиган', ggm: true },
+            { title: 'фальката', ggf: true },
             { title: 'гіршфанґер', ggm: true },
             { title: 'бойовий ціп', ggm: true },
             { title: 'бойова гиря', ggf: true },
@@ -730,8 +731,39 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 1,
         priceMult: 3.2,
         items: [
-            // todo: add moarrrr!
-            { title: 'щит', ggm: true }
+            { title: 'фіранка', ggf: true },
+            { title: 'тертиця', ggf: true },
+            { title: 'парасолька', ggf: true },
+            { title: 'книга', ggf: true },
+            { title: 'дошка', ggf: true },
+            { title: 'лист', ggm: true },
+            { title: 'куля', ggf: true },
+            { title: 'фіал', ggm: true },
+            { title: 'келих', ggm: true },
+            { title: 'кубок', ggm: true },
+            { title: 'диск', ggm: true },
+            { title: 'фетиш', ggm: true },
+            { title: 'ограда', ggf: true },
+            { title: 'заслона', ggf: true },
+            { title: 'пластина', ggf: true },
+            { title: 'кружало', ggn: true },
+            { title: 'завіса', ggf: true },
+            { title: 'плита', ggf: true },
+            { title: 'екран', ggm: true },
+            { title: 'сфера', ggf: true },
+            { title: 'ідол', ggm: true },
+            { title: 'щит', ggm: true },
+            { title: 'тарч', ggm: true },
+            { title: 'аспіс', ggm: true },
+            { title: 'баклер', ggm: true },
+            { title: 'гоплон', ggm: true },
+            { title: 'кліпеус', ggm: true },
+            { title: 'павеза', ggf: true },
+            { title: 'кетра', ggf: true },
+            { title: 'парма', ggf: true },
+            { title: 'пельта', ggf: true },
+            { title: 'скутум', ggm: true },
+            { title: 'туреос', ggm: true }
         ]
     },
     {
@@ -754,11 +786,13 @@ const gearSlots: readonly GearSlotMeta[] = [
             { title: 'циліндр', ggm: true },
             { title: 'сомбреро', ggn: true },
             { title: 'коло', ggn: true },
+            { title: 'койф', ggm: true },
             { title: 'ковпак', ggm: true },
             { title: 'лінза', ggf: true },
             { title: 'монокль', ggm: true },
             { title: 'башлик', ggm: true },
             { title: 'стетсон', ggm: true },
+            { title: 'штурмак', ggm: true },
             { title: 'шолом', ggm: true },
             { title: 'мисюрка', ggf: true },
             { title: 'топхельм', ggm: true },
@@ -789,17 +823,28 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 1,
         priceMult: 2.0,
         items: [
-            // todo: add moarrrr!
             { title: 'лейбик', ggm: true },
             { title: 'сардак', ggm: true },
             { title: 'серапе', ggn: true },
             { title: 'пончо', ggn: true },
             { title: 'жупан', ggm: true },
+            { title: 'тегиляй', ggm: true },
             { title: 'кептар', ggm: true },
             { title: 'куртка', ggf: true },
+            { title: 'юшман', ggm: true },
             { title: 'кожух', ggm: true },
+            { title: 'броня', ggf: true },
+            { title: 'бехтер', ggm: true },
+            { title: 'дублет', ggm: true },
+            { title: 'обладунок', ggm: true },
+            { title: 'гауберк', ggm: true },
+            { title: 'панцир', ggm: true },
             { title: 'кираса', ggf: true },
-            { title: 'панцир', ggm: true }
+            { title: 'сполас', ggm: true },
+            { title: 'кольчуга', ggf: true },
+            { title: 'клібаніон', ggm: true },
+            { title: 'ліноторакс', ggm: true },
+            { title: 'бригантина', ggf: true }
         ]
     },
     {
@@ -822,7 +867,10 @@ const gearSlots: readonly GearSlotMeta[] = [
             // todo: add moarrrr!
             { title: 'браслет', ggm: true },
             { title: 'бранзолета', ggf: true },
-            { title: 'наруччя', ggn: true }
+            { title: 'нарукавники', ggx: true },
+            { title: 'наруччя', ggn: true },
+            { title: 'поручі', ggx: true },
+            { title: 'маніка', ggf: true }
         ]
     },
     {
@@ -853,7 +901,11 @@ const gearSlots: readonly GearSlotMeta[] = [
         priceMult: 1.8,
         items: [
             // todo: add moarrrr!
-            { title: 'штани', ggx: true }
+            { title: 'штани', ggx: true },
+            { title: 'набедреник', ggm: true },
+            { title: 'наголінник', ggm: true },
+            { title: 'налядвенники', ggx: true },
+            { title: 'бутурлики', ggx: true }
         ]
     },
     {

@@ -40,6 +40,9 @@ deno run debug.ts
     - hero class limited weapon types (for example: 2h hammer can only be used by warriors; wand can only be used mage etc.)
     - 1h/2h weapons; so offhand cannot be equipped with 2h weapons
 
+- add quest depth
+    - add dropping quest items (dont forget to skip selling these item; now sellJunk() sell entire bag content)
+
 - add gear durability and its loss, when < 10% (?) => move-to-town; add need for repair while in town (chance if durability < 50%)
 - add unique/rare mobs with notable loot
 - add spell book
