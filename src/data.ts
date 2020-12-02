@@ -1006,7 +1006,7 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 20,
         priceMult: 2.6,
         items: [
-            { title: 'сережка', ggm: true },
+            { title: 'сережка', ggf: true },
             { title: 'шпилька', ggf: true },
             { title: 'брошка', ggf: true },
             { title: 'брелок', ggm: true },
