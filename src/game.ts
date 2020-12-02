@@ -396,7 +396,7 @@ function passQuest(hero: Hero) {
 function rollItemsAndLootSingleBestOne(hero: Hero, source: GearSource.Quest | GearSource.Vendor) {
     const amount =
         source == GearSource.Quest ? 3 :
-        source == GearSource.Vendor ? 5 :
+        source == GearSource.Vendor ? 6 :
         0
 
     let bestItem: Item | undefined = undefined
