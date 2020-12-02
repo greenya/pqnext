@@ -106,7 +106,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'move-to-town',
-        title: () => 'Прямує до міста...',
+        title: () => 'Прямує до найближчого поселення...',
         duration: () => 10,
         onStart: (hero) => {
             updateZone(hero, ZoneType.Traveling)

@@ -836,6 +836,7 @@ const gearSlots: readonly GearSlotMeta[] = [
             { title: 'дублет', ggm: true },
             { title: 'обладунок', ggm: true },
             { title: 'гауберк', ggm: true },
+            { title: 'мундир', ggm: true },
             { title: 'панцир', ggm: true },
             { title: 'кираса', ggf: true },
             { title: 'сполас', ggm: true },
@@ -916,12 +917,19 @@ const gearSlots: readonly GearSlotMeta[] = [
         level: 1,
         priceMult: 1.8,
         items: [
-            // todo: add moarrrr!
             { title: 'штани', ggx: true },
-            { title: 'набедреник', ggm: true },
-            { title: 'наголінник', ggm: true },
+            { title: 'брюки', ggx: true },
+            { title: 'рейтузи', ggx: true },
+            { title: 'кальсони', ggx: true },
+            { title: 'ногавиці', ggx: true },
+            { title: 'шаровари', ggx: true },
+            { title: 'набедреники', ggx: true },
+            { title: 'наголінники', ggx: true },
             { title: 'налядвенники', ggx: true },
-            { title: 'бутурлики', ggx: true }
+            { title: 'бутурлики', ggx: true },
+            { title: 'бриджі', ggx: true },
+            { title: 'хакама', ggx: true },
+            { title: 'кюлоти', ggx: true }
         ]
     },
     {
