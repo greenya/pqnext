@@ -477,9 +477,9 @@
         const g = value
 
         const p = []
-        if (g > 0) { p.push(g + '<i class="fas fa-coins mx-1 gold"></i>') }
-        if (s > 0) { p.push(s + '<i class="fas fa-coins mx-1 silver"></i>') }
-        if (c > 0) { p.push(c + '<i class="fas fa-coins mx-1 copper"></i>') }
+        if (g > 0) { p.push(Number(g).toLocaleString() + '<i class="fas fa-coins ml-1 gold"></i>') }
+        if (s > 0) { p.push(s + '<i class="fas fa-coins ml-1 silver"></i>') }
+        if (c > 0) { p.push(c + '<i class="fas fa-coins ml-1 copper"></i>') }
 
         return p.length > 0 ? p.join(' ') : '0<i class="fas fa-coins ml-1 copper"></i>'
     })
