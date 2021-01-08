@@ -322,11 +322,12 @@ function getPoorItemPriceDeviation(hero: Hero, title: string): number {
 }
 
 function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: GearSlot, extraMult?: number): number {
+    const level = hero.level.num
     return Math.floor(
         (quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0)
-        + hero.level.num
+        + level
         * data.itemQualities.find(q => q.name == quality)!.priceMult
-        * (slot ? data.gearSlots.find(s => s.name == slot)!.priceMult : 1)
+        * (slot ? (level / 10) * data.gearSlots.find(s => s.name == slot)!.priceMult : 1)
         * (extraMult ? extraMult : 1)
     )
 }
@@ -395,8 +396,8 @@ function passQuest(hero: Hero) {
 
 function rollItemsAndLootSingleBestOne(hero: Hero, source: GearSource.Quest | GearSource.Vendor) {
     const amount =
-        source == GearSource.Quest ? 3 :
-        source == GearSource.Vendor ? 6 :
+        source == GearSource.Quest ? 4 :
+        source == GearSource.Vendor ? 12 :
         0
 
     let bestItem: Item | undefined = undefined
