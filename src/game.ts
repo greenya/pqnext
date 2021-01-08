@@ -339,31 +339,13 @@ function sellJunk(hero: Hero) {
 }
 
 function getQuestTitle(hero: Hero): string {
-    let text = rand.text(hero, rand.item(hero, data.questTitles))
-
-    if (text.includes('{number-5-20}')) {
-        text = text.replace('{number-5-20}', `${rand.int(hero, 16) + 5}`)
-    }
-
-    if (text.includes('{mob-gcm-n}')) {
-        text = text.replace('{mob-gcm-n}', rand.item(hero, data.mobs).gcm.n)
-    }
-
-    if (text.includes('{mob-gcm-r}')) {
-        text = text.replace('{mob-gcm-r}', rand.item(hero, data.mobs).gcm.r)
-    }
-
-    if (text.includes('{mob-flesh-gcm-r}')) {
-        text = text.replace('{mob-flesh-gcm-r}', rand.item(hero, data.mobs.filter(m => m.trait & Trait.Flesh)).gcm.r)
-    }
-
-    if (text.includes('{precious-item-ggmn}')) {
-        text = text.replace('{precious-item-ggmn}', rand.text(hero, rand.item(hero, data.preciousItems.filter(i => i.ggm || i.ggn)).gen))
-    }
-
-    if (text.includes('{precious-item-ggf}')) {
-        text = text.replace('{precious-item-ggf}', rand.text(hero, rand.item(hero, data.preciousItems.filter(i => i.ggf)).gen))
-    }
+    const text = rand.text(hero, rand.item(hero, data.questTitles))
+        .replace('{number-5-20}', `${rand.int(hero, 16) + 5}`)
+        .replace('{mob-gcm-n}', rand.item(hero, data.mobs).gcm.n)
+        .replace('{mob-gcm-r}', rand.item(hero, data.mobs).gcm.r)
+        .replace('{mob-flesh-gcm-r}', rand.item(hero, data.mobs.filter(m => m.trait & Trait.Flesh)).gcm.r)
+        .replace('{precious-item-ggmn}', rand.text(hero, rand.item(hero, data.preciousItems.filter(i => i.ggm || i.ggn)).gen))
+        .replace('{precious-item-ggf}', rand.text(hero, rand.item(hero, data.preciousItems.filter(i => i.ggf)).gen))
 
     return text.charAt(0).toUpperCase() + text.slice(1)
 }
