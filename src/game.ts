@@ -629,6 +629,18 @@ function advanceTime(hero: Hero) {
     }
 }
 
+function rollName(): string {
+    const state = { seed: Math.floor(Math.random() * 1000000) }
+
+    let text = ''
+    for (let i = 0; i < rand.int(state, 6) + 3; i++) {
+        text += rand.item(state, data.characterNameParts[i % data.characterNameParts.length]).trim()
+    }
+
+    data.characterNameProfanity.forEach(s => text = text.replaceAll(s[0], s[1]))
+    return text.charAt(0).toUpperCase() + text.slice(1)
+}
+
 function rollAttr(): Map<number> {
     const keys = data.attributes.filter(e => e.primary).map(e => e.name)
     const attr: Map<number> = {}
@@ -740,6 +752,7 @@ function dump(hero: Hero) {
 
 export default {
     rollAttr,
+    rollName,
     createHero,
     advanceTime,
     dump
@@ -768,7 +781,8 @@ if (!window.Deno) {
         classes: () => data.classes.map(({ name, title, desc }) => { return { name, title, desc } }),
         attributes: () => data.attributes.map(({ name, title, desc, format, primary }) => { return { name, title, desc, format, primary } }),
         gearSlots: () => data.gearSlots.map(({ name, title }) => { return { name, title } }),
-        roll: rollAttr,
+        rollAttr,
+        rollName,
         create: createHero,
         save: (hero: Hero) => {
             if (hero) {

@@ -1,8 +1,8 @@
 import game from './src/game.ts'
 
-const hero = game.createHero('Котигорошко', 'human', 'warrior', game.rollAttr())
+const hero = game.createHero(game.rollName(), 'human', 'warrior', game.rollAttr())
 
-for (let t = 0; t < (60 * 60 * 24) * 1; t++) { // ~45 lvl
+for (let t = 0; t < (60 * 60 * 24) * 10; t++) {
     game.advanceTime(hero)
 }
 

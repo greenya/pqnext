@@ -325,7 +325,7 @@
                                 <input class="input is-fullwidth" type="text" placeholder="Введіть або згенеруйте..." v-model="newHeroSetup.nickname">
                             </div>
                             <div class="control">
-                                <button class="button">
+                                <button class="button" @click="newHeroSetup.nickname = game.rollName()">
                                     <span class="icon"><i class="fas fa-dice"></i></span>
                                 </button>
                             </div>
@@ -342,7 +342,7 @@
                             </div>
                             <div class="level-right">
                                 <div class="level-item">
-                                    <button class="button" @click="newHeroSetup.attr = game.roll()">
+                                    <button class="button" @click="newHeroSetup.attr = game.rollAttr()">
                                         <span class="icon"><i class="fas fa-dice"></i></span>
                                     </button>
                                 </div>
@@ -508,7 +508,7 @@
             state: 'load',
             game: undefined,
             hero: undefined,
-            newHeroSetup: { nickname: 'Котигорошко', race: undefined, class: undefined, attr: undefined } // todo: add nickname generation; the dice button should also work
+            newHeroSetup: { nickname: undefined, race: undefined, class: undefined, attr: undefined }
         },
         created: function () {
             const i = setInterval(() => {
@@ -516,9 +516,10 @@
                     clearInterval(i)
                     this.game = window.game
                     this.hero = this.game.load()
+                    this.newHeroSetup.nickname = this.game.rollName()
                     this.newHeroSetup.class = this.game.classes()[0].name
                     this.newHeroSetup.race = this.game.races()[0].name
-                    this.newHeroSetup.attr = this.game.roll()
+                    this.newHeroSetup.attr = this.game.rollAttr()
                     this.state = 'menu'
                 }
             }, 200)
