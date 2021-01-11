@@ -100,6 +100,11 @@ const attributes = [
         desc: 'Зростає з рівнем та _витривалістю_'
     },
     {
+        name: 'curMp',
+        title: 'Мана',
+        desc: 'Витрачається в бою'
+    },
+    {
         name: 'maxMp',
         title: 'Максимум мани',
         desc: 'Зростає з рівнем та _інтелектом_'
@@ -240,6 +245,18 @@ const biomes = [
 ];
 const mobs = [
     {
+        name: 'ambusher',
+        level: 10,
+        trait: Trait.Human | Trait.Forest | Trait.Desert | Trait.Swamp,
+        masculine: 'підступний/нічний/кригоокий/темноволосий_душитель',
+        feminine: 'підступна/нічна/кригоока/темноволоса_душителька',
+        junk: 'пов\'язка на око/розірваний чобіт/тупий ніж/запальничка_душителя',
+        gcm: {
+            n: 'душителі',
+            r: 'душителів'
+        }
+    },
+    {
         name: 'ape',
         level: 18,
         trait: Trait.Beast | Trait.Flesh | Trait.Forest,
@@ -248,6 +265,30 @@ const mobs = [
         gcm: {
             n: 'мавпи',
             r: 'мавп'
+        }
+    },
+    {
+        name: 'assassin',
+        level: 16,
+        trait: Trait.Human | Trait.Desert,
+        masculine: 'хитрий/непомітний/бородатий/зухвалий_душогуб',
+        feminine: 'хитра/непомітна/зеленоока/зухвала_душогубка',
+        junk: 'відрізане вухо/потертий пасок/вставне око_душогуба',
+        gcm: {
+            n: 'душогуби',
+            r: 'душогубів'
+        }
+    },
+    {
+        name: 'bandit',
+        level: 4,
+        trait: Trait.Human | Trait.Forest | Trait.Swamp,
+        masculine: 'безстрашний/сірозубий/однорукий/рудоволосий_бандит',
+        feminine: 'безстрашна/сірозуба/однорука/рудоволоса_бандитка',
+        junk: 'вицвілий гаманець/відсічений палець/вибита щелепа_бандита',
+        gcm: {
+            n: 'бандити',
+            r: 'бандитів'
         }
     },
     {
@@ -297,6 +338,18 @@ const mobs = [
         }
     },
     {
+        name: 'cannibal',
+        level: 28,
+        trait: Trait.Human | Trait.Tundra | Trait.Swamp,
+        masculine: 'білозубий/оскаженілий/широкощелепий/бруднопикий_людожер',
+        feminine: 'білозуба/оскаженіла/широкощелепа/бруднопика_людожерка',
+        junk: 'брудний ніготь/зрізаний скальп/кремезна дубина_людожера',
+        gcm: {
+            n: 'людожери',
+            r: 'людожерів'
+        }
+    },
+    {
         name: 'crab',
         level: 16,
         trait: Trait.Beast | Trait.Flesh | Trait.Swamp | Trait.Water,
@@ -327,6 +380,18 @@ const mobs = [
         gcm: {
             n: 'крокодили',
             r: 'крокодилів'
+        }
+    },
+    {
+        name: 'cultist',
+        level: 22,
+        trait: Trait.Human | Trait.Desert | Trait.Tundra,
+        masculine: 'очманілий/відданий/печерний/довгорясий_культист',
+        feminine: 'очманіла/віддана/печерна/довгоряса_культистка',
+        junk: 'шматок мантії/сторінка книги/тріснувший посох_культиста',
+        gcm: {
+            n: 'культисти',
+            r: 'культистів'
         }
     },
     {
@@ -476,6 +541,17 @@ const mobs = [
         }
     },
     {
+        name: 'pirate',
+        level: 22,
+        trait: Trait.Human | Trait.Water,
+        masculine: 'маячний/одноокий/одноногий/золотозубий/мулобородий_пірат',
+        junk: 'іржавий крюк/карта скарбів/пов\'язка на око/зламана рапіра_пірата',
+        gcm: {
+            n: 'пірати',
+            r: 'піратів'
+        }
+    },
+    {
         name: 'raptor',
         level: 24,
         trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra,
@@ -495,6 +571,30 @@ const mobs = [
         gcm: {
             n: 'круки',
             r: 'круків'
+        }
+    },
+    {
+        name: 'renegade',
+        level: 32,
+        trait: Trait.Human | Trait.Swamp,
+        masculine: 'зловісний/безжалісний/криваворукий/мовчазний_відступник',
+        feminine: 'зловісна/безжалісна/криваворука/мовчазна_відступниця',
+        junk: 'зірваний кулон/пробитий шолом/гральна карта/сторінка контракту_відступника',
+        gcm: {
+            n: 'відступники',
+            r: 'відступників'
+        }
+    },
+    {
+        name: 'robber',
+        level: 6,
+        trait: Trait.Human | Trait.Forest | Trait.Tundra,
+        masculine: 'гнівний/окривавлений/бритоголовий/косоокий_грабіжник',
+        feminine: 'гнівна/окривавлена/бритоголова/косоока_грабіжниця',
+        junk: 'затуплена сокира/жувальний табак/смердючий жупан/балаклава_грабіжника',
+        gcm: {
+            n: 'грабіжники',
+            r: 'грабіжників'
         }
     },
     {
@@ -623,6 +723,29 @@ const mobs = [
         }
     },
     {
+        name: 'thief',
+        level: 14,
+        trait: Trait.Human | Trait.Tundra | Trait.Swamp,
+        masculine: 'підлий/довговусий/чорноокий/блискозубий_злодій',
+        feminine: 'підла/хмуроброва/чорноока/блискозуба_злодійка',
+        junk: 'іржавий палаш/погнуте кулко/розірвана пальчатка/пошматовані замітки_злодія',
+        gcm: {
+            n: 'злодії',
+            r: 'злодіїв'
+        }
+    },
+    {
+        name: 'thug',
+        level: 10,
+        trait: Trait.Human | Trait.Forest | Trait.Desert | Trait.Swamp,
+        masculine: 'незграбний/густобородий/грубопикий/темнобровий/товстопузий_головоріз',
+        junk: 'сталевий різак/заплічний мішок/тріснувша попільничка/намисто з зубів жертв_головоріза',
+        gcm: {
+            n: 'головорізи',
+            r: 'головорізів'
+        }
+    },
+    {
         name: 'tiger',
         level: 22,
         trait: Trait.Beast | Trait.Flesh | Trait.Tundra | Trait.Swamp,
@@ -643,6 +766,30 @@ const mobs = [
         gcm: {
             n: 'блукаючі дерева',
             r: 'блукаючих дерев'
+        }
+    },
+    {
+        name: 'warlock',
+        level: 26,
+        trait: Trait.Human | Trait.Swamp,
+        masculine: 'темноклятий/шепочучий/кривоносий/шкутильгаючий_чорнокнижник',
+        feminine: 'темноклята/шепочуча/кривоноса/шкутильгаюча_чорнокнижниця',
+        junk: 'пустий флакон мани/дирява накидка/згаслий кристал_чорнокнижника',
+        gcm: {
+            n: 'чорнокнижники',
+            r: 'чорнокнижників'
+        }
+    },
+    {
+        name: 'wizard',
+        level: 20,
+        trait: Trait.Human | Trait.Forest | Trait.Tundra,
+        masculine: 'сліпий/завиваючий/таврований/палаючоокий_чародій',
+        feminine: 'сліпа/завиваюча/таврована/палаючоока_чародійка',
+        junk: 'обгорілий свиток/фіолетовий каптур/руна знань_чародія',
+        gcm: {
+            n: 'чародії',
+            r: 'чародіїв'
         }
     },
     {
@@ -2322,7 +2469,7 @@ function text(state, template) {
     return template.split('_').map((s)=>s.includes('/') ? item(state, s.split('/')) : s
     ).join(' ');
 }
-const version = ()=>2
+const version = ()=>3
 ;
 const __default1 = {
     int,
@@ -2425,10 +2572,23 @@ const knownHeroActions = [
                 return 'move-to-town';
             } else if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
                 return 'move-to-town';
+            } else if (hero.attr.curMp < manaNeededForCombat(hero)) {
+                return 'rest';
             } else {
                 return 'combat';
             }
         }
+    },
+    {
+        name: 'rest',
+        title: ()=>'Відновлює сили...'
+        ,
+        duration: ()=>20
+        ,
+        onFinish: (hero)=>{
+            hero.attr.curMp = hero.attr.maxMp;
+        },
+        next: ()=>'combat'
     },
     {
         name: 'move-to-town',
@@ -2526,6 +2686,10 @@ function getHeroTarget(hero) {
         might
     };
 }
+function manaNeededForCombat(hero) {
+    const level = hero.level.num;
+    return Math.min(20 + level, hero.attr.maxMp);
+}
 function startCombat(hero) {
     hero.target = getHeroTarget(hero);
 }
@@ -2537,7 +2701,7 @@ function finishCombat(hero) {
     const reinforced = target.might == MobMight.Reinforced;
     addExp(hero, level + 1 + (reinforced ? 1 : 0), 'mob');
     if ((mob.trait & Trait.Human) == Trait.Human) {
-        addGold(hero, __default1.int(hero, 3) + level * 2 + (reinforced ? 10 : 0), 'mob');
+        addGold(hero, __default1.int(hero, 3) + level * 2 + (reinforced ? level * 10 : 0), 'mob');
     }
     if (__default1.dice(hero, 2)) {
         progressQuest(hero);
@@ -2556,6 +2720,7 @@ function finishCombat(hero) {
         lootItems(hero, items);
     }
     hero.target = undefined;
+    hero.attr.curMp -= manaNeededForCombat(hero);
     stats.mobsKilled[target.might]++;
 }
 function getGearItemTitle(hero, slot, quality) {
@@ -2657,9 +2822,10 @@ function getPoorItemPriceDeviation(hero, title) {
 }
 function getItemPrice(hero, title, quality, slot, extraMult) {
     const level = hero.level.num;
-    return Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + level * __default.itemQualities.find((q)=>q.name == quality
+    const price = Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + level * __default.itemQualities.find((q)=>q.name == quality
     ).priceMult * (slot ? level / 10 * __default.gearSlots.find((s)=>s.name == slot
     ).priceMult : 1) * (extraMult ? extraMult : 1));
+    return Math.max(price, 1);
 }
 function sellJunk(hero) {
     hero.bag.splice(0).forEach((slot)=>addGold(hero, slot.item.price * slot.count, 'junk')
@@ -2728,6 +2894,9 @@ function updateZone(hero, newType) {
     hero.zone.type = newType;
     hero.zone.biome = newType == ZoneType.Wilderness ? __default1.item(hero, __default.biomes.filter((b)=>b.level <= hero.level.num
     )).biome : Trait.None;
+    if (newType == ZoneType.Town) {
+        hero.attr.curMp = hero.attr.maxMp;
+    }
 }
 function addExp(hero, value, source) {
     stats.expGained[source] += value;
@@ -2738,10 +2907,12 @@ function addExp(hero, value, source) {
 }
 function attrUpdated(hero) {
     const level = hero.level.num;
-    const { str , int: int1 , sta  } = hero.attr;
+    const { str , int: int1 , sta , curMp: curMpPrev , maxMp: maxMpPrev  } = hero.attr;
     hero.attr.bagCap = 10 + Math.floor(str / 10);
     hero.attr.maxHp = 20 + level * 8 + sta * 10 + Math.floor(Math.pow(level, 2) / 100) * 40;
     hero.attr.maxMp = 20 + level * 2 + int1 * 10 + Math.floor(Math.pow(level, 2) / 100) * 20;
+    const mpFraction = curMpPrev >= 0 && maxMpPrev > 0 ? curMpPrev / maxMpPrev : 1;
+    hero.attr.curMp = Math.floor(mpFraction * hero.attr.maxMp);
 }
 function addAttr(hero, attr) {
     Object.keys(attr).forEach((a)=>hero.attr[a] += attr[a]
@@ -2757,6 +2928,7 @@ function levelUp(hero) {
     const level = ++hero.level.num;
     hero.level.progress.cur -= hero.level.progress.max;
     hero.level.progress.max = Math.ceil(Math.pow(level, 2) * (level + 1) / 10) * 10 + 40;
+    hero.attr.curMp = hero.attr.maxMp;
     const attr = {
         str: 0,
         dex: 0,
@@ -2917,6 +3089,9 @@ function advanceTime(hero) {
         case 'combat':
             stats.timeSpent.combat++;
             break;
+        case 'rest':
+            stats.timeSpent.resting++;
+            break;
         case 'sell-junk':
             stats.timeSpent.selling++;
             break;
@@ -2945,7 +3120,7 @@ function rollName() {
         seed: Math.floor(Math.random() * 1000000)
     };
     let text1 = '';
-    for(let i = 0; i < __default1.int(state, 6) + 3; i++){
+    for(let i = 0; i < __default1.int(state, 5) + 3; i++){
         text1 += __default1.item(state, __default.characterNameParts[i % __default.characterNameParts.length]).trim();
     }
     __default.characterNameProfanity.forEach((s)=>text1 = text1.replaceAll(s[0], s[1])
@@ -3033,6 +3208,7 @@ const stats = {
         wilderness: 0,
         traveling: 0,
         combat: 0,
+        resting: 0,
         afk: 0,
         selling: 0,
         buying: 0,
@@ -3150,12 +3326,17 @@ function migrate(obj) {
         obj.ver = 2;
         return true;
     }
+    if (obj.ver == 2) {
+        obj.attr.curMp = obj.attr.maxMp;
+        obj.ver = 3;
+        return true;
+    }
     return false;
 }
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-210108`,
+        version: `pqnext-${version()}-210111`,
         races: ()=>__default.races.map(({ name , title , desc  })=>{
                 return {
                     name,
