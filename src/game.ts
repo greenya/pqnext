@@ -323,13 +323,14 @@ function getPoorItemPriceDeviation(hero: Hero, title: string): number {
 
 function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: GearSlot, extraMult?: number): number {
     const level = hero.level.num
-    return Math.floor(
+    const price = Math.floor(
         (quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0)
         + level
         * data.itemQualities.find(q => q.name == quality)!.priceMult
         * (slot ? (level / 10) * data.gearSlots.find(s => s.name == slot)!.priceMult : 1)
         * (extraMult ? extraMult : 1)
     )
+    return Math.max(price, 1)
 }
 
 function sellJunk(hero: Hero) {
