@@ -633,7 +633,7 @@ function rollName(): string {
     const state = { seed: Math.floor(Math.random() * 1000000) }
 
     let text = ''
-    for (let i = 0; i < rand.int(state, 6) + 3; i++) {
+    for (let i = 0; i < rand.int(state, 5) + 3; i++) {
         text += rand.item(state, data.characterNameParts[i % data.characterNameParts.length]).trim()
     }
 
