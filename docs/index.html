@@ -303,6 +303,7 @@
                 <div class="block buttons">
                     <a class="button" :class="{ 'is-primary': !hero }" @click="state = 'create'">Новий герой</a>
                     <a v-if="hero" class="button is-primary" @click="playHero">Продовжити: <b class="pl-2">{{ heroSummaryString() }}</b></a>
+                    <span v-if="autoStartTimer > 0">...{{ autoStartTimer }}</span>
                 </div>
             </div>
         </section>
@@ -508,12 +509,14 @@
             state: 'load',
             game: undefined,
             hero: undefined,
-            newHeroSetup: { nickname: undefined, race: undefined, class: undefined, attr: undefined }
+            newHeroSetup: { nickname: undefined, race: undefined, class: undefined, attr: undefined },
+            autoStartTimer: 0
         },
         created: function () {
             const i = setInterval(() => {
                 if (window.game) {
                     clearInterval(i)
+
                     this.game = window.game
                     this.hero = this.game.load()
                     this.newHeroSetup.nickname = this.game.rollName()
@@ -521,6 +524,10 @@
                     this.newHeroSetup.race = this.game.races()[0].name
                     this.newHeroSetup.attr = this.game.rollAttr()
                     this.state = 'menu'
+
+                    if (this.hero) {
+                        this.setupAutoStart()
+                    }
                 }
             }, 200)
         },
@@ -561,6 +568,21 @@
                 const level = this.hero.level.num
                 const clazz = this.game.classes().find(e => e.name == this.hero.class).title.toLowerCase()
                 return `${name}, ${clazz} ${level}-го рівня`
+            },
+            setupAutoStart: function () {
+                this.autoStartTimer = 30
+                const i = setInterval(() => {
+                    if (this.autoStartTimer > 0 && this.state == 'menu') {
+                        this.autoStartTimer--
+                        if (this.autoStartTimer == 0) {
+                            clearInterval(i)
+                            this.playHero()
+                        }
+                    } else {
+                        this.autoStartTimer = 0
+                        clearInterval(i)
+                    }
+                }, 1000)
             }
         }
     })
