@@ -204,7 +204,7 @@ function finishCombat(hero: Hero) {
     addExp(hero, level + 1 + (reinforced ? 1 : 0), 'mob')
 
     if ((mob.trait & Trait.Human) == Trait.Human) {
-        addGold(hero, rand.int(hero, 3) + level * 2 + (reinforced ? 10 : 0), 'mob')
+        addGold(hero, rand.int(hero, 3) + level * 2 + (reinforced ? level * 10 : 0), 'mob')
     }
 
     if (rand.dice(hero, 2)) {
