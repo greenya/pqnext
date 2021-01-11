@@ -539,10 +539,15 @@
                     value: Number(this.hero.attr[a.name]).toLocaleString()
                 } })
 
-                ;[ 'maxHp', 'maxMp' ].forEach(e => result.push({
-                    title: attr.find(a => a.name == e).title,
-                    value: Number(this.hero.attr[e]).toLocaleString()
-                }))
+                result.push({
+                    title: attr.find(a => a.name == 'maxHp').title,
+                    value: Number(this.hero.attr.maxHp).toLocaleString()
+                })
+
+                result.push({
+                    title: attr.find(a => a.name == 'curMp').title,
+                    value: Number(this.hero.attr.curMp).toLocaleString() + '/' + Number(this.hero.attr.maxMp).toLocaleString()
+                })
 
                 return result
             }
