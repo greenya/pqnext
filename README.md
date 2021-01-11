@@ -25,7 +25,7 @@ deno run debug.ts
 - add value to attributes:
     + str (more bag slots),
     - dex (lesser chance to die),
-    - int (more mana allows longer non-stop combat; each mob takes 20 mana; when no mana -> eat-and-drink action)
+    + int (more mana allows longer non-stop combat; each mob takes portion of mana; when no mana -> "rest" action)
 - add dying; on death -> run to corpse (50% of town distance) -> eat-and-drink
 - add chance to fail when fighting mob; removes a lot of gear durability and takes time to run to corpse
 
@@ -49,8 +49,6 @@ deno run debug.ts
 - add legendary items; unique names and maybe stats/effects; maybe obtainable only from high-end quests (?)
 - add gear item flavor text generation (for rare+ with small chance)
 - maybe add ability to choose geneder (male/female); action texts should be enchanced to support it
-
-- web: fix item attributes order in the tooltip; should be consistent; maybe use array (for item.gear.attr), not an object
 
 - add perks; player can choose one at start when creating hero; each perk has pros and cons, examples:
     - Quest hater (pro: more exp from killing mobs; con: chance to skip getting quest)

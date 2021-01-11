@@ -17,7 +17,7 @@ import data from './data.ts'
 import format from './format.ts'
 import rand from './rand.ts'
 
-const version = () => 2
+const version = () => 3
 
 const knownHeroActions: readonly HeroAction[] = [
     {
@@ -99,10 +99,21 @@ const knownHeroActions: readonly HeroAction[] = [
                 return 'move-to-town'
             } else if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
                 return 'move-to-town'
+            } else if (hero.attr.curMp < manaNeededForCombat(hero)) {
+                return 'rest'
             } else {
                 return 'combat'
             }
         }
+    },
+    {
+        name: 'rest',
+        title: () => 'Відновлює сили...',
+        duration: () => 20,
+        onFinish: (hero) => {
+            hero.attr.curMp = hero.attr.maxMp
+        },
+        next: () => 'combat'
     },
     {
         name: 'move-to-town',
@@ -191,7 +202,13 @@ function getHeroTarget(hero: Hero): HeroTarget {
     }
 }
 
+function manaNeededForCombat(hero: Hero) {
+    const level = hero.level.num
+    return Math.min(20 + level, hero.attr.maxMp)
+}
+
 function startCombat(hero: Hero) {
+    hero.attr.curMp -= manaNeededForCombat(hero)
     hero.target = getHeroTarget(hero)
 }
 
@@ -419,6 +436,10 @@ function updateZone(hero: Hero, newType: ZoneType) {
     hero.zone.biome = newType == ZoneType.Wilderness
         ? rand.item(hero, data.biomes.filter(b => b.level <= hero.level.num)).biome
         : Trait.None
+
+    if (newType == ZoneType.Town) {
+        hero.attr.curMp = hero.attr.maxMp
+    }
 }
 
 function addExp(hero: Hero, value: number, source: 'mob' | 'quest') {
@@ -431,11 +452,14 @@ function addExp(hero: Hero, value: number, source: 'mob' | 'quest') {
 
 function attrUpdated(hero: Hero) {
     const level = hero.level.num
-    const { str, int, sta } = hero.attr
+    const { str, int, sta, curMp: curMpPrev, maxMp: maxMpPrev } = hero.attr
 
     hero.attr.bagCap = 10 + Math.floor(str / 10)
     hero.attr.maxHp = 20 + level * 8 + sta * 10 + Math.floor(Math.pow(level, 2) / 100) * 40
     hero.attr.maxMp = 20 + level * 2 + int * 10 + Math.floor(Math.pow(level, 2) / 100) * 20
+
+    const mpFraction = curMpPrev >= 0 && maxMpPrev > 0 ? curMpPrev / maxMpPrev : 1
+    hero.attr.curMp = Math.floor(mpFraction * hero.attr.maxMp)
 }
 
 function addAttr(hero: Hero, attr: Map<number>) {
@@ -452,6 +476,7 @@ function levelUp(hero: Hero) {
     const level = ++hero.level.num
     hero.level.progress.cur -= hero.level.progress.max
     hero.level.progress.max = Math.ceil((Math.pow(level, 2) * (level + 1)) / 10) * 10 + 40
+    hero.attr.curMp = hero.attr.maxMp
 
     const attr: Map<number> = { str: 0, dex: 0, int: 0, sta: 0 }
 
@@ -617,6 +642,7 @@ function advanceTime(hero: Hero) {
     switch (hero.action.name) {
         case 'afk': stats.timeSpent.afk++; break
         case 'combat': stats.timeSpent.combat++; break
+        case 'rest': stats.timeSpent.resting++; break
         case 'sell-junk': stats.timeSpent.selling++; break
         case 'buy-gear': stats.timeSpent.buying++; break
         case 'accept-quest':
@@ -702,7 +728,7 @@ function createHero(nickname: string, raceName: string, className: string, attrR
 
 const stats = {
     time: 0,
-    timeSpent: <Map<number>>{ town: 0, wilderness: 0, traveling: 0, combat: 0, afk: 0, selling: 0, buying: 0, quest: 0 },
+    timeSpent: <Map<number>>{ town: 0, wilderness: 0, traveling: 0, combat: 0, resting: 0, afk: 0, selling: 0, buying: 0, quest: 0 },
     expGained: { mob: 0, quest: 0 },
     goldCollected: { mob: 0, quest: 0, junk: 0 },
     goldSpent: { gear: 0 },
@@ -764,6 +790,11 @@ function migrate(obj: any): boolean {
     if (obj.ver == 1) { // v1 => v2 // 201126
         obj.gear = Object.values(obj.gear)
         obj.ver = 2
+        return true
+    }
+    if (obj.ver == 2) { // v2 => v3 // 210111
+        obj.attr.curMp = obj.attr.maxMp
+        obj.ver = 3
         return true
     }
     return false

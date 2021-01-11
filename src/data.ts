@@ -46,6 +46,11 @@ const attributes: readonly Attribute[] = [
         desc: 'Зростає з рівнем та _витривалістю_'
     },
     {
+        name: 'curMp',
+        title: 'Мана',
+        desc: 'Витрачається в бою'
+    },
+    {
         name: 'maxMp',
         title: 'Максимум мани',
         desc: 'Зростає з рівнем та _інтелектом_'
