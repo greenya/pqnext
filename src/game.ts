@@ -208,7 +208,6 @@ function manaNeededForCombat(hero: Hero) {
 }
 
 function startCombat(hero: Hero) {
-    hero.attr.curMp -= manaNeededForCombat(hero)
     hero.target = getHeroTarget(hero)
 }
 
@@ -245,6 +244,7 @@ function finishCombat(hero: Hero) {
     }
 
     hero.target = undefined
+    hero.attr.curMp -= manaNeededForCombat(hero)
     stats.mobsKilled[target.might]++
 }
 
