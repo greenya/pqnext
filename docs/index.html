@@ -61,11 +61,43 @@
 
         .app-progress-bar .text {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 85%;
-            line-height: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0 .5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 75%;
+            font-weight: 500;
+        }
+
+        .app-progress-bar.hp,
+        .app-progress-bar.mp {
+            height: 24px;
+            border: 0;
+        }
+
+        .app-progress-bar.hp .bar {
+            background: salmon;
+        }
+
+        .app-progress-bar.mp .bar {
+            background: skyblue;
+        }
+
+        .app-progress-bar.hp .text.left,
+        .app-progress-bar.mp .text.left {
+            width: 2.25em;
+            font-size: 100%;
+            color: white;
+        }
+
+        .app-progress-bar.hp .text.right,
+        .app-progress-bar.mp .text.right {
+            justify-content: flex-end;
+            font-size: 90%;
         }
 
         .app-item-tooltip {
@@ -135,9 +167,10 @@
 <body>
 
 <template id="app-progress-bar">
-    <div class="app-progress-bar" :class="{ smooth: value.cur > 0 }" :title="title">
+    <div class="app-progress-bar" :class="{ smooth: value.cur > 0, hp: format == 'hp', mp: format == 'mp' }" :title="title">
         <div class="bar" :style="{ width: percent + '%' }"></div>
-        <div v-if="format" class="text">{{ text }}</div>
+        <div v-if="format" class="text left" v-html="text"></div>
+        <div v-if="format == 'hp' || format == 'mp'" class="text right" v-html="text2"></div>
     </div>
 </template>
 
@@ -157,6 +190,15 @@
                     case 'quest':
                     case 'exp': return this.percent + '%'
                     case 'bag': return `${this.value.cur} / ${this.value.max}`
+                    case 'hp': return `<i class="fas fa-heart mr-1"></i>`
+                    case 'mp': return `<i class="fas fa-flask mr-1"></i>`
+                    default: return ''
+                }
+            },
+            text2: function () {
+                switch (this.format) {
+                    case 'hp':
+                    case 'mp': return `${Number(this.value.cur).toLocaleString()} / ${Number(this.value.max).toLocaleString()}`
                     default: return ''
                 }
             },
@@ -285,7 +327,6 @@
         <section class="hero">
             <div class="hero-body">
                 <div class="container is-size-4 has-text-centered has-text-grey-light">
-                    <!-- <i class="fas fa-spinner fa-pulse"></i> -->
                     <span>Завантаження...</span>
                 </div>
             </div>
@@ -406,6 +447,10 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="mb-4">
+                            <app-progress-bar :value="{ cur: hero.attr.maxHp, max: hero.attr.maxHp }" format="hp" title="Здоров'я"></app-progress-bar>
+                            <app-progress-bar :value="{ cur: hero.attr.curMp, max: hero.attr.maxMp }" format="mp" title="Мана"></app-progress-bar>
+                        </div>
                         <div class="level is-align-items-baseline is-mobile mb-0">
                             <div class="level-left">
                                 <div class="level-item">Рівень</div>
@@ -533,23 +578,10 @@
         },
         computed: {
             attributes: function () {
-                const attr = this.game.attributes()
-                const result = attr.filter(a => a.primary).map(a => { return {
+                return this.game.attributes().filter(a => a.primary).map(a => { return {
                     title: a.title,
                     value: Number(this.hero.attr[a.name]).toLocaleString()
                 } })
-
-                result.push({
-                    title: attr.find(a => a.name == 'maxHp').title,
-                    value: Number(this.hero.attr.maxHp).toLocaleString()
-                })
-
-                result.push({
-                    title: attr.find(a => a.name == 'curMp').title,
-                    value: Number(this.hero.attr.curMp).toLocaleString() + '/' + Number(this.hero.attr.maxMp).toLocaleString()
-                })
-
-                return result
             }
         },
         methods: {
