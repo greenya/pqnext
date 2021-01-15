@@ -75,7 +75,7 @@ const knownHeroActions: readonly HeroAction[] = [
     {
         name: 'move-to-wilderness',
         title: () => 'Прямує до дикої місцевості...',
-        duration: () => 10,
+        duration: () => 15,
         onStart: (hero) => {
             updateZone(hero, ZoneType.Traveling)
         },
@@ -109,7 +109,7 @@ const knownHeroActions: readonly HeroAction[] = [
     {
         name: 'rest',
         title: () => 'Відновлює сили...',
-        duration: () => 20,
+        duration: () => 15,
         onFinish: (hero) => {
             hero.attr.curMp = hero.attr.maxMp
         },
@@ -118,7 +118,7 @@ const knownHeroActions: readonly HeroAction[] = [
     {
         name: 'move-to-town',
         title: () => 'Прямує до найближчого поселення...',
-        duration: () => 10,
+        duration: () => 15,
         onStart: (hero) => {
             updateZone(hero, ZoneType.Traveling)
         },
