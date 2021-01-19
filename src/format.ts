@@ -5,22 +5,22 @@ function number(value: number): string {
 function duration(seconds: number): string {
     if (seconds < 60) {
         const v = seconds
-        return Number(v).toFixed(0) + ' с'
+        return Number(v).toFixed(0) + ' s'
     } else if (seconds < 60 * 60) {
         const v = seconds / 60
-        return Number(v).toFixed(0) + ' хв'
+        return Number(v).toFixed(0) + ' m'
     } else if (seconds < 60 * 60 * 24) {
         const v = seconds / 60 / 60
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' год'
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' h'
     } else if (seconds < 60 * 60 * 24 * 30) {
         const v = seconds / 60 / 60 / 24
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' д'
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' d'
     } else if (seconds < 60 * 60 * 24 * 365.25) {
         const v = seconds / 60 / 60 / 24 / 30
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' міс'
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' M'
     } else {
         const v = seconds / 60 / 60 / 24 / 365.25
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' р'
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' Y'
     }
 }
 
@@ -34,11 +34,11 @@ function gold(value: number): string {
     const g = value
 
     const p = []
-    if (g > 0) { p.push(number(g) + 'з') }
-    if (s > 0) { p.push(s + 'с') }
-    if (c > 0) { p.push(c + 'м') }
+    if (g > 0) { p.push(number(g) + 'g') }
+    if (s > 0) { p.push(s + 's') }
+    if (c > 0) { p.push(c + 'c') }
 
-    return p.length > 0 ? p.join(' ') : '0м'
+    return p.length > 0 ? p.join(' ') : '0c'
 }
 
 function progress(value: { cur: number, max: number }, fractionDigits = 0): string {
