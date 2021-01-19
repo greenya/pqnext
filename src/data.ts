@@ -14,71 +14,71 @@ import {
 const attributes: readonly Attribute[] = [
     {
         name: 'str',
-        title: 'Сила',
-        desc: 'Збільшує ємність сумки',
-        format: '+X до сили',
+        title: 'attr-str-title',
+        desc: 'attr-str-desc',
+        format: 'attr-str-format',
         primary: true
     },
     {
         name: 'dex',
-        title: 'Спритність',
-        desc: 'Зменьшує шанс програти бій',
-        format: '+X до спритності',
+        title: 'attr-dex-title',
+        desc: 'attr-dex-desc',
+        format: 'attr-dex-format',
         primary: true
     },
     {
         name: 'int',
-        title: 'Інтелект',
-        desc: 'Збільшує максимум мани',
-        format: '+X до інтелекту',
+        title: 'attr-int-title',
+        desc: 'attr-int-desc',
+        format: 'attr-int-format',
         primary: true
     },
     {
         name: 'sta',
-        title: 'Витривалість',
-        desc: 'Збільшує максимум здоров\'я',
-        format: '+X до витривалості',
+        title: 'attr-sta-title',
+        desc: 'attr-sta-desc',
+        format: 'attr-sta-format',
         primary: true
     },
     {
         name: 'maxHp',
-        title: 'Максимум здоров\'я',
-        desc: 'Зростає з рівнем та _витривалістю_'
+        title: 'attr-maxHp-title',
+        desc: 'attr-maxHp-desc'
     },
     {
         name: 'curMp',
-        title: 'Мана',
-        desc: 'Витрачається в бою'
+        title: 'attr-curMp-title',
+        desc: 'attr-curMp-desc'
     },
     {
         name: 'maxMp',
-        title: 'Максимум мани',
-        desc: 'Зростає з рівнем та _інтелектом_'
+        title: 'attr-maxMp-title',
+        desc: 'attr-maxMp-desc'
     },
     {
         name: 'bagCap',
-        title: 'Ємність сумки',
-        desc: 'Зростає з _силою_'
+        title: 'attr-bagCap-title',
+        desc: 'attr-bagCap-desc'
     }
 ]
 
 const races: readonly Race[] = [
     {
         name: 'human',
-        title: 'Людина',
-        desc: 'Люди добре почуваються у будь-якій ролі, приживаються до будь яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів однаковий',
+        title: 'race-human-title',
+        desc: 'race-human-desc',
         attrPrio: { str: 4, dex: 4, int: 4, sta: 6 }
     },
     {
         name: 'dwarf',
-        title: 'Дворф',
-        desc: 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
+        title: 'race-dwarf-title',
+        desc: 'race-dwarf-desc',
         attrPrio: { str: 5, dex: 3, int: 3, sta: 7 }
     },
     {
         name: 'elf',
-        title: 'Ельф',
-        desc: 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
+        title: 'race-elf-title',
+        desc: 'race-elf-desc',
         attrPrio: { str: 3, dex: 5, int: 5, sta: 5 }
     }
 ]
@@ -86,8 +86,8 @@ const races: readonly Race[] = [
 const classes: readonly Class[] = [
     {
         name: 'warrior',
-        title: 'Воїн',
-        desc: '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
+        title: 'class-warrior-title',
+        desc: 'class-warrior-desc',
         attrPrio: { str: 3, dex: 1 },
         startItems: [
             {
@@ -105,8 +105,8 @@ const classes: readonly Class[] = [
     },
     {
         name: 'rogue',
-        title: 'Пройдисвіт',
-        desc: 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
+        title: 'class-rogue-title',
+        desc: 'class-rogue-desc',
         attrPrio: { str: 1, dex: 3 },
         startItems: [
             {
@@ -124,8 +124,8 @@ const classes: readonly Class[] = [
     },
     {
         name: 'mage',
-        title: 'Маг',
-        desc: 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
+        title: 'class-mage-title',
+        desc: 'class-mage-desc',
         attrPrio: { dex: 1, int: 3 },
         startItems: [
             {
@@ -785,7 +785,7 @@ const itemQualities: readonly ItemQualityMeta[] = [
 const gearSlots: readonly GearSlotMeta[] = [
     {
         name: GearSlot.MainHand,
-        title: 'Права рука',
+        title: 'gear-slot-mainhand-title',
         level: 1,
         priceMult: 3.5,
         items: [
@@ -837,7 +837,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.OffHand,
-        title: 'Ліва рука',
+        title: 'gear-slot-offhand-title',
         level: 1,
         priceMult: 3.2,
         items: [
@@ -877,7 +877,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Head,
-        title: 'Голова',
+        title: 'gear-slot-head-title',
         level: 8,
         priceMult: 1.7,
         items: [
@@ -912,7 +912,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Shoulders,
-        title: 'Плечі',
+        title: 'gear-slot-shoulders-title',
         level: 10,
         priceMult: 1.9,
         items: [
@@ -928,7 +928,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Chest,
-        title: 'Груди',
+        title: 'gear-slot-chest-title',
         level: 1,
         priceMult: 2.0,
         items: [
@@ -958,7 +958,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Back,
-        title: 'Спина',
+        title: 'gear-slot-back-title',
         level: 4,
         priceMult: 1.2,
         items: [
@@ -985,7 +985,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Wrist,
-        title: 'Зап\'ястя',
+        title: 'gear-slot-wrist-title',
         level: 1,
         priceMult: 1.3,
         items: [
@@ -1000,7 +1000,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Hands,
-        title: 'Руки',
+        title: 'gear-slot-hands-title',
         level: 1,
         priceMult: 1.6,
         items: [
@@ -1012,7 +1012,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Waist,
-        title: 'Пояс',
+        title: 'gear-slot-waist-title',
         level: 2,
         priceMult: 1.4,
         items: [
@@ -1024,7 +1024,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Legs,
-        title: 'Ноги',
+        title: 'gear-slot-legs-title',
         level: 1,
         priceMult: 1.8,
         items: [
@@ -1045,7 +1045,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Feet,
-        title: 'Ступні',
+        title: 'gear-slot-feet-title',
         level: 1,
         priceMult: 1.5,
         items: [
@@ -1078,7 +1078,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Neck,
-        title: 'Шия',
+        title: 'gear-slot-neck-title',
         level: 15,
         priceMult: 2.4,
         items: [
@@ -1099,7 +1099,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Finger,
-        title: 'Палець',
+        title: 'gear-slot-finger-title',
         level: 12,
         priceMult: 2.2,
         items: [
@@ -1113,7 +1113,7 @@ const gearSlots: readonly GearSlotMeta[] = [
     },
     {
         name: GearSlot.Trinket,
-        title: 'Дрібничка',
+        title: 'gear-slot-trinket-title',
         level: 20,
         priceMult: 2.6,
         items: [

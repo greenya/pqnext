@@ -15,6 +15,7 @@ import {
 
 import data from './data.ts'
 import format from './format.ts'
+import lingo from './lingo.ts'
 import rand from './rand.ts'
 
 const version = () => 3
@@ -809,6 +810,7 @@ if (!window.Deno) {
     let activeIntervalId = 0
     window.game = {
         version: `pqnext-${version()}-[BUILDSTAMP]`,
+        lingo,
         races: () => data.races.map(({ name, title, desc }) => { return { name, title, desc } }),
         classes: () => data.classes.map(({ name, title, desc }) => { return { name, title, desc } }),
         attributes: () => data.attributes.map(({ name, title, desc, format, primary }) => { return { name, title, desc, format, primary } }),
@@ -851,7 +853,6 @@ if (!window.Deno) {
                 activeIntervalId = 0
             }
         },
-        playing: () => activeIntervalId > 0,
-        dump
+        playing: () => activeIntervalId > 0
     }
 }
