@@ -1,6 +1,7 @@
 const meta = {
     name:   'ua',
-    title:  'Українська'
+    title:  'Українська',
+    icon:   'https://www.countryflags.io/ua/shiny/32.png'
 }
 
 const dict: { readonly [key: string]: string } = {
@@ -73,6 +74,12 @@ const dict: { readonly [key: string]: string } = {
     'gear-slot-neck-title':         'Шия',
     'gear-slot-finger-title':       'Палець',
     'gear-slot-trinket-title':      'Дрібничка',
+
+    // ui
+
+    'ui-language-note':     'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
+    'ui-new-hero':          'Новий герой',
+    'ui-continue':          'Продовжити'
 
 }
 

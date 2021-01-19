@@ -1,6 +1,7 @@
 const meta = {
     name:   'en',
-    title:  'English'
+    title:  'English',
+    icon:   'https://www.countryflags.io/gb/shiny/32.png'
 }
 
 const dict: { readonly [key: string]: string } = {
@@ -73,6 +74,12 @@ const dict: { readonly [key: string]: string } = {
     'gear-slot-neck-title':         'Neck',
     'gear-slot-finger-title':       'Finger',
     'gear-slot-trinket-title':      'Trinket',
+
+    // ui
+
+    'ui-language-note':     'Note: created character can only be played in the language it was created.',
+    'ui-new-hero':          'New Hero',
+    'ui-continue':          'Continue',
 
 }
 

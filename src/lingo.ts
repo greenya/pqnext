@@ -5,7 +5,11 @@ const langs = [ EN, UA ]
 let lang = EN
 
 function languages() {
-    return langs.map(e => ({ name: e.meta.name, title: e.meta.title }))
+    return langs.map(e => ({
+        name: e.meta.name,
+        title: e.meta.title,
+        icon: e.meta.icon
+    }))
 }
 
 function setLanguage(name: string) {
