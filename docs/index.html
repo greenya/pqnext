@@ -342,10 +342,18 @@
                     небезпечних ворогів та рідкісних предметів.
                 </div>
                 <div class="block buttons">
-                    <a class="button" :class="{ 'is-primary': !hero }" @click="state = 'create'">Новий герой</a>
-                    <a v-if="hero" class="button is-primary" @click="playHero">Продовжити: <b class="pl-2">{{ heroSummaryString() }}</b></a>
+                    <a class="button" :class="{ 'is-primary': !hero }" @click="state = 'create'">{{ 'ui-new-hero' | text }}</a>
+                    <a v-if="hero" class="button is-primary" @click="playHero">{{ 'ui-continue' | text }}: <b class="pl-2">{{ heroSummaryString() }}</b></a>
                     <span v-if="autoStartTimer > 0">...{{ autoStartTimer }}</span>
                 </div>
+                <hr>
+                <div class="block buttons">
+                    <a v-for="l in game.lingo.languages()" class="button" :class="{ 'is-info': l.name == lang }" @click="setLanguage(l.name)">
+                        <figure v-if="l.icon" class="image is-32x32"><img :src="l.icon" /></figure>
+                        <span :class="{ 'ml-2': l.icon }">{{ l.title }}</span>
+                    </a>
+                </div>
+                <div>{{ 'ui-language-note' | text }}</div>
             </div>
         </section>
     </div>
@@ -548,10 +556,20 @@
         }
     })
 
+    Vue.filter('text', function (value) {
+        if (value) {
+            value = value.toString()
+            return window.game.lingo.text(value)
+        } else {
+            return ''
+        }
+    })
+
     new Vue({
         el: '#app',
         data: {
             state: 'load',
+            lang: 'en',
             game: undefined,
             hero: undefined,
             newHeroSetup: { nickname: undefined, race: undefined, class: undefined, attr: undefined },
@@ -585,6 +603,11 @@
             }
         },
         methods: {
+            setLanguage: function (name) {
+                this.game.lingo.setLanguage(name)
+                this.lang = name
+                this.$forceUpdate()
+            },
             createHero: function () {
                 this.hero = this.game.create(
                     this.newHeroSetup.nickname,
