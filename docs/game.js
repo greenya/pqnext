@@ -1,70 +1,39 @@
-var ItemQuality;
-(function(ItemQuality1) {
-    ItemQuality1["Poor"] = 'poor';
-    ItemQuality1["Common"] = 'common';
-    ItemQuality1["Uncommon"] = 'uncommon';
-    ItemQuality1["Rare"] = 'rare';
-    ItemQuality1["Epic"] = 'epic';
-})(ItemQuality || (ItemQuality = {
-}));
-var GearSlot;
-(function(GearSlot1) {
-    GearSlot1["MainHand"] = 'mainhand';
-    GearSlot1["OffHand"] = 'offhand';
-    GearSlot1["Head"] = 'head';
-    GearSlot1["Shoulders"] = 'shoulders';
-    GearSlot1["Chest"] = 'chest';
-    GearSlot1["Back"] = 'back';
-    GearSlot1["Wrist"] = 'wrist';
-    GearSlot1["Hands"] = 'hands';
-    GearSlot1["Waist"] = 'waist';
-    GearSlot1["Legs"] = 'legs';
-    GearSlot1["Feet"] = 'feet';
-    GearSlot1["Neck"] = 'neck';
-    GearSlot1["Finger"] = 'finger';
-    GearSlot1["Trinket"] = 'trinket';
-})(GearSlot || (GearSlot = {
-}));
-var GearSource;
-(function(GearSource1) {
-    GearSource1["Drop"] = 'drop';
-    GearSource1["Vendor"] = 'vendor';
-    GearSource1["Quest"] = 'quest';
-})(GearSource || (GearSource = {
-}));
-var ZoneType;
-(function(ZoneType1) {
-    ZoneType1["Town"] = 'town';
-    ZoneType1["Wilderness"] = 'wilderness';
-    ZoneType1["Traveling"] = 'traveling';
-})(ZoneType || (ZoneType = {
-}));
-var MobMight;
-(function(MobMight1) {
-    MobMight1["Normal"] = 'normal';
-    MobMight1["Reinforced"] = 'reinforced';
-})(MobMight || (MobMight = {
-}));
-var Trait;
-(function(Trait1) {
-    Trait1[Trait1["None"] = 0] = "None";
-    Trait1[Trait1["Human"] = 1] = "Human";
-    Trait1[Trait1["Beast"] = 2] = "Beast";
-    Trait1[Trait1["Magic"] = 4] = "Magic";
-    Trait1[Trait1["Flesh"] = 1024] = "Flesh";
-    Trait1[Trait1["Insect"] = 2048] = "Insect";
-    Trait1[Trait1["Bone"] = 4096] = "Bone";
-    Trait1[Trait1["Mech"] = 8192] = "Mech";
-    Trait1[Trait1["Fire"] = 16384] = "Fire";
-    Trait1[Trait1["Ice"] = 32768] = "Ice";
-    Trait1[Trait1["Air"] = 65536] = "Air";
-    Trait1[Trait1["Forest"] = 1048576] = "Forest";
-    Trait1[Trait1["Desert"] = 2097152] = "Desert";
-    Trait1[Trait1["Tundra"] = 4194304] = "Tundra";
-    Trait1[Trait1["Swamp"] = 8388608] = "Swamp";
-    Trait1[Trait1["Water"] = 16777216] = "Water";
-})(Trait || (Trait = {
-}));
+const version = ()=>3
+;
+function __int(state, max) {
+    const x = Math.sin(state.seed++) * 1000000;
+    return Math.floor((x - Math.floor(x)) * max);
+}
+function dice(state, faceCount, targetCap = 1) {
+    const i = __int(state, faceCount) + 1;
+    return targetCap >= i;
+}
+function item(state, arr) {
+    const i = __int(state, arr.length);
+    return arr[i];
+}
+function shuffle(state, arr) {
+    for(let i = arr.length - 1; i > 0; i--){
+        const j = __int(state, arr.length);
+        if (i != j) {
+            const t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+    }
+    return arr;
+}
+function text(state, template) {
+    return template.split('_').map((s)=>s.includes('/') ? item(state, s.split('/')) : s
+    ).join(' ');
+}
+const __default = {
+    int: __int,
+    dice,
+    item,
+    shuffle,
+    text
+};
 const attributes = [
     {
         name: 'str',
@@ -150,6 +119,73 @@ const races = [
         }
     }
 ];
+var ItemQuality;
+(function(ItemQuality1) {
+    ItemQuality1["Poor"] = 'poor';
+    ItemQuality1["Common"] = 'common';
+    ItemQuality1["Uncommon"] = 'uncommon';
+    ItemQuality1["Rare"] = 'rare';
+    ItemQuality1["Epic"] = 'epic';
+})(ItemQuality || (ItemQuality = {
+}));
+var GearSlot;
+(function(GearSlot1) {
+    GearSlot1["MainHand"] = 'mainhand';
+    GearSlot1["OffHand"] = 'offhand';
+    GearSlot1["Head"] = 'head';
+    GearSlot1["Shoulders"] = 'shoulders';
+    GearSlot1["Chest"] = 'chest';
+    GearSlot1["Back"] = 'back';
+    GearSlot1["Wrist"] = 'wrist';
+    GearSlot1["Hands"] = 'hands';
+    GearSlot1["Waist"] = 'waist';
+    GearSlot1["Legs"] = 'legs';
+    GearSlot1["Feet"] = 'feet';
+    GearSlot1["Neck"] = 'neck';
+    GearSlot1["Finger"] = 'finger';
+    GearSlot1["Trinket"] = 'trinket';
+})(GearSlot || (GearSlot = {
+}));
+var GearSource;
+(function(GearSource1) {
+    GearSource1["Drop"] = 'drop';
+    GearSource1["Vendor"] = 'vendor';
+    GearSource1["Quest"] = 'quest';
+})(GearSource || (GearSource = {
+}));
+var ZoneType;
+(function(ZoneType1) {
+    ZoneType1["Town"] = 'town';
+    ZoneType1["Wilderness"] = 'wilderness';
+    ZoneType1["Traveling"] = 'traveling';
+})(ZoneType || (ZoneType = {
+}));
+var MobMight;
+(function(MobMight1) {
+    MobMight1["Normal"] = 'normal';
+    MobMight1["Reinforced"] = 'reinforced';
+})(MobMight || (MobMight = {
+}));
+var Trait;
+(function(Trait1) {
+    Trait1[Trait1["None"] = 0] = "None";
+    Trait1[Trait1["Human"] = 1] = "Human";
+    Trait1[Trait1["Beast"] = 2] = "Beast";
+    Trait1[Trait1["Magic"] = 4] = "Magic";
+    Trait1[Trait1["Flesh"] = 1024] = "Flesh";
+    Trait1[Trait1["Insect"] = 2048] = "Insect";
+    Trait1[Trait1["Bone"] = 4096] = "Bone";
+    Trait1[Trait1["Mech"] = 8192] = "Mech";
+    Trait1[Trait1["Fire"] = 16384] = "Fire";
+    Trait1[Trait1["Ice"] = 32768] = "Ice";
+    Trait1[Trait1["Air"] = 65536] = "Air";
+    Trait1[Trait1["Forest"] = 1048576] = "Forest";
+    Trait1[Trait1["Desert"] = 2097152] = "Desert";
+    Trait1[Trait1["Tundra"] = 4194304] = "Tundra";
+    Trait1[Trait1["Swamp"] = 8388608] = "Swamp";
+    Trait1[Trait1["Water"] = 16777216] = "Water";
+})(Trait || (Trait = {
+}));
 const classes = [
     {
         name: 'warrior',
@@ -2388,9 +2424,7 @@ const characterNameProfanity = [
         'блу'
     ]
 ];
-const itemBuyPriceMult = 10;
-const itemStackSize = 10;
-const __default = {
+const __default1 = {
     afkMessages,
     attributes,
     biomes,
@@ -2406,232 +2440,6 @@ const __default = {
     mobs,
     preciousItems,
     races
-};
-function number(value) {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-function duration(seconds) {
-    if (seconds < 60) {
-        const v = seconds;
-        return Number(seconds).toFixed(0) + ' s';
-    } else if (seconds < 60 * 60) {
-        const v = seconds / 60;
-        return Number(v).toFixed(0) + ' m';
-    } else if (seconds < 60 * 60 * 24) {
-        const v = seconds / 60 / 60;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' h';
-    } else if (seconds < 60 * 60 * 24 * 30) {
-        const v = seconds / 60 / 60 / 24;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' d';
-    } else if (seconds < 60 * 60 * 24 * 365.25) {
-        const v = seconds / 60 / 60 / 24 / 30;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' M';
-    } else {
-        const v = seconds / 60 / 60 / 24 / 365.25;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' Y';
-    }
-}
-function gold(value) {
-    const c = value % 100;
-    value -= c;
-    value /= 100;
-    const s = value % 100;
-    value -= s;
-    value /= 100;
-    const g = value;
-    const p = [];
-    if (value > 0) {
-        p.push(number(value) + 'g');
-    }
-    if (s > 0) {
-        p.push(s + 's');
-    }
-    if (c > 0) {
-        p.push(c + 'c');
-    }
-    return p.length > 0 ? p.join(' ') : '0c';
-}
-function progress(value, fractionDigits = 0) {
-    return Number(value.cur * 100 / value.max).toFixed(fractionDigits) + '%';
-}
-const meta = {
-    name: 'en',
-    title: 'English',
-    icon: 'https://www.countryflags.io/gb/shiny/32.png'
-};
-const dict = {
-    'attr-str-title': 'Strength',
-    'attr-str-desc': 'Increases bag capacity',
-    'attr-str-format': '+X Strength',
-    'attr-dex-title': 'Dexterity',
-    'attr-dex-desc': 'Descreases chance to lose in combat',
-    'attr-dex-format': '+X Dexterity',
-    'attr-int-title': 'Intellect',
-    'attr-int-desc': 'Increases maximum mana',
-    'attr-int-format': '+X Intellect',
-    'attr-sta-title': 'Stamina',
-    'attr-sta-desc': 'Increases maximum health',
-    'attr-sta-format': '+X Stamina',
-    'attr-maxHp-title': 'Maximum Health',
-    'attr-maxHp-desc': 'Increases with level and _stamina_',
-    'attr-curMp-title': 'Mana',
-    'attr-curMp-desc': 'Consumed in combat',
-    'attr-maxMp-title': 'Maximum Mana',
-    'attr-maxMp-desc': 'Increases with level and _intellect_',
-    'attr-bagCap-title': 'Bag Capacity',
-    'attr-bagCap-desc': 'Increases with _strength_',
-    'race-human-title': 'Human',
-    'race-dwarf-title': 'Dwarf',
-    'race-elf-title': 'Elf',
-    'class-warrior-title': 'Warrior',
-    'class-rogue-title': 'Rogue',
-    'class-mage-title': 'Mage',
-    'gear-slot-mainhand-title': 'Main Hand',
-    'gear-slot-offhand-title': 'Off Hand',
-    'gear-slot-head-title': 'Head',
-    'gear-slot-shoulders-title': 'Shoulders',
-    'gear-slot-chest-title': 'Chest',
-    'gear-slot-back-title': 'Back',
-    'gear-slot-wrist-title': 'Wrist',
-    'gear-slot-hands-title': 'Hands',
-    'gear-slot-waist-title': 'Waist',
-    'gear-slot-legs-title': 'Legs',
-    'gear-slot-feet-title': 'Feet',
-    'gear-slot-neck-title': 'Neck',
-    'gear-slot-finger-title': 'Finger',
-    'gear-slot-trinket-title': 'Trinket',
-    'ui-language-note': 'Note: created character can only be played in the language it was created.',
-    'ui-new-hero': 'New Hero',
-    'ui-continue': 'Continue'
-};
-const meta1 = {
-    name: 'ua',
-    title: 'Українська',
-    icon: 'https://www.countryflags.io/ua/shiny/32.png'
-};
-const dict1 = {
-    'attr-str-title': 'Сила',
-    'attr-str-desc': 'Збільшує ємність сумки',
-    'attr-str-format': '+X до сили',
-    'attr-dex-title': 'Спритність',
-    'attr-dex-desc': 'Зменьшує шанс програти бій',
-    'attr-dex-format': '+X до спритності',
-    'attr-int-title': 'Інтелект',
-    'attr-int-desc': 'Збільшує максимум мани',
-    'attr-int-format': '+X до інтелекту',
-    'attr-sta-title': 'Витривалість',
-    'attr-sta-desc': 'Збільшує максимум здоров\'я',
-    'attr-sta-format': '+X до витривалості',
-    'attr-maxHp-title': 'Максимум здоров\'я',
-    'attr-maxHp-desc': 'Зростає з рівнем та _витривалістю_',
-    'attr-curMp-title': 'Мана',
-    'attr-curMp-desc': 'Витрачається в бою',
-    'attr-maxMp-title': 'Максимум мани',
-    'attr-maxMp-desc': 'Зростає з рівнем та _інтелектом_',
-    'attr-bagCap-title': 'Ємність сумки',
-    'attr-bagCap-desc': 'Зростає з _силою_',
-    'race-human-title': 'Людина',
-    'race-human-desc': 'Люди добре почуваються у будь-якій ролі, приживаються до будь яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів збалансований',
-    'race-dwarf-title': 'Дворф',
-    'race-dwarf-desc': 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
-    'race-elf-title': 'Ельф',
-    'race-elf-desc': 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
-    'class-warrior-title': 'Воїн',
-    'class-warrior-desc': '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
-    'class-rogue-title': 'Пройдисвіт',
-    'class-rogue-desc': 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
-    'class-mage-title': 'Маг',
-    'class-mage-desc': 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
-    'gear-slot-mainhand-title': 'Права рука',
-    'gear-slot-offhand-title': 'Ліва рука',
-    'gear-slot-head-title': 'Голова',
-    'gear-slot-shoulders-title': 'Плечі',
-    'gear-slot-chest-title': 'Груди',
-    'gear-slot-back-title': 'Спина',
-    'gear-slot-wrist-title': 'Зап\'ястя',
-    'gear-slot-hands-title': 'Руки',
-    'gear-slot-waist-title': 'Пояс',
-    'gear-slot-legs-title': 'Ноги',
-    'gear-slot-feet-title': 'Ступні',
-    'gear-slot-neck-title': 'Шия',
-    'gear-slot-finger-title': 'Палець',
-    'gear-slot-trinket-title': 'Дрібничка',
-    'ui-language-note': 'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
-    'ui-new-hero': 'Новий герой',
-    'ui-continue': 'Продовжити'
-};
-const __default1 = {
-    meta,
-    dict
-};
-const __default2 = {
-    meta: meta1,
-    dict: dict1
-};
-const langs = [
-    __default1,
-    __default2
-];
-let lang = __default1;
-function languages() {
-    return langs.map((e)=>({
-            name: e.meta.name,
-            title: e.meta.title,
-            icon: e.meta.icon
-        })
-    );
-}
-function setLanguage(name) {
-    const found = langs.find((e)=>e.meta.name == name
-    );
-    if (found) {
-        lang = found;
-    }
-}
-function text(key) {
-    return lang.dict[key] || __default1.dict[key] || key;
-}
-const __default3 = {
-    languages,
-    setLanguage,
-    text
-};
-const lingo = __default3;
-function int(state, max) {
-    const x = Math.sin(state.seed++) * 1000000;
-    return Math.floor((x - Math.floor(x)) * max);
-}
-function dice(state, faceCount, targetCap = 1) {
-    const i = int(state, faceCount) + 1;
-    return targetCap >= i;
-}
-function item(state, arr) {
-    const i = int(state, arr.length);
-    return arr[i];
-}
-function shuffle(state, arr) {
-    for(let i = arr.length - 1; i > 0; i--){
-        const j = int(state, arr.length);
-        if (i != j) {
-            const t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
-        }
-    }
-    return arr;
-}
-function text1(state, template) {
-    return template.split('_').map((s)=>s.includes('/') ? item(state, s.split('/')) : s
-    ).join(' ');
-}
-const version = ()=>3
-;
-const __default4 = {
-    int,
-    dice,
-    item,
-    shuffle,
-    text: text1
 };
 const knownHeroActions = [
     {
@@ -2652,12 +2460,12 @@ const knownHeroActions = [
     },
     {
         name: 'afk',
-        title: (hero)=>'[AFK] ' + __default4.text(hero, __default4.item(hero, __default.afkMessages)) + '...'
+        title: (hero)=>'[AFK] ' + __default.text(hero, __default.item(hero, __default1.afkMessages)) + '...'
         ,
-        duration: (hero)=>8 + __default4.int(hero, 2)
+        duration: (hero)=>8 + __default.int(hero, 2)
         ,
         next: (hero)=>{
-            if (__default4.dice(hero, 5)) {
+            if (__default.dice(hero, 5)) {
                 return 'afk';
             } else if (hero.bag.length > 0) {
                 return 'sell-junk';
@@ -2670,13 +2478,13 @@ const knownHeroActions = [
         name: 'accept-quest',
         title: ()=>'Ознайомлюється з новим завданням...'
         ,
-        duration: (hero)=>5 + __default4.int(hero, 2)
+        duration: (hero)=>5 + __default.int(hero, 2)
         ,
         onFinish: (hero)=>{
             acceptQuest(hero);
         },
         next: (hero)=>{
-            if (__default4.dice(hero, 4)) {
+            if (__default.dice(hero, 4)) {
                 return 'afk';
             } else if (hero.bag.length > 0) {
                 return 'sell-junk';
@@ -2689,7 +2497,7 @@ const knownHeroActions = [
         name: 'pass-quest',
         title: ()=>'Завершує завдання...'
         ,
-        duration: (hero)=>5 + __default4.int(hero, 2)
+        duration: (hero)=>5 + __default.int(hero, 2)
         ,
         onFinish: (hero)=>{
             passQuest(hero);
@@ -2761,7 +2569,7 @@ const knownHeroActions = [
             if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
                 return 'pass-quest';
             } else {
-                return __default4.item(hero, [
+                return __default.item(hero, [
                     'afk',
                     'sell-junk'
                 ]);
@@ -2781,7 +2589,7 @@ const knownHeroActions = [
             if (haveEnoughGoldToGoShopping(hero)) {
                 return 'buy-gear';
             } else {
-                return __default4.dice(hero, 4) ? 'afk' : 'move-to-wilderness';
+                return __default.dice(hero, 4) ? 'afk' : 'move-to-wilderness';
             }
         }
     },
@@ -2794,13 +2602,13 @@ const knownHeroActions = [
         onFinish: (hero)=>{
             buyGear(hero);
         },
-        next: (hero)=>__default4.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
+        next: (hero)=>__default.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
     }
 ];
 function haveEnoughGoldToGoShopping(hero) {
-    const bestQualityAvail = __default.itemQualities.slice().reverse().find((q)=>q.level <= hero.level.num
+    const bestQualityAvail = __default1.itemQualities.slice().reverse().find((q)=>q.level <= hero.level.num
     ).name;
-    const priceThreshold = __default.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, GearSlot.Chest);
+    const priceThreshold = __default1.itemBuyPriceMult * getItemPrice(hero, '?', bestQualityAvail, GearSlot.Chest);
     return hero.gold >= priceThreshold;
 }
 function buyGear(hero) {
@@ -2808,9 +2616,9 @@ function buyGear(hero) {
 }
 function getHeroTarget(hero) {
     const level = hero.level.num;
-    const mobs1 = __default.mobs.filter((m)=>(m.trait & hero.zone.biome) == hero.zone.biome && m.level <= level
+    const mobs1 = __default1.mobs.filter((m)=>(m.trait & hero.zone.biome) == hero.zone.biome && m.level <= level
     );
-    const mob = __default4.item(hero, mobs1);
+    const mob = __default.item(hero, mobs1);
     const genders = [
         mob.masculine,
         mob.feminine,
@@ -2824,15 +2632,15 @@ function getHeroTarget(hero) {
         }
         return a;
     }, []);
-    const gender = __default4.item(hero, genders);
-    const title = __default4.text(hero, gender.gen);
+    const gender = __default.item(hero, genders);
+    const title = __default.text(hero, gender.gen);
     let might = MobMight.Normal;
     let prefix = '';
-    if (level >= mob.level + 10 && __default4.dice(hero, 8)) {
-        const prefixes = __default.mobReinforcedPrefixes.filter((p)=>p.trait & mob.trait
+    if (level >= mob.level + 10 && __default.dice(hero, 8)) {
+        const prefixes = __default1.mobReinforcedPrefixes.filter((p)=>p.trait & mob.trait
         ).map((p)=>p.gen
         );
-        prefix = __default4.item(hero, prefixes).split('/')[gender.i];
+        prefix = __default.item(hero, prefixes).split('/')[gender.i];
         might = MobMight.Reinforced;
     }
     return {
@@ -2851,18 +2659,18 @@ function startCombat(hero) {
 function finishCombat(hero) {
     const level = hero.level.num;
     const target = hero.target;
-    const mob = __default.mobs.find((m)=>m.name == target.mob
+    const mob = __default1.mobs.find((m)=>m.name == target.mob
     );
     const reinforced = target.might == MobMight.Reinforced;
     addExp(hero, level + 1 + (reinforced ? 1 : 0), 'mob');
     if ((mob.trait & Trait.Human) == Trait.Human) {
-        addGold(hero, __default4.int(hero, 3) + level * 2 + (reinforced ? level * 10 : 0), 'mob');
+        addGold(hero, __default.int(hero, 3) + level * 2 + (reinforced ? level * 10 : 0), 'mob');
     }
-    if (__default4.dice(hero, 2)) {
+    if (__default.dice(hero, 2)) {
         progressQuest(hero);
     }
     const items = [];
-    if (__default4.dice(hero, 14)) {
+    if (__default.dice(hero, 14)) {
         items.push(getGearItem(hero, GearSource.Drop));
     } else {
         if (reinforced) {
@@ -2879,7 +2687,7 @@ function finishCombat(hero) {
     stats.mobsKilled[target.might]++;
 }
 function getGearItemTitle(hero, slot, quality) {
-    const slotMeta = __default.gearSlots.find((s)=>s.name == slot
+    const slotMeta = __default1.gearSlots.find((s)=>s.name == slot
     );
     const availItems = slotMeta.items.filter((i, index)=>slotMeta.level + index * 2 <= hero.level.num
     );
@@ -2890,31 +2698,31 @@ function getGearItemTitle(hero, slot, quality) {
             return `${quality} ${slot}`;
         }
     }
-    const item1 = __default4.item(hero, availItems);
+    const item1 = __default.item(hero, availItems);
     const ggKey = item1.ggm ? 'm' : item1.ggf ? 'f' : item1.ggn ? 'n' : 'x';
-    const qualityMeta = __default.itemQualities.find((q)=>q.name == quality
+    const qualityMeta = __default1.itemQualities.find((q)=>q.name == quality
     );
-    return __default4.item(hero, qualityMeta.templates).replace('{item-title}', item1.title).replace('{quality-title}', __default4.text(hero, qualityMeta.title[ggKey])).replace('{uncommon-prefix}', __default4.text(hero, __default.itemQualities.find((q)=>q.name == ItemQuality.Uncommon
-    ).prefix[ggKey])).replace('{rare-prefix}', __default4.text(hero, __default.itemQualities.find((q)=>q.name == ItemQuality.Rare
-    ).prefix[ggKey])).replace('{epic-suffix}', __default4.text(hero, __default.itemQualities.find((q)=>q.name == ItemQuality.Epic
+    return __default.item(hero, qualityMeta.templates).replace('{item-title}', item1.title).replace('{quality-title}', __default.text(hero, qualityMeta.title[ggKey])).replace('{uncommon-prefix}', __default.text(hero, __default1.itemQualities.find((q)=>q.name == ItemQuality.Uncommon
+    ).prefix[ggKey])).replace('{rare-prefix}', __default.text(hero, __default1.itemQualities.find((q)=>q.name == ItemQuality.Rare
+    ).prefix[ggKey])).replace('{epic-suffix}', __default.text(hero, __default1.itemQualities.find((q)=>q.name == ItemQuality.Epic
     ).suffix));
 }
 function getItemQuality(hero, source) {
     const level = hero.level.num;
-    const roll = __default4.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0));
-    const quality = __default.itemQualities.reduce((a, c)=>c.chance > 0 && c.chance > roll && c.level <= level ? c.name : a
-    , level < 20 && __default4.dice(hero, 1 + Math.floor(level / 4)) ? ItemQuality.Poor : ItemQuality.Common);
+    const roll = __default.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0));
+    const quality = __default1.itemQualities.reduce((a, c)=>c.chance > 0 && c.chance > roll && c.level <= level ? c.name : a
+    , level < 20 && __default.dice(hero, 1 + Math.floor(level / 4)) ? ItemQuality.Poor : ItemQuality.Common);
     return quality;
 }
 function getGearItemAttributes(hero, quality, source) {
     const level = hero.level.num;
     const attr = {
     };
-    const count = __default.itemQualities.find((q)=>q.name == quality
+    const count = __default1.itemQualities.find((q)=>q.name == quality
     ).attrCount;
     if (count) {
         const bonus = Math.floor(level / 5);
-        const stat = __default4.shuffle(hero, __default.attributes.filter((e)=>e.primary
+        const stat = __default.shuffle(hero, __default1.attributes.filter((e)=>e.primary
         ).map((e)=>e.name
         ));
         for(let i = 0; i < count; i++){
@@ -2925,10 +2733,10 @@ function getGearItemAttributes(hero, quality, source) {
 }
 function getGearItem(hero, source) {
     const level = hero.level.num;
-    const availSlots = __default.gearSlots.filter((s)=>s.level <= level
+    const availSlots = __default1.gearSlots.filter((s)=>s.level <= level
     ).map((s)=>s.name
     );
-    const slot = __default4.item(hero, availSlots);
+    const slot = __default.item(hero, availSlots);
     const quality = getItemQuality(hero, source);
     const title = getGearItemTitle(hero, slot, quality);
     const price = getItemPrice(hero, title, quality, slot);
@@ -2946,10 +2754,10 @@ function getGearItem(hero, source) {
     };
 }
 function getMobPreciousItem(hero, mob) {
-    const preciousItems1 = __default.preciousItems.filter((i)=>(mob.trait & i.trait) == i.trait
+    const preciousItems1 = __default1.preciousItems.filter((i)=>(mob.trait & i.trait) == i.trait
     );
-    const preciousItem = __default4.item(hero, preciousItems1);
-    const title = __default4.text(hero, preciousItem.gen);
+    const preciousItem = __default.item(hero, preciousItems1);
+    const title = __default.text(hero, preciousItem.gen);
     const quality = ItemQuality.Common;
     const price = getItemPrice(hero, title, quality, undefined, preciousItem.value);
     return {
@@ -2959,7 +2767,7 @@ function getMobPreciousItem(hero, mob) {
     };
 }
 function getMobJunkItem(hero, mob) {
-    const title = __default4.text(hero, mob.junk);
+    const title = __default.text(hero, mob.junk);
     const quality = ItemQuality.Poor;
     const price = getItemPrice(hero, title, quality);
     return {
@@ -2977,8 +2785,8 @@ function getPoorItemPriceDeviation(hero, title) {
 }
 function getItemPrice(hero, title, quality, slot, extraMult) {
     const level = hero.level.num;
-    const price = Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + level * __default.itemQualities.find((q)=>q.name == quality
-    ).priceMult * (slot ? level / 10 * __default.gearSlots.find((s)=>s.name == slot
+    const price = Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + level * __default1.itemQualities.find((q)=>q.name == quality
+    ).priceMult * (slot ? level / 10 * __default1.gearSlots.find((s)=>s.name == slot
     ).priceMult : 1) * (extraMult ? extraMult : 1));
     return Math.max(price, 1);
 }
@@ -2987,11 +2795,11 @@ function sellJunk(hero) {
     );
 }
 function getQuestTitle(hero) {
-    const text2 = __default4.text(hero, __default4.item(hero, __default.questTitles)).replace('{number-5-20}', `${__default4.int(hero, 16) + 5}`).replace('{mob-gcm-n}', __default4.item(hero, __default.mobs).gcm.n).replace('{mob-gcm-r}', __default4.item(hero, __default.mobs).gcm.r).replace('{mob-flesh-gcm-r}', __default4.item(hero, __default.mobs.filter((m)=>m.trait & Trait.Flesh
-    )).gcm.r).replace('{precious-item-ggmn}', __default4.text(hero, __default4.item(hero, __default.preciousItems.filter((i)=>i.ggm || i.ggn
-    )).gen)).replace('{precious-item-ggf}', __default4.text(hero, __default4.item(hero, __default.preciousItems.filter((i)=>i.ggf
+    const text1 = __default.text(hero, __default.item(hero, __default1.questTitles)).replace('{number-5-20}', `${__default.int(hero, 16) + 5}`).replace('{mob-gcm-n}', __default.item(hero, __default1.mobs).gcm.n).replace('{mob-gcm-r}', __default.item(hero, __default1.mobs).gcm.r).replace('{mob-flesh-gcm-r}', __default.item(hero, __default1.mobs.filter((m)=>m.trait & Trait.Flesh
+    )).gcm.r).replace('{precious-item-ggmn}', __default.text(hero, __default.item(hero, __default1.preciousItems.filter((i)=>i.ggm || i.ggn
+    )).gen)).replace('{precious-item-ggf}', __default.text(hero, __default.item(hero, __default1.preciousItems.filter((i)=>i.ggf
     )).gen));
-    return text2.charAt(0).toUpperCase() + text2.slice(1);
+    return text1.charAt(0).toUpperCase() + text1.slice(1);
 }
 function acceptQuest(hero) {
     const level = hero.level.num;
@@ -2999,7 +2807,7 @@ function acceptQuest(hero) {
         title: getQuestTitle(hero),
         progress: {
             cur: 0,
-            max: 5 + Math.ceil(level * 1.5) + __default4.int(hero, Math.ceil(level / 5))
+            max: 5 + Math.ceil(level * 1.5) + __default.int(hero, Math.ceil(level / 5))
         }
     };
 }
@@ -3009,7 +2817,7 @@ function passQuest(hero) {
     }
     const level = hero.level.num;
     addExp(hero, Math.ceil(hero.level.progress.max / (10 + level / 10)) + level * 4 + 3, 'quest');
-    addGold(hero, __default4.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest');
+    addGold(hero, __default.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest');
     rollItemsAndLootSingleBestOne(hero, GearSource.Quest);
     hero.quest = undefined;
     stats.questsPassed++;
@@ -3021,7 +2829,7 @@ function rollItemsAndLootSingleBestOne(hero, source) {
     let bestBuyPrice = 0;
     for(let i = 0; i < amount; i++){
         const item1 = getGearItem(hero, source);
-        const buyPrice = source == GearSource.Vendor ? item1.price * __default.itemBuyPriceMult : 0;
+        const buyPrice = source == GearSource.Vendor ? item1.price * __default1.itemBuyPriceMult : 0;
         if (hero.gold < buyPrice) {
             continue;
         }
@@ -3047,7 +2855,7 @@ function rollItemsAndLootSingleBestOne(hero, source) {
 }
 function updateZone(hero, newType) {
     hero.zone.type = newType;
-    hero.zone.biome = newType == ZoneType.Wilderness ? __default4.item(hero, __default.biomes.filter((b)=>b.level <= hero.level.num
+    hero.zone.biome = newType == ZoneType.Wilderness ? __default.item(hero, __default1.biomes.filter((b)=>b.level <= hero.level.num
     )).biome : Trait.None;
     if (newType == ZoneType.Town) {
         hero.attr.curMp = hero.attr.maxMp;
@@ -3062,10 +2870,10 @@ function addExp(hero, value, source) {
 }
 function attrUpdated(hero) {
     const level = hero.level.num;
-    const { str , int: int1 , sta , curMp: curMpPrev , maxMp: maxMpPrev  } = hero.attr;
+    const { str , int: __int1 , sta , curMp: curMpPrev , maxMp: maxMpPrev  } = hero.attr;
     hero.attr.bagCap = 10 + Math.floor(str / 10);
     hero.attr.maxHp = 20 + level * 8 + sta * 10 + Math.floor(Math.pow(level, 2) / 100) * 40;
-    hero.attr.maxMp = 20 + level * 2 + int1 * 10 + Math.floor(Math.pow(level, 2) / 100) * 20;
+    hero.attr.maxMp = 20 + level * 2 + __int1 * 10 + Math.floor(Math.pow(level, 2) / 100) * 20;
     const mpFraction = curMpPrev >= 0 && maxMpPrev > 0 ? curMpPrev / maxMpPrev : 1;
     hero.attr.curMp = Math.floor(mpFraction * hero.attr.maxMp);
 }
@@ -3093,7 +2901,7 @@ function levelUp(hero) {
     if (level > 1) {
         const prio = hero.attrPrio;
         for(let i = 0; i < 4; i++){
-            const roll = __default4.int(hero, prio.str + prio.dex + prio.int + prio.sta);
+            const roll = __default.int(hero, prio.str + prio.dex + prio.int + prio.sta);
             if (roll < prio.str) {
                 attr.str++;
             } else if (roll < prio.str + prio.dex) {
@@ -3132,13 +2940,13 @@ function getGearItemValue(hero, item1) {
     if (item1.gear) {
         const attr = item1.gear.attr;
         const prio = hero.attrPrio;
-        value = __default.attributes.filter((e)=>e.primary
+        value = __default1.attributes.filter((e)=>e.primary
         ).map((e)=>e.name
         ).reduce((a, c)=>a + prio[c] * (attr[c] ?? 0)
         , 0);
     }
     if (value < 1) {
-        value = __default.itemQualities.findIndex((q)=>q.name == item1.quality
+        value = __default1.itemQualities.findIndex((q)=>q.name == item1.quality
         );
     }
     return value;
@@ -3181,7 +2989,7 @@ function ensureBagHasFreeSlots(hero, target) {
     }
 }
 function moveItemToBag(hero, item1) {
-    const stackSize = item1.gear ? 1 : __default.itemStackSize;
+    const stackSize = item1.gear ? 1 : __default1.itemStackSize;
     const slot = hero.bag.find((s)=>s.item.title == item1.title && s.item.price == item1.price && !s.item.gear && s.count < stackSize
     );
     if (slot) {
@@ -3234,7 +3042,7 @@ function advanceAction(hero) {
     hero.action.progress.max = nextAction.duration(hero);
 }
 function advanceTime(hero) {
-    hero.seed = __default4.int(hero, 2000000000);
+    hero.seed = __default.int(hero, 2000000000);
     advanceAction(hero);
     stats.time++;
     switch(hero.action.name){
@@ -3274,16 +3082,16 @@ function rollName() {
     const state = {
         seed: Math.floor(Math.random() * 1000000)
     };
-    let text2 = '';
-    for(let i = 0; i < __default4.int(state, 5) + 3; i++){
-        text2 += __default4.item(state, __default.characterNameParts[i % __default.characterNameParts.length]).trim();
+    let text1 = '';
+    for(let i = 0; i < __default.int(state, 5) + 3; i++){
+        text1 += __default.item(state, __default1.characterNameParts[i % __default1.characterNameParts.length]).trim();
     }
-    __default.characterNameProfanity.forEach((s)=>text2 = text2.replaceAll(s[0], s[1])
+    __default1.characterNameProfanity.forEach((s)=>text1 = text1.replaceAll(s[0], s[1])
     );
-    return text2.charAt(0).toUpperCase() + text2.slice(1);
+    return text1.charAt(0).toUpperCase() + text1.slice(1);
 }
 function rollAttr() {
-    const keys = __default.attributes.filter((e)=>e.primary
+    const keys = __default1.attributes.filter((e)=>e.primary
     ).map((e)=>e.name
     );
     const attr = {
@@ -3294,10 +3102,10 @@ function rollAttr() {
         seed: Math.floor(Math.random() * 1000000)
     };
     for(let t = 0; t < 8; t++){
-        const k1 = __default4.item(state, keys);
+        const k1 = __default.item(state, keys);
         let k2 = k1;
         while(k2 == k1){
-            k2 = __default4.item(state, keys);
+            k2 = __default.item(state, keys);
         }
         attr[k1]--;
         attr[k2]++;
@@ -3305,9 +3113,9 @@ function rollAttr() {
     return attr;
 }
 function createHero(nickname, raceName, className, attrRoll) {
-    const race = __default.races.find((r)=>r.name == raceName
+    const race = __default1.races.find((r)=>r.name == raceName
     );
-    const clazz = __default.classes.find((c)=>c.name == className
+    const clazz = __default1.classes.find((c)=>c.name == className
     );
     const hero = {
         ver: version(),
@@ -3316,12 +3124,12 @@ function createHero(nickname, raceName, className, attrRoll) {
         nickname,
         race: raceName,
         class: className,
-        attr: Object.values(__default.attributes).reduce((a, { name  })=>{
+        attr: Object.values(__default1.attributes).reduce((a, { name  })=>{
             a[name] = attrRoll[name] ?? 0;
             return a;
         }, {
         }),
-        attrPrio: Object.values(__default.attributes).filter((e)=>e.primary
+        attrPrio: Object.values(__default1.attributes).filter((e)=>e.primary
         ).reduce((a, { name  })=>{
             a[name] = (race.attrPrio[name] ?? 0) + (clazz.attrPrio[name] ?? 0);
             return a;
@@ -3416,14 +3224,61 @@ const stats = {
         0
     ]
 };
-const __default5 = {
+function number(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+function duration(seconds) {
+    if (seconds < 60) {
+        const v = seconds;
+        return Number(seconds).toFixed(0) + ' s';
+    } else if (seconds < 60 * 60) {
+        const v = seconds / 60;
+        return Number(v).toFixed(0) + ' m';
+    } else if (seconds < 60 * 60 * 24) {
+        const v = seconds / 60 / 60;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' h';
+    } else if (seconds < 60 * 60 * 24 * 30) {
+        const v = seconds / 60 / 60 / 24;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' d';
+    } else if (seconds < 60 * 60 * 24 * 365.25) {
+        const v = seconds / 60 / 60 / 24 / 30;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' M';
+    } else {
+        const v = seconds / 60 / 60 / 24 / 365.25;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' Y';
+    }
+}
+function gold(value) {
+    const c = value % 100;
+    value -= c;
+    value /= 100;
+    const s = value % 100;
+    value -= s;
+    value /= 100;
+    const g = value;
+    const p = [];
+    if (value > 0) {
+        p.push(number(value) + 'g');
+    }
+    if (s > 0) {
+        p.push(s + 's');
+    }
+    if (c > 0) {
+        p.push(c + 'c');
+    }
+    return p.length > 0 ? p.join(' ') : '0c';
+}
+function progress(value, fractionDigits = 0) {
+    return Number(value.cur * 100 / value.max).toFixed(fractionDigits) + '%';
+}
+const __default2 = {
     duration,
     gold,
     number,
     progress
 };
 function dump(hero) {
-    console.log('==================================================== TIME:', __default5.duration(stats.time), '==== GOLD:', __default5.gold(hero.gold));
+    console.log('==================================================== TIME:', __default2.duration(stats.time), '==== GOLD:', __default2.gold(hero.gold));
     console.log('#### HERO', hero);
     console.log('#### STATS', stats);
     console.log('#### TIME SPENT BREAKDOWN');
@@ -3432,7 +3287,7 @@ function dump(hero) {
         return {
             k,
             v,
-            '%': __default5.progress({
+            '%': __default2.progress({
                 cur: v,
                 max: stats.time
             }, 1)
@@ -3457,9 +3312,9 @@ function dump(hero) {
     const totalGoldCollected = Object.values(stats.goldCollected).reduce((a, c)=>a + c
     , 0);
     console.table(stats.levelUpTimestamps.map((e, i, a)=>{
-        const et = __default5.duration(e);
-        const dt = __default5.duration((i < a.length - 1 ? a[i + 1] : stats.time) - e);
-        const dg = __default5.gold((i < a.length - 1 ? stats.levelUpGoldstamps[i + 1] : totalGoldCollected) - stats.levelUpGoldstamps[i]);
+        const et = __default2.duration(e);
+        const dt = __default2.duration((i < a.length - 1 ? a[i + 1] : stats.time) - e);
+        const dg = __default2.gold((i < a.length - 1 ? stats.levelUpGoldstamps[i + 1] : totalGoldCollected) - stats.levelUpGoldstamps[i]);
         return [
             et,
             dt,
@@ -3468,13 +3323,6 @@ function dump(hero) {
     }));
     console.log('====================================================');
 }
-export default {
-    rollAttr,
-    rollName,
-    createHero,
-    advanceTime,
-    dump
-};
 function migrate(obj) {
     if (obj.ver == 1) {
         obj.gear = Object.values(obj.gear);
@@ -3488,12 +3336,203 @@ function migrate(obj) {
     }
     return false;
 }
+const meta = {
+    name: 'en',
+    title: 'English',
+    icon: 'https://www.countryflags.io/gb/shiny/32.png'
+};
+const dict = {
+    'attr-str-title': 'Strength',
+    'attr-str-desc': 'Increases bag capacity',
+    'attr-str-format': '+X Strength',
+    'attr-dex-title': 'Dexterity',
+    'attr-dex-desc': 'Descreases chance to lose in combat',
+    'attr-dex-format': '+X Dexterity',
+    'attr-int-title': 'Intellect',
+    'attr-int-desc': 'Increases maximum mana',
+    'attr-int-format': '+X Intellect',
+    'attr-sta-title': 'Stamina',
+    'attr-sta-desc': 'Increases maximum health',
+    'attr-sta-format': '+X Stamina',
+    'attr-curHp-title': 'Health',
+    'attr-curHp-desc': 'The higher the better',
+    'attr-maxHp-title': 'Maximum Health',
+    'attr-maxHp-desc': 'Increases with level and _stamina_',
+    'attr-curMp-title': 'Mana',
+    'attr-curMp-desc': 'Consumed in combat',
+    'attr-maxMp-title': 'Maximum Mana',
+    'attr-maxMp-desc': 'Increases with level and _intellect_',
+    'attr-bagCap-title': 'Bag Capacity',
+    'attr-bagCap-desc': 'Increases with _strength_',
+    'race-human-title': 'Human',
+    'race-human-desc': 'Humans can perform any role, able to get used to any conditions. They keep balance, as they never behind in any descipline, but also never truly excel at anything.\n\n[i] Attribute priority is balanced',
+    'race-dwarf-title': 'Dwarf',
+    'race-dwarf-desc': 'The native lands of dwarves are hard and demanding. Natural selection determined the direction of their body development.\n\n[i] _Strength_ and _stamina_ are prioritized',
+    'race-elf-title': 'Elf',
+    'race-elf-desc': 'Elves prefer to develop body and mind.\n\n[i] _Intellect_ and _dexterity_ are prioritized',
+    'class-warrior-title': 'Warrior',
+    'class-warrior-desc': '"Strength is the only power!", a warrior yelled and hit his head with a rusty stick. They always knew how to intimidate their foes.\n\n[i] _Strength_ is prioritized',
+    'class-rogue-title': 'Rogue',
+    'class-rogue-desc': 'The life of foes of a rogue is quite bright and fleeting. Often they notice him when it\'s way too late.\n\n[i] _Dexterity_ is prioritized',
+    'class-mage-title': 'Mage',
+    'class-mage-desc': 'In-depth study of everything a magic wand reaches. Foes are defeated with powerful spells.\n\n[i] _Intellect_ is prioritized',
+    'gear-slot-mainhand-title': 'Main Hand',
+    'gear-slot-offhand-title': 'Off Hand',
+    'gear-slot-head-title': 'Head',
+    'gear-slot-shoulders-title': 'Shoulders',
+    'gear-slot-chest-title': 'Chest',
+    'gear-slot-back-title': 'Back',
+    'gear-slot-wrist-title': 'Wrist',
+    'gear-slot-hands-title': 'Hands',
+    'gear-slot-waist-title': 'Waist',
+    'gear-slot-legs-title': 'Legs',
+    'gear-slot-feet-title': 'Feet',
+    'gear-slot-neck-title': 'Neck',
+    'gear-slot-finger-title': 'Finger',
+    'gear-slot-trinket-title': 'Trinket',
+    'ui-game-subtitle': 'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc': 'Create a hero and spectate his adventures in the crazy world of never ending progress bars, dangerous enemies and rare loot.',
+    'ui-language-note': 'Note: created character can only be played in the language it was created.',
+    'ui-new-hero': 'New Hero',
+    'ui-continue': 'Continue',
+    'ui-hero-summary': '{name}, Level {level} {class}',
+    'ui-losing-prev-hero-warn': 'Previous hero, <b>{hero}</b>, will be lost in case you create new one.',
+    'ui-nickname': 'Nickname',
+    'ui-attributes': 'Attributes',
+    'ui-race': 'Race',
+    'ui-class': 'Class',
+    'ui-create': 'Create',
+    'ui-cancel': 'Cancel',
+    'ui-level': 'Level',
+    'ui-bag': 'Bag',
+    'ui-item-count': '{count} pcs',
+    'ui-item-level': 'Level {level}',
+    'ui-item-source-quest': 'Quest reward'
+};
+const __default3 = {
+    meta,
+    dict
+};
+const meta1 = {
+    name: 'ua',
+    title: 'Українська',
+    icon: 'https://www.countryflags.io/ua/shiny/32.png'
+};
+const dict1 = {
+    'attr-str-title': 'Сила',
+    'attr-str-desc': 'Збільшує ємність сумки',
+    'attr-str-format': '+X до сили',
+    'attr-dex-title': 'Спритність',
+    'attr-dex-desc': 'Зменьшує шанс програти бій',
+    'attr-dex-format': '+X до спритності',
+    'attr-int-title': 'Інтелект',
+    'attr-int-desc': 'Збільшує максимум мани',
+    'attr-int-format': '+X до інтелекту',
+    'attr-sta-title': 'Витривалість',
+    'attr-sta-desc': 'Збільшує максимум здоров\'я',
+    'attr-sta-format': '+X до витривалості',
+    'attr-curHp-title': 'Здоров\'я',
+    'attr-curHp-desc': 'Краще коли його більше',
+    'attr-maxHp-title': 'Максимум здоров\'я',
+    'attr-maxHp-desc': 'Зростає з рівнем та _витривалістю_',
+    'attr-curMp-title': 'Мана',
+    'attr-curMp-desc': 'Витрачається в бою',
+    'attr-maxMp-title': 'Максимум мани',
+    'attr-maxMp-desc': 'Зростає з рівнем та _інтелектом_',
+    'attr-bagCap-title': 'Ємність сумки',
+    'attr-bagCap-desc': 'Зростає з _силою_',
+    'race-human-title': 'Людина',
+    'race-human-desc': 'Люди добре почуваються у будь-якій ролі, приживаються до будь-яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів збалансований',
+    'race-dwarf-title': 'Дворф',
+    'race-dwarf-desc': 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
+    'race-elf-title': 'Ельф',
+    'race-elf-desc': 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
+    'class-warrior-title': 'Воїн',
+    'class-warrior-desc': '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
+    'class-rogue-title': 'Пройдисвіт',
+    'class-rogue-desc': 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
+    'class-mage-title': 'Маг',
+    'class-mage-desc': 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
+    'gear-slot-mainhand-title': 'Права рука',
+    'gear-slot-offhand-title': 'Ліва рука',
+    'gear-slot-head-title': 'Голова',
+    'gear-slot-shoulders-title': 'Плечі',
+    'gear-slot-chest-title': 'Груди',
+    'gear-slot-back-title': 'Спина',
+    'gear-slot-wrist-title': 'Зап\'ястя',
+    'gear-slot-hands-title': 'Руки',
+    'gear-slot-waist-title': 'Пояс',
+    'gear-slot-legs-title': 'Ноги',
+    'gear-slot-feet-title': 'Ступні',
+    'gear-slot-neck-title': 'Шия',
+    'gear-slot-finger-title': 'Палець',
+    'gear-slot-trinket-title': 'Дрібничка',
+    'ui-game-subtitle': 'Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc': 'Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу, небезпечних ворогів та рідкісних предметів.',
+    'ui-language-note': 'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
+    'ui-new-hero': 'Новий герой',
+    'ui-continue': 'Продовжити',
+    'ui-hero-summary': '{name}, {class} {level}-го рівня',
+    'ui-losing-prev-hero-warn': 'Попередній герой, <b>{hero}</b>, буде втрачений при створенні нового.',
+    'ui-nickname': 'Прізвисько',
+    'ui-attributes': 'Атрибути',
+    'ui-race': 'Раса',
+    'ui-class': 'Клас',
+    'ui-create': 'Створити',
+    'ui-cancel': 'Відміна',
+    'ui-level': 'Рівень',
+    'ui-bag': 'Сумка',
+    'ui-item-count': '{count} шт',
+    'ui-item-level': '{level}-го рівня',
+    'ui-item-source-quest': 'Винагорода за завдання'
+};
+const __default4 = {
+    meta: meta1,
+    dict: dict1
+};
+const langs = [
+    __default3,
+    __default4
+];
+let lang = __default3;
+function languages() {
+    return langs.map((e)=>({
+            name: e.meta.name,
+            title: e.meta.title,
+            icon: e.meta.icon
+        })
+    );
+}
+function setLanguage(name) {
+    const found = langs.find((e)=>e.meta.name == name
+    );
+    if (found) {
+        lang = found;
+    }
+}
+function text1(key, args = {
+}) {
+    let result = lang.dict[key] || __default3.dict[key];
+    if (result) {
+        for(const arg in args){
+            result = result.replace('{' + arg + '}', args[arg]);
+        }
+        return result;
+    } else {
+        return key;
+    }
+}
+const __default5 = {
+    languages,
+    setLanguage,
+    text: text1
+};
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-210119`,
-        lingo: __default3,
-        races: ()=>__default.races.map(({ name , title , desc  })=>{
+        version: `pqnext-${version()}-210120`,
+        lingo: __default5,
+        races: ()=>__default1.races.map(({ name , title , desc  })=>{
                 return {
                     name,
                     title,
@@ -3501,7 +3540,7 @@ if (!window.Deno) {
                 };
             })
         ,
-        classes: ()=>__default.classes.map(({ name , title , desc  })=>{
+        classes: ()=>__default1.classes.map(({ name , title , desc  })=>{
                 return {
                     name,
                     title,
@@ -3509,7 +3548,7 @@ if (!window.Deno) {
                 };
             })
         ,
-        attributes: ()=>__default.attributes.map(({ name , title , desc , format , primary  })=>{
+        attributes: ()=>__default1.attributes.map(({ name , title , desc , format , primary  })=>{
                 return {
                     name,
                     title,
@@ -3519,7 +3558,7 @@ if (!window.Deno) {
                 };
             })
         ,
-        gearSlots: ()=>__default.gearSlots.map(({ name , title  })=>{
+        gearSlots: ()=>__default1.gearSlots.map(({ name , title  })=>{
                 return {
                     name,
                     title
@@ -3568,3 +3607,11 @@ if (!window.Deno) {
         playing: ()=>activeIntervalId > 0
     };
 }
+const __default6 = {
+    rollAttr,
+    rollName,
+    createHero,
+    advanceTime,
+    dump
+};
+export { __default6 as default };
