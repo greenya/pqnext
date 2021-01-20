@@ -24,7 +24,10 @@ const dict: { readonly [key: string]: string } = {
     'attr-sta-desc':        'Збільшує максимум здоров\'я',
     'attr-sta-format':      '+X до витривалості',
 
-    'attr-maxHp-title':     'Максимум здоров\'я',
+    'attr-curHp-title':     'Здоров\'я',
+    'attr-curHp-desc':      'Краще коли його більше',
+
+    'attr-maxHp-title':     'Максимум здоров\'я', // Здоров'я
     'attr-maxHp-desc':      'Зростає з рівнем та _витривалістю_',
 
     'attr-curMp-title':     'Мана',
@@ -90,6 +93,11 @@ const dict: { readonly [key: string]: string } = {
     'ui-class':                 'Клас',
     'ui-create':                'Створити',
     'ui-cancel':                'Відміна',
+    'ui-level':                 'Рівень',
+    'ui-bag':                   'Сумка',
+    'ui-item-count':            '{count} шт',
+    'ui-item-level':            '{level}-го рівня',
+    'ui-item-source-quest':     'Винагорода за завдання',
 
 }
 

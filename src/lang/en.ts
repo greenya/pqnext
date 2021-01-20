@@ -24,6 +24,9 @@ const dict: { readonly [key: string]: string } = {
     'attr-sta-desc':        'Increases maximum health',
     'attr-sta-format':      '+X Stamina',
 
+    'attr-curHp-title':     'Health',
+    'attr-curHp-desc':      'The higher the better',
+
     'attr-maxHp-title':     'Maximum Health',
     'attr-maxHp-desc':      'Increases with level and _stamina_',
 
@@ -90,6 +93,11 @@ const dict: { readonly [key: string]: string } = {
     'ui-class':                 'Class',
     'ui-create':                'Create',
     'ui-cancel':                'Cancel',
+    'ui-level':                 'Level',
+    'ui-bag':                   'Bag',
+    'ui-item-count':            '{count} pcs',
+    'ui-item-level':            'Level {level}',
+    'ui-item-source-quest':     'Quest reward',
 
 }
 
