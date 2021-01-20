@@ -39,13 +39,13 @@ const dict: { readonly [key: string]: string } = {
     // races
 
     'race-human-title': 'Human',
-    // TODO: translate 'race-human-desc'
+    'race-human-desc':  'Humans can perform any role, able to get used to any conditions. They keep balance, as they never behind in any descipline, but also never truly excel at anything.\n\n[i] Attribute priority is balanced',
 
     'race-dwarf-title': 'Dwarf',
-    // TODO: translate 'race-dwarf-desc'
+    'race-dwarf-desc':  'The native lands of dwarves are hard and demanding. Natural selection determined the direction of their body development.\n\n[i] _Strength_ and _stamina_ are prioritized',
 
     'race-elf-title':   'Elf',
-    // TODO: translate 'race-elf-desc'
+    'race-elf-desc':    'Elves prefer to develop body and mind.\n\n[i] _Intellect_ and _dexterity_ are prioritized',
 
     // classes
 
