@@ -11,7 +11,7 @@
 ## Bundle
 
 ```
-deno run --unstable --allow-net --allow-read --allow-write bundle.ts
+deno run --unstable --allow-read --allow-write bundle.ts
 ```
 
 ## Debug
@@ -65,5 +65,3 @@ deno run debug.ts
 
 - some con: you lose all items in the bag on death
 - some pro: chance of getting higher quality rings and necklaces
-
-- base chance to die from a mob is 10% (?) and more dex decreases this chance (?)
