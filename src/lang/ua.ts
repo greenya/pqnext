@@ -77,9 +77,12 @@ const dict: { readonly [key: string]: string } = {
 
     // ui
 
+    'ui-game-subtitle':     'Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc':         'Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу, небезпечних ворогів та рідкісних предметів.',
     'ui-language-note':     'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
     'ui-new-hero':          'Новий герой',
-    'ui-continue':          'Продовжити'
+    'ui-continue':          'Продовжити',
+    'ui-hero-summary':      '{name}, {class} {level}-го рівня',
 
 }
 

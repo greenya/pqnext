@@ -336,11 +336,9 @@
     <div v-else-if="state == 'menu'">
         <section class="hero container">
             <div class="hero-body">
-                <h1 class="title">Пригоди авто-героя</h1>
-                <p class="subtitle is-italic is-size-6">Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a></p>
-                <div class="block">Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу,
-                    небезпечних ворогів та рідкісних предметів.
-                </div>
+                <h1 class="title">pqnext</h1>
+                <p class="subtitle is-italic is-size-6" :inner-html.prop="'ui-game-subtitle' | text"></p>
+                <div class="block" :inner-html.prop="'ui-game-desc' | text"></div>
                 <div class="block buttons">
                     <a class="button" :class="{ 'is-primary': !hero }" @click="state = 'create'">{{ 'ui-new-hero' | text }}</a>
                     <a v-if="hero" class="button is-primary" @click="playHero">{{ 'ui-continue' | text }}: <b class="pl-2">{{ heroSummaryString() }}</b></a>
@@ -624,10 +622,11 @@
                 setInterval(() => { this.game.save(this.hero) }, 10000)
             },
             heroSummaryString: function () {
-                const name = this.hero.nickname
-                const level = this.hero.level.num
-                const clazz = this.game.classes().find(e => e.name == this.hero.class).title.toLowerCase()
-                return `${name}, ${clazz} ${level}-го рівня`
+                return game.lingo.text('ui-hero-summary', {
+                    name: this.hero.nickname,
+                    level: this.hero.level.num,
+                    class: game.lingo.text(this.game.classes().find(e => e.name == this.hero.class).title)
+                })
             },
             setupAutoStart: function () {
                 this.autoStartTimer = 30

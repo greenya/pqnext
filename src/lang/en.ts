@@ -77,9 +77,12 @@ const dict: { readonly [key: string]: string } = {
 
     // ui
 
+    'ui-game-subtitle':     'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc':         'Create a hero and spectate his adventures in the crazy world of never ending progress bars, dangerous enemies and rare loot.',
     'ui-language-note':     'Note: created character can only be played in the language it was created.',
     'ui-new-hero':          'New Hero',
     'ui-continue':          'Continue',
+    'ui-hero-summary':      '{name}, Level {level} {class}',
 
 }
 
