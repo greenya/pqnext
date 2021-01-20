@@ -50,13 +50,13 @@ const dict: { readonly [key: string]: string } = {
     // classes
 
     'class-warrior-title':  'Warrior',
-    // TODO: translate 'class-warrior-desc'
+    'class-warrior-desc':   '"Strength is the only power!", a warrior yelled and hit his head with a rusty stick. They always knew how to intimidate their foes.\n\n[i] _Strength_ is prioritized',
 
     'class-rogue-title':    'Rogue',
-    // TODO: translate 'class-rogue-desc'
+    'class-rogue-desc':     'The life of foes of a rogue is quite bright and fleeting. Often they notice him when it\'s way too late.\n\n[i] _Dexterity_ is prioritized',
 
     'class-mage-title':     'Mage',
-    // TODO: translate 'class-mage-desc'
+    'class-mage-desc':      'In-depth study of everything a magic wand reaches. Foes are defeated with powerful spells.\n\n[i] _Intellect_ is prioritized',
 
     // gear slots
 
