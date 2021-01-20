@@ -19,8 +19,16 @@ function setLanguage(name: string) {
     }
 }
 
-function text(key: string) {
-    return lang.dict[key] || EN.dict[key] || key
+function text(key: string, args: { [_: string]: string } = {}) {
+    let result = lang.dict[key] || EN.dict[key]
+    if (result) {
+        for (const arg in args) {
+            result = result.replace('{' + arg + '}', args[arg])
+        }
+        return result
+    } else {
+        return key
+    }
 }
 
 export default {
