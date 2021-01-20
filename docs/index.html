@@ -359,15 +359,13 @@
     <div v-else-if="state == 'create'">
         <section class="hero container">
             <div class="hero-body">
-                <h1 class="title">Новий герой</h1>
+                <h1 class="title">{{ 'ui-new-hero' | text }}</h1>
                 <article v-if="hero" class="message is-warning">
-                    <div class="message-body">
-                        Попередній герой, <b>{{ heroSummaryString() }}</b>, буде втрачений при створенні нового.
-                    </div>
+                    <div class="message-body" :inner-html.prop="'ui-losing-prev-hero-warn' | text({ hero: heroSummaryString() })"></div>
                 </article>
                 <div class="columns">
                     <div class="column is-one-third">
-                        <h2 class="title is-size-4">Прізвисько</h2>
+                        <h2 class="title is-size-4">{{ 'ui-nickname' | text }}</h2>
                         <div class="field has-addons">
                             <div class="control is-expanded">
                                 <input class="input is-fullwidth" type="text" placeholder="Введіть або згенеруйте..." v-model="newHeroSetup.nickname">
@@ -385,7 +383,7 @@
                         <div class="level is-mobile">
                             <div class="level-left">
                                 <div class="level-item">
-                                    <h2 class="title is-size-4">Атрибути</h2>
+                                    <h2 class="title is-size-4">{{ 'ui-attributes' | text }}</h2>
                                 </div>
                             </div>
                             <div class="level-right">
@@ -400,8 +398,8 @@
                             <tbody>
                                 <tr v-for="a in game.attributes().filter(a => a.primary)" :key="a.name">
                                     <td class="pl-0">
-                                        <b>{{ a.title }}</b><br>
-                                        <span :inner-html.prop="a.desc | htmlify" class="is-size-6"></span>
+                                        <b>{{ a.title | text }}</b><br>
+                                        <span :inner-html.prop="a.desc | text | htmlify" class="is-size-6"></span>
                                     </td>
                                     <td class="px-0 pr-2 is-size-4 has-text-weight-medium has-text-right">
                                         {{ newHeroSetup.attr[a.name] }}
@@ -411,26 +409,26 @@
                         </table>
                     </div>
                     <div class="column">
-                        <h2 class="title is-size-4">Раса</h2>
+                        <h2 class="title is-size-4">{{ 'ui-race' | text }}</h2>
                         <div class="buttons has-addons">
-                            <button v-for="r in game.races()" :key="r.name" @click="newHeroSetup.race = r.name" class="button" :class="{ 'is-info is-active': r.name == newHeroSetup.race }">{{ r.title }}</button>
+                            <button v-for="r in game.races()" :key="r.name" @click="newHeroSetup.race = r.name" class="button" :class="{ 'is-info is-active': r.name == newHeroSetup.race }">{{ r.title | text }}</button>
                         </div>
-                        <div :inner-html.prop="game.races().find(r => r.name == newHeroSetup.race).desc | htmlify"></div>
+                        <div :inner-html.prop="game.races().find(r => r.name == newHeroSetup.race).desc | text | htmlify"></div>
                     </div>
                     <div class="column">
-                        <h2 class="title is-size-4">Клас</h2>
+                        <h2 class="title is-size-4">{{ 'ui-class' | text }}</h2>
                         <div class="buttons has-addons">
-                            <button v-for="c in game.classes()" :key="c.name" @click="newHeroSetup.class = c.name" class="button" :class="{ 'is-info is-active': c.name == newHeroSetup.class }">{{ c.title }}</button>
+                            <button v-for="c in game.classes()" :key="c.name" @click="newHeroSetup.class = c.name" class="button" :class="{ 'is-info is-active': c.name == newHeroSetup.class }">{{ c.title | text }}</button>
                         </div>
-                        <div :inner-html.prop="game.classes().find(c => c.name == newHeroSetup.class).desc | htmlify"></div>
+                        <div :inner-html.prop="game.classes().find(c => c.name == newHeroSetup.class).desc | text | htmlify"></div>
                     </div>
                 </div>
                 <div class="field is-grouped mt-4">
                     <div class="control">
-                        <a class="button is-primary" @click="createHero" :disabled="!newHeroSetup.nickname">Створити</a>
+                        <a class="button is-primary" @click="createHero" :disabled="!newHeroSetup.nickname">{{ 'ui-create' | text }}</a>
                     </div>
                     <div class="control">
-                        <a class="button" @click="state='menu'">Відміна</a>
+                        <a class="button" @click="state='menu'">{{ 'ui-cancel' | text }}</a>
                     </div>
                 </div>
             </div>
@@ -554,10 +552,10 @@
         }
     })
 
-    Vue.filter('text', function (value) {
+    Vue.filter('text', function (value, args = {}) {
         if (value) {
             value = value.toString()
-            return window.game.lingo.text(value)
+            return window.game.lingo.text(value, args)
         } else {
             return ''
         }
