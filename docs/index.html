@@ -606,6 +606,7 @@
             },
             createHero: function () {
                 this.hero = this.game.create(
+                    this.lang,
                     this.newHeroSetup.nickname,
                     this.newHeroSetup.race,
                     this.newHeroSetup.class,
@@ -615,6 +616,7 @@
                 this.playHero()
             },
             playHero: function () {
+                this.setLanguage(this.hero.lang)
                 this.game.start(this.hero)
                 this.state = 'game'
                 setInterval(() => { this.game.save(this.hero) }, 10000)

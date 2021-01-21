@@ -184,5 +184,6 @@ export interface Hero {
     bag: BagSlot[],
     seed: number,
     born: number,
+    lang: string,
     ver: number
 }

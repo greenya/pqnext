@@ -18,7 +18,7 @@ import format from './format.ts'
 import lingo from './lingo.ts'
 import rand from './rand.ts'
 
-const version = () => 3
+const version = () => 4
 
 const knownHeroActions: readonly HeroAction[] = [
     {
@@ -689,7 +689,7 @@ function rollAttr(): Map<number> {
     return attr
 }
 
-function createHero(nickname: string, raceName: string, className: string, attrRoll: Map<number>): Hero {
+function createHero(lang: string, nickname: string, raceName: string, className: string, attrRoll: Map<number>): Hero {
     const race = data.races.find(r => r.name == raceName)!
     const clazz = data.classes.find(c => c.name == className)!
 
@@ -697,6 +697,7 @@ function createHero(nickname: string, raceName: string, className: string, attrR
         ver: version(),
         born: Math.floor(Date.now() / 1000),
         seed: Math.floor(7e7 + Math.random() * 2e9),
+        lang: lingo.languages().find(l => l.name == lang) ? lang : lingo.languages()[0].name,
         nickname,
         race: raceName,
         class: className,
@@ -796,6 +797,11 @@ function migrate(obj: any): boolean {
     if (obj.ver == 2) { // v2 => v3 // 210111
         obj.attr.curMp = obj.attr.maxMp
         obj.ver = 3
+        return true
+    }
+    if (obj.ver == 3) { // v3 => v4 // 210121
+        obj.lang = 'ua'
+        obj.ver = 4
         return true
     }
     return false
