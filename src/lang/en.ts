@@ -10,19 +10,19 @@ const dict: { readonly [key: string]: string } = {
 
     'attr-str-title':       'Strength',
     'attr-str-desc':        'Increases bag capacity',
-    'attr-str-format':      '+X Strength',
+    'attr-str-format':      '+{value} Strength',
 
     'attr-dex-title':       'Dexterity',
     'attr-dex-desc':        'Descreases chance to lose in combat',
-    'attr-dex-format':      '+X Dexterity',
+    'attr-dex-format':      '+{value} Dexterity',
 
     'attr-int-title':       'Intellect',
     'attr-int-desc':        'Increases maximum mana',
-    'attr-int-format':      '+X Intellect',
+    'attr-int-format':      '+{value} Intellect',
 
     'attr-sta-title':       'Stamina',
     'attr-sta-desc':        'Increases maximum health',
-    'attr-sta-format':      '+X Stamina',
+    'attr-sta-format':      '+{value} Stamina',
 
     'attr-curHp-title':     'Health',
     'attr-curHp-desc':      'The higher the better',

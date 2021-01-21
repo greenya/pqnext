@@ -10,24 +10,24 @@ const dict: { readonly [key: string]: string } = {
 
     'attr-str-title':       'Сила',
     'attr-str-desc':        'Збільшує ємність сумки',
-    'attr-str-format':      '+X до сили',
+    'attr-str-format':      '+{value} до сили',
 
     'attr-dex-title':       'Спритність',
     'attr-dex-desc':        'Зменьшує шанс програти бій',
-    'attr-dex-format':      '+X до спритності',
+    'attr-dex-format':      '+{value} до спритності',
 
     'attr-int-title':       'Інтелект',
     'attr-int-desc':        'Збільшує максимум мани',
-    'attr-int-format':      '+X до інтелекту',
+    'attr-int-format':      '+{value} до інтелекту',
 
     'attr-sta-title':       'Витривалість',
     'attr-sta-desc':        'Збільшує максимум здоров\'я',
-    'attr-sta-format':      '+X до витривалості',
+    'attr-sta-format':      '+{value} до витривалості',
 
     'attr-curHp-title':     'Здоров\'я',
     'attr-curHp-desc':      'Краще коли його більше',
 
-    'attr-maxHp-title':     'Максимум здоров\'я', // Здоров'я
+    'attr-maxHp-title':     'Максимум здоров\'я',
     'attr-maxHp-desc':      'Зростає з рівнем та _витривалістю_',
 
     'attr-curMp-title':     'Мана',

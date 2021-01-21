@@ -225,7 +225,7 @@
                 </div>
             </div>
             <div v-if="item.gear && Object.keys(item.gear.attr).length > 0" class="block">
-                <div v-for="a in attrs" :key="a">{{ a }}</div>
+                <div v-for="[ format, args ] in attrs" :key="format">{{ format | text(args) }}</div>
             </div>
             <div class="block has-text-right">
                 <span :inner-html.prop="item.price | coinify"></span>
@@ -246,9 +246,9 @@
             },
             attrs: function () {
                 return window.game.attributes().reduce((a, c) => {
-                    const attr = this.item.gear.attr[c.name]
-                    if (attr) {
-                        a.push(c.format.replace('X', attr))
+                    const x = this.item.gear.attr[c.name]
+                    if (x) {
+                        a.push([ c.format, { value: x } ])
                     }
                     return a
                 }, [])
