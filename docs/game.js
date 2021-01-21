@@ -1,4 +1,4 @@
-const version = ()=>3
+const version = ()=>4
 ;
 function __int(state, max) {
     const x = Math.sin(state.seed++) * 1000000;
@@ -850,7 +850,7 @@ const mobs = [
             n: 'лісові скрадачі',
             r: 'лісових скрадачів'
         }
-    },
+    }, 
 ];
 const mobReinforcedPrefixes = [
     {
@@ -2201,7 +2201,7 @@ const gearSlots = [
             {
                 title: 'броги',
                 ggx: true
-            },
+            }, 
         ]
     },
     {
@@ -2386,29 +2386,8 @@ const gearSlots = [
     }
 ];
 const characterNameParts = [
-    'б,б,б,бр,бл,бс,\
-\n    в,в,в,в,вк,вн,вр,вл,вт,вс,\
-\n    г,г,гр,гн,гл,\
-\n    ґ,ґ,ґр,ґн,ґл,\
-\n    д,д,дл,дн,дв,\
-\n    з,з,зр,зн,зг,зґ,зт,зв,зм,\
-\n    к,к,к,к,кр,кн,кв,км,кл,кт,\
-\n    м,м,м,м,мн,мр,мл,мс,мт,\
-\n    н,н,н,н,нк,нн,нз,нх,нф,нв,\
-\n    п,п,п,п,пр,пл,\
-\n    с,с,с,с,ст,сц,ск,сн,сг,сґ,сх,сф,св,сп,ср,сл,сд,см,сс,\
-\n    т,т,т,т,тр,тв,тл,тс,тм,\
-\n    х,х,х,х,хр,хв,хл,хс,хм,хт,\
-\n    ш,ш,ш,ш,шр,шк,шн,шв,шп,шл,шм,шт'.split(','),
-    'а,а,а,а,ай,аа,ау,ае,ає,аі,аї,ао,аю,ая,\
-\n    е,е,е,е,ей,ее,еу,ео,еі,еї,ею,ея,\
-\n    є,є,є,є,єй,єу,єі,єю,єя,\
-\n    і,і,і,і,ій,іу,ії,іа,іо,ія,\
-\n    и,и,и,и,ий,иу,ие,иє,иі,иї,иа,ио,ию,ия,\
-\n    о,о,о,о,ой,оо,оу,ое,оє,оі,ої,оа,ою,оя,\
-\n    у,у,у,у,уу,уе,ує,уі,уї,уа,уо,ую,уя,\
-\n    ю,ю,ю,ю,юй,ює,юі,юї,юа,юо,юя,\
-\n    я,я,я,я,яй,яу,яе,яє,яі,яї,яа,яо,яю,яя'.split(',')
+    'б,б,б,бр,бл,бс,\\n    в,в,в,в,вк,вн,вр,вл,вт,вс,\\n    г,г,гр,гн,гл,\\n    ґ,ґ,ґр,ґн,ґл,\\n    д,д,дл,дн,дв,\\n    з,з,зр,зн,зг,зґ,зт,зв,зм,\\n    к,к,к,к,кр,кн,кв,км,кл,кт,\\n    м,м,м,м,мн,мр,мл,мс,мт,\\n    н,н,н,н,нк,нн,нз,нх,нф,нв,\\n    п,п,п,п,пр,пл,\\n    с,с,с,с,ст,сц,ск,сн,сг,сґ,сх,сф,св,сп,ср,сл,сд,см,сс,\\n    т,т,т,т,тр,тв,тл,тс,тм,\\n    х,х,х,х,хр,хв,хл,хс,хм,хт,\\n    ш,ш,ш,ш,шр,шк,шн,шв,шп,шл,шм,шт'.split(','),
+    'а,а,а,а,ай,аа,ау,ае,ає,аі,аї,ао,аю,ая,\\n    е,е,е,е,ей,ее,еу,ео,еі,еї,ею,ея,\\n    є,є,є,є,єй,єу,єі,єю,єя,\\n    і,і,і,і,ій,іу,ії,іа,іо,ія,\\n    и,и,и,и,ий,иу,ие,иє,иі,иї,иа,ио,ию,ия,\\n    о,о,о,о,ой,оо,оу,ое,оє,оі,ої,оа,ою,оя,\\n    у,у,у,у,уу,уе,ує,уі,уї,уа,уо,ую,уя,\\n    ю,ю,ю,ю,юй,ює,юі,юї,юа,юо,юя,\\n    я,я,я,я,яй,яу,яе,яє,яі,яї,яа,яо,яю,яя'.split(',')
 ];
 const characterNameProfanity = [
     [
@@ -3112,7 +3091,198 @@ function rollAttr() {
     }
     return attr;
 }
-function createHero(nickname, raceName, className, attrRoll) {
+const meta = {
+    name: 'en',
+    title: 'English',
+    icon: 'https://www.countryflags.io/gb/shiny/32.png'
+};
+const dict = {
+    'attr-str-title': 'Strength',
+    'attr-str-desc': 'Increases bag capacity',
+    'attr-str-format': '+{value} Strength',
+    'attr-dex-title': 'Dexterity',
+    'attr-dex-desc': 'Descreases chance to lose in combat',
+    'attr-dex-format': '+{value} Dexterity',
+    'attr-int-title': 'Intellect',
+    'attr-int-desc': 'Increases maximum mana',
+    'attr-int-format': '+{value} Intellect',
+    'attr-sta-title': 'Stamina',
+    'attr-sta-desc': 'Increases maximum health',
+    'attr-sta-format': '+{value} Stamina',
+    'attr-curHp-title': 'Health',
+    'attr-curHp-desc': 'The higher the better',
+    'attr-maxHp-title': 'Maximum Health',
+    'attr-maxHp-desc': 'Increases with level and _stamina_',
+    'attr-curMp-title': 'Mana',
+    'attr-curMp-desc': 'Consumed in combat',
+    'attr-maxMp-title': 'Maximum Mana',
+    'attr-maxMp-desc': 'Increases with level and _intellect_',
+    'attr-bagCap-title': 'Bag Capacity',
+    'attr-bagCap-desc': 'Increases with _strength_',
+    'race-human-title': 'Human',
+    'race-human-desc': 'Humans can perform any role, able to get used to any conditions. They keep balance, as they never behind in any descipline, but also never truly excel at anything.\n\n[i] Attribute priority is balanced',
+    'race-dwarf-title': 'Dwarf',
+    'race-dwarf-desc': 'The native lands of dwarves are hard and demanding. Natural selection determined the direction of their body development.\n\n[i] _Strength_ and _stamina_ are prioritized',
+    'race-elf-title': 'Elf',
+    'race-elf-desc': 'Elves prefer to develop body and mind.\n\n[i] _Intellect_ and _dexterity_ are prioritized',
+    'class-warrior-title': 'Warrior',
+    'class-warrior-desc': '"Strength is the only power!", a warrior yelled and hit his head with a rusty stick. They always knew how to intimidate their foes.\n\n[i] _Strength_ is prioritized',
+    'class-rogue-title': 'Rogue',
+    'class-rogue-desc': 'The life of foes of a rogue is quite bright and fleeting. Often they notice him when it\'s way too late.\n\n[i] _Dexterity_ is prioritized',
+    'class-mage-title': 'Mage',
+    'class-mage-desc': 'In-depth study of everything a magic wand reaches. Foes are defeated with powerful spells.\n\n[i] _Intellect_ is prioritized',
+    'gear-slot-mainhand-title': 'Main Hand',
+    'gear-slot-offhand-title': 'Off Hand',
+    'gear-slot-head-title': 'Head',
+    'gear-slot-shoulders-title': 'Shoulders',
+    'gear-slot-chest-title': 'Chest',
+    'gear-slot-back-title': 'Back',
+    'gear-slot-wrist-title': 'Wrist',
+    'gear-slot-hands-title': 'Hands',
+    'gear-slot-waist-title': 'Waist',
+    'gear-slot-legs-title': 'Legs',
+    'gear-slot-feet-title': 'Feet',
+    'gear-slot-neck-title': 'Neck',
+    'gear-slot-finger-title': 'Finger',
+    'gear-slot-trinket-title': 'Trinket',
+    'ui-game-subtitle': 'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc': 'Create a hero and spectate his adventures in the crazy world of never ending progress bars, dangerous enemies and rare loot.',
+    'ui-language-note': 'Note: created character can only be played in the language it was created.',
+    'ui-new-hero': 'New Hero',
+    'ui-continue': 'Continue',
+    'ui-hero-summary': '{name}, Level {level} {class}',
+    'ui-losing-prev-hero-warn': 'Previous hero, <b>{hero}</b>, will be lost in case you create new one.',
+    'ui-nickname': 'Nickname',
+    'ui-attributes': 'Attributes',
+    'ui-race': 'Race',
+    'ui-class': 'Class',
+    'ui-create': 'Create',
+    'ui-cancel': 'Cancel',
+    'ui-level': 'Level',
+    'ui-bag': 'Bag',
+    'ui-item-count': '{count} pcs',
+    'ui-item-level': 'Level {level}',
+    'ui-item-source-quest': 'Quest reward'
+};
+const __default2 = {
+    meta,
+    dict
+};
+const meta1 = {
+    name: 'ua',
+    title: 'Українська',
+    icon: 'https://www.countryflags.io/ua/shiny/32.png'
+};
+const dict1 = {
+    'attr-str-title': 'Сила',
+    'attr-str-desc': 'Збільшує ємність сумки',
+    'attr-str-format': '+{value} до сили',
+    'attr-dex-title': 'Спритність',
+    'attr-dex-desc': 'Зменьшує шанс програти бій',
+    'attr-dex-format': '+{value} до спритності',
+    'attr-int-title': 'Інтелект',
+    'attr-int-desc': 'Збільшує максимум мани',
+    'attr-int-format': '+{value} до інтелекту',
+    'attr-sta-title': 'Витривалість',
+    'attr-sta-desc': 'Збільшує максимум здоров\'я',
+    'attr-sta-format': '+{value} до витривалості',
+    'attr-curHp-title': 'Здоров\'я',
+    'attr-curHp-desc': 'Краще коли його більше',
+    'attr-maxHp-title': 'Максимум здоров\'я',
+    'attr-maxHp-desc': 'Зростає з рівнем та _витривалістю_',
+    'attr-curMp-title': 'Мана',
+    'attr-curMp-desc': 'Витрачається в бою',
+    'attr-maxMp-title': 'Максимум мани',
+    'attr-maxMp-desc': 'Зростає з рівнем та _інтелектом_',
+    'attr-bagCap-title': 'Ємність сумки',
+    'attr-bagCap-desc': 'Зростає з _силою_',
+    'race-human-title': 'Людина',
+    'race-human-desc': 'Люди добре почуваються у будь-якій ролі, приживаються до будь-яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів збалансований',
+    'race-dwarf-title': 'Дворф',
+    'race-dwarf-desc': 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
+    'race-elf-title': 'Ельф',
+    'race-elf-desc': 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
+    'class-warrior-title': 'Воїн',
+    'class-warrior-desc': '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
+    'class-rogue-title': 'Пройдисвіт',
+    'class-rogue-desc': 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
+    'class-mage-title': 'Маг',
+    'class-mage-desc': 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
+    'gear-slot-mainhand-title': 'Права рука',
+    'gear-slot-offhand-title': 'Ліва рука',
+    'gear-slot-head-title': 'Голова',
+    'gear-slot-shoulders-title': 'Плечі',
+    'gear-slot-chest-title': 'Груди',
+    'gear-slot-back-title': 'Спина',
+    'gear-slot-wrist-title': 'Зап\'ястя',
+    'gear-slot-hands-title': 'Руки',
+    'gear-slot-waist-title': 'Пояс',
+    'gear-slot-legs-title': 'Ноги',
+    'gear-slot-feet-title': 'Ступні',
+    'gear-slot-neck-title': 'Шия',
+    'gear-slot-finger-title': 'Палець',
+    'gear-slot-trinket-title': 'Дрібничка',
+    'ui-game-subtitle': 'Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc': 'Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу, небезпечних ворогів та рідкісних предметів.',
+    'ui-language-note': 'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
+    'ui-new-hero': 'Новий герой',
+    'ui-continue': 'Продовжити',
+    'ui-hero-summary': '{name}, {class} {level}-го рівня',
+    'ui-losing-prev-hero-warn': 'Попередній герой, <b>{hero}</b>, буде втрачений при створенні нового.',
+    'ui-nickname': 'Прізвисько',
+    'ui-attributes': 'Атрибути',
+    'ui-race': 'Раса',
+    'ui-class': 'Клас',
+    'ui-create': 'Створити',
+    'ui-cancel': 'Відміна',
+    'ui-level': 'Рівень',
+    'ui-bag': 'Сумка',
+    'ui-item-count': '{count} шт',
+    'ui-item-level': '{level}-го рівня',
+    'ui-item-source-quest': 'Винагорода за завдання'
+};
+const __default3 = {
+    meta: meta1,
+    dict: dict1
+};
+const langs = [
+    __default2,
+    __default3
+];
+let lang = __default2;
+function languages() {
+    return langs.map((e)=>({
+            name: e.meta.name,
+            title: e.meta.title,
+            icon: e.meta.icon
+        })
+    );
+}
+function setLanguage(name) {
+    const found = langs.find((e)=>e.meta.name == name
+    );
+    if (found) {
+        lang = found;
+    }
+}
+function text1(key, args = {
+}) {
+    let result = lang.dict[key] || __default2.dict[key];
+    if (result) {
+        for(const arg in args){
+            result = result.replace('{' + arg + '}', args[arg]);
+        }
+        return result;
+    } else {
+        return key;
+    }
+}
+const __default4 = {
+    languages,
+    setLanguage,
+    text: text1
+};
+function createHero(lang1, nickname, raceName, className, attrRoll) {
     const race = __default1.races.find((r)=>r.name == raceName
     );
     const clazz = __default1.classes.find((c)=>c.name == className
@@ -3121,6 +3291,8 @@ function createHero(nickname, raceName, className, attrRoll) {
         ver: version(),
         born: Math.floor(Date.now() / 1000),
         seed: Math.floor(70000000 + Math.random() * 2000000000),
+        lang: __default4.languages().find((l)=>l.name == lang1
+        ) ? lang1 : __default4.languages()[0].name,
         nickname,
         race: raceName,
         class: className,
@@ -3271,14 +3443,14 @@ function gold(value) {
 function progress(value, fractionDigits = 0) {
     return Number(value.cur * 100 / value.max).toFixed(fractionDigits) + '%';
 }
-const __default2 = {
+const __default5 = {
     duration,
     gold,
     number,
     progress
 };
 function dump(hero) {
-    console.log('==================================================== TIME:', __default2.duration(stats.time), '==== GOLD:', __default2.gold(hero.gold));
+    console.log('==================================================== TIME:', __default5.duration(stats.time), '==== GOLD:', __default5.gold(hero.gold));
     console.log('#### HERO', hero);
     console.log('#### STATS', stats);
     console.log('#### TIME SPENT BREAKDOWN');
@@ -3287,7 +3459,7 @@ function dump(hero) {
         return {
             k,
             v,
-            '%': __default2.progress({
+            '%': __default5.progress({
                 cur: v,
                 max: stats.time
             }, 1)
@@ -3312,9 +3484,9 @@ function dump(hero) {
     const totalGoldCollected = Object.values(stats.goldCollected).reduce((a, c)=>a + c
     , 0);
     console.table(stats.levelUpTimestamps.map((e, i, a)=>{
-        const et = __default2.duration(e);
-        const dt = __default2.duration((i < a.length - 1 ? a[i + 1] : stats.time) - e);
-        const dg = __default2.gold((i < a.length - 1 ? stats.levelUpGoldstamps[i + 1] : totalGoldCollected) - stats.levelUpGoldstamps[i]);
+        const et = __default5.duration(e);
+        const dt = __default5.duration((i < a.length - 1 ? a[i + 1] : stats.time) - e);
+        const dg = __default5.gold((i < a.length - 1 ? stats.levelUpGoldstamps[i + 1] : totalGoldCollected) - stats.levelUpGoldstamps[i]);
         return [
             et,
             dt,
@@ -3334,204 +3506,18 @@ function migrate(obj) {
         obj.ver = 3;
         return true;
     }
+    if (obj.ver == 3) {
+        obj.lang = 'ua';
+        obj.ver = 4;
+        return true;
+    }
     return false;
 }
-const meta = {
-    name: 'en',
-    title: 'English',
-    icon: 'https://www.countryflags.io/gb/shiny/32.png'
-};
-const dict = {
-    'attr-str-title': 'Strength',
-    'attr-str-desc': 'Increases bag capacity',
-    'attr-str-format': '+X Strength',
-    'attr-dex-title': 'Dexterity',
-    'attr-dex-desc': 'Descreases chance to lose in combat',
-    'attr-dex-format': '+X Dexterity',
-    'attr-int-title': 'Intellect',
-    'attr-int-desc': 'Increases maximum mana',
-    'attr-int-format': '+X Intellect',
-    'attr-sta-title': 'Stamina',
-    'attr-sta-desc': 'Increases maximum health',
-    'attr-sta-format': '+X Stamina',
-    'attr-curHp-title': 'Health',
-    'attr-curHp-desc': 'The higher the better',
-    'attr-maxHp-title': 'Maximum Health',
-    'attr-maxHp-desc': 'Increases with level and _stamina_',
-    'attr-curMp-title': 'Mana',
-    'attr-curMp-desc': 'Consumed in combat',
-    'attr-maxMp-title': 'Maximum Mana',
-    'attr-maxMp-desc': 'Increases with level and _intellect_',
-    'attr-bagCap-title': 'Bag Capacity',
-    'attr-bagCap-desc': 'Increases with _strength_',
-    'race-human-title': 'Human',
-    'race-human-desc': 'Humans can perform any role, able to get used to any conditions. They keep balance, as they never behind in any descipline, but also never truly excel at anything.\n\n[i] Attribute priority is balanced',
-    'race-dwarf-title': 'Dwarf',
-    'race-dwarf-desc': 'The native lands of dwarves are hard and demanding. Natural selection determined the direction of their body development.\n\n[i] _Strength_ and _stamina_ are prioritized',
-    'race-elf-title': 'Elf',
-    'race-elf-desc': 'Elves prefer to develop body and mind.\n\n[i] _Intellect_ and _dexterity_ are prioritized',
-    'class-warrior-title': 'Warrior',
-    'class-warrior-desc': '"Strength is the only power!", a warrior yelled and hit his head with a rusty stick. They always knew how to intimidate their foes.\n\n[i] _Strength_ is prioritized',
-    'class-rogue-title': 'Rogue',
-    'class-rogue-desc': 'The life of foes of a rogue is quite bright and fleeting. Often they notice him when it\'s way too late.\n\n[i] _Dexterity_ is prioritized',
-    'class-mage-title': 'Mage',
-    'class-mage-desc': 'In-depth study of everything a magic wand reaches. Foes are defeated with powerful spells.\n\n[i] _Intellect_ is prioritized',
-    'gear-slot-mainhand-title': 'Main Hand',
-    'gear-slot-offhand-title': 'Off Hand',
-    'gear-slot-head-title': 'Head',
-    'gear-slot-shoulders-title': 'Shoulders',
-    'gear-slot-chest-title': 'Chest',
-    'gear-slot-back-title': 'Back',
-    'gear-slot-wrist-title': 'Wrist',
-    'gear-slot-hands-title': 'Hands',
-    'gear-slot-waist-title': 'Waist',
-    'gear-slot-legs-title': 'Legs',
-    'gear-slot-feet-title': 'Feet',
-    'gear-slot-neck-title': 'Neck',
-    'gear-slot-finger-title': 'Finger',
-    'gear-slot-trinket-title': 'Trinket',
-    'ui-game-subtitle': 'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
-    'ui-game-desc': 'Create a hero and spectate his adventures in the crazy world of never ending progress bars, dangerous enemies and rare loot.',
-    'ui-language-note': 'Note: created character can only be played in the language it was created.',
-    'ui-new-hero': 'New Hero',
-    'ui-continue': 'Continue',
-    'ui-hero-summary': '{name}, Level {level} {class}',
-    'ui-losing-prev-hero-warn': 'Previous hero, <b>{hero}</b>, will be lost in case you create new one.',
-    'ui-nickname': 'Nickname',
-    'ui-attributes': 'Attributes',
-    'ui-race': 'Race',
-    'ui-class': 'Class',
-    'ui-create': 'Create',
-    'ui-cancel': 'Cancel',
-    'ui-level': 'Level',
-    'ui-bag': 'Bag',
-    'ui-item-count': '{count} pcs',
-    'ui-item-level': 'Level {level}',
-    'ui-item-source-quest': 'Quest reward'
-};
-const __default3 = {
-    meta,
-    dict
-};
-const meta1 = {
-    name: 'ua',
-    title: 'Українська',
-    icon: 'https://www.countryflags.io/ua/shiny/32.png'
-};
-const dict1 = {
-    'attr-str-title': 'Сила',
-    'attr-str-desc': 'Збільшує ємність сумки',
-    'attr-str-format': '+X до сили',
-    'attr-dex-title': 'Спритність',
-    'attr-dex-desc': 'Зменьшує шанс програти бій',
-    'attr-dex-format': '+X до спритності',
-    'attr-int-title': 'Інтелект',
-    'attr-int-desc': 'Збільшує максимум мани',
-    'attr-int-format': '+X до інтелекту',
-    'attr-sta-title': 'Витривалість',
-    'attr-sta-desc': 'Збільшує максимум здоров\'я',
-    'attr-sta-format': '+X до витривалості',
-    'attr-curHp-title': 'Здоров\'я',
-    'attr-curHp-desc': 'Краще коли його більше',
-    'attr-maxHp-title': 'Максимум здоров\'я',
-    'attr-maxHp-desc': 'Зростає з рівнем та _витривалістю_',
-    'attr-curMp-title': 'Мана',
-    'attr-curMp-desc': 'Витрачається в бою',
-    'attr-maxMp-title': 'Максимум мани',
-    'attr-maxMp-desc': 'Зростає з рівнем та _інтелектом_',
-    'attr-bagCap-title': 'Ємність сумки',
-    'attr-bagCap-desc': 'Зростає з _силою_',
-    'race-human-title': 'Людина',
-    'race-human-desc': 'Люди добре почуваються у будь-якій ролі, приживаються до будь-яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів збалансований',
-    'race-dwarf-title': 'Дворф',
-    'race-dwarf-desc': 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
-    'race-elf-title': 'Ельф',
-    'race-elf-desc': 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
-    'class-warrior-title': 'Воїн',
-    'class-warrior-desc': '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
-    'class-rogue-title': 'Пройдисвіт',
-    'class-rogue-desc': 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
-    'class-mage-title': 'Маг',
-    'class-mage-desc': 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
-    'gear-slot-mainhand-title': 'Права рука',
-    'gear-slot-offhand-title': 'Ліва рука',
-    'gear-slot-head-title': 'Голова',
-    'gear-slot-shoulders-title': 'Плечі',
-    'gear-slot-chest-title': 'Груди',
-    'gear-slot-back-title': 'Спина',
-    'gear-slot-wrist-title': 'Зап\'ястя',
-    'gear-slot-hands-title': 'Руки',
-    'gear-slot-waist-title': 'Пояс',
-    'gear-slot-legs-title': 'Ноги',
-    'gear-slot-feet-title': 'Ступні',
-    'gear-slot-neck-title': 'Шия',
-    'gear-slot-finger-title': 'Палець',
-    'gear-slot-trinket-title': 'Дрібничка',
-    'ui-game-subtitle': 'Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
-    'ui-game-desc': 'Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу, небезпечних ворогів та рідкісних предметів.',
-    'ui-language-note': 'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
-    'ui-new-hero': 'Новий герой',
-    'ui-continue': 'Продовжити',
-    'ui-hero-summary': '{name}, {class} {level}-го рівня',
-    'ui-losing-prev-hero-warn': 'Попередній герой, <b>{hero}</b>, буде втрачений при створенні нового.',
-    'ui-nickname': 'Прізвисько',
-    'ui-attributes': 'Атрибути',
-    'ui-race': 'Раса',
-    'ui-class': 'Клас',
-    'ui-create': 'Створити',
-    'ui-cancel': 'Відміна',
-    'ui-level': 'Рівень',
-    'ui-bag': 'Сумка',
-    'ui-item-count': '{count} шт',
-    'ui-item-level': '{level}-го рівня',
-    'ui-item-source-quest': 'Винагорода за завдання'
-};
-const __default4 = {
-    meta: meta1,
-    dict: dict1
-};
-const langs = [
-    __default3,
-    __default4
-];
-let lang = __default3;
-function languages() {
-    return langs.map((e)=>({
-            name: e.meta.name,
-            title: e.meta.title,
-            icon: e.meta.icon
-        })
-    );
-}
-function setLanguage(name) {
-    const found = langs.find((e)=>e.meta.name == name
-    );
-    if (found) {
-        lang = found;
-    }
-}
-function text1(key, args = {
-}) {
-    let result = lang.dict[key] || __default3.dict[key];
-    if (result) {
-        for(const arg in args){
-            result = result.replace('{' + arg + '}', args[arg]);
-        }
-        return result;
-    } else {
-        return key;
-    }
-}
-const __default5 = {
-    languages,
-    setLanguage,
-    text: text1
-};
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-210120`,
-        lingo: __default5,
+        version: `pqnext-${version()}-210121`,
+        lingo: __default4,
         races: ()=>__default1.races.map(({ name , title , desc  })=>{
                 return {
                     name,

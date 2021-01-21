@@ -1,4 +1,4 @@
-# Progress Quest Next
+# pqnext
 
 - [Demo](https://greenya.github.io/pqnext/)
 - Original idea: [ProgressQuest](http://progressquest.com/)
@@ -22,14 +22,21 @@ deno run debug.ts
 
 ## Todos and Ideas
 
-- add value to attributes:
-    + str (more bag slots),
-    - dex (lesser chance to die),
-    + int (more mana allows longer non-stop combat; each mob takes portion of mana; when no mana -> "rest" action)
-- add dying; on death -> run to corpse (50% of town distance) -> eat-and-drink
-- add chance to fail when fighting mob; removes a lot of gear durability and takes time to run to corpse
+- extend lingo to fully support different languages:
+    - [x] client ui (index.html)
+    - [_] title of the quest
+    - [_] title of the mob (target)
+    - [_] title of the item
+    - [_] title of the action
 
-- add gear slot items limit when generating name; should be a window of 6-8 items that moves down the list; so at high levels we generate random name from last 6-8 item names (or maybe add optional properly "level-limit" so it is posible to manually limit some weak titles for high levels) (or maybe allow optionally define rarities for gear slot item titles; so no rare and epic weak titles generated)
+- add value to attributes:
+    - [x] str (more bag slots),
+    - [_] dex (lesser chance to die),
+    - [x] int (more mana allows longer non-stop combat; each mob takes portion of mana; when no mana -> "rest" action)
+
+- add dying (fail when fighting mob); on death -> run to corpse (50% of town distance) -> eat-and-drink
+
+- [?] add gear slot items limit when generating name; should be a window of 6-8 items that moves down the list; so at high levels we generate random name from last 6-8 item names (or maybe add optional properly "level-limit" so it is posible to manually limit some weak titles for high levels) (or maybe allow optionally define rarities for gear slot item titles; so no rare and epic weak titles generated)
 
 - add weapon depth (mainhand and offhand slots)
     - melee/ranged weapons; hero class defines what type of weapon can be used (for example: hypothetical "archer" class might be able to use ranged weapon only)
@@ -38,14 +45,17 @@ deno run debug.ts
 
 - add quest depth
     - add dropping quest items (dont forget to skip selling these item; now sellJunk() sell entire bag content)
+    - [?] add quest chains
+    - [?] add main quest chain and plot development
 
 - add gear durability and its loss, when < 10% (?) => move-to-town; add need for repair while in town (chance if durability < 50%)
+
 - add unique/rare mobs with notable loot
 - add spell book
 - add quest log
 - add travel distance tracking
 - add achivements (e.g. Hit Level 10 yay!, Killed 1000 mobs!, First gold coin!, Travelled 1 km! etc.)
-- add Underground zone type with worms, skeletons, zombies, witches, fire giants etc
+- add Underground zone type with skeletons, zombies, witches, lava worms, fire giants etc
 - add legendary items; unique names and maybe stats/effects; maybe obtainable only from high-end quests (?)
 - add gear item flavor text generation (for rare+ with small chance)
 - maybe add ability to choose geneder (male/female); action texts should be enchanced to support it
