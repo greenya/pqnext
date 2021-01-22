@@ -24,14 +24,14 @@ deno run debug.ts
 
 - extend lingo to fully support different languages:
     - [x] client ui (index.html)
-    - [_] title of the quest
-    - [_] title of the mob (target)
-    - [_] title of the item
-    - [_] title of the action
+    - [ ] title of the quest
+    - [ ] title of the mob (target)
+    - [ ] title of the item
+    - [ ] title of the action
 
 - add value to attributes:
     - [x] str (more bag slots),
-    - [_] dex (lesser chance to die),
+    - [ ] dex (lesser chance to die),
     - [x] int (more mana allows longer non-stop combat; each mob takes portion of mana; when no mana -> "rest" action)
 
 - add dying (fail when fighting mob); on death -> run to corpse (50% of town distance) -> eat-and-drink
