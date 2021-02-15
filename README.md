@@ -14,10 +14,12 @@
 deno run --unstable --allow-read --allow-write bundle.ts
 ```
 
-## Debug
+## Start Web Server
 
+Serve `docs` folder. I use PHP to start it, but if you dont' have it, no need to install, you can use Google Chrome extension like [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en)
 ```
-deno run debug.ts
+cd docs
+php -S localhost:8000
 ```
 
 ## Todos and Ideas
