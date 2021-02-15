@@ -298,9 +298,11 @@ function getGearItemAttributes(hero: Hero, quality: ItemQuality, source: GearSou
     return attr
 }
 
-function getGearItem(hero: Hero, source: GearSource): Item {
+function getGearItem(hero: Hero, source: GearSource, forSlot?: GearSlot): Item {
     const level = hero.level.num
-    const availSlots = data.gearSlots.filter(s => s.level <= level).map(s => s.name)
+    const availSlots = forSlot
+        ? [ forSlot ]
+        : data.gearSlots.filter(s => s.level <= level).map(s => s.name)
 
     const slot = rand.item(hero, availSlots)
     const quality = getItemQuality(hero, source)
@@ -721,7 +723,7 @@ function createHero(lang: string, nickname: string, raceName: string, className:
     }
 
     levelUp(hero)
-    lootItems(hero, clazz.startItems)
+    lootItems(hero, [ getGearItem(hero, GearSource.Drop, GearSlot.MainHand) ])
     updateZone(hero, ZoneType.Town)
     advanceAction(hero)
 

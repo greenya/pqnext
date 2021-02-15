@@ -147,10 +147,7 @@ export interface Class {
     name: string,
     title: string,
     desc: string,
-    attrPrio: Map<number>,
-    // useableWeaponTypes
-    // useableArmorTypes
-    startItems: readonly Item[]
+    attrPrio: Map<number>
 }
 
 export interface HeroTarget {

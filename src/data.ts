@@ -88,58 +88,19 @@ const classes: readonly Class[] = [
         name: 'warrior',
         title: 'class-warrior-title',
         desc: 'class-warrior-desc',
-        attrPrio: { str: 3, dex: 1 },
-        startItems: [
-            {
-                title: 'іржавий дрин',
-                quality: ItemQuality.Poor,
-                gear: {
-                    slot: GearSlot.MainHand,
-                    attr: {},
-                    level: 1,
-                    source: GearSource.Drop
-                },
-                price: 1
-            }
-        ]
+        attrPrio: { str: 3, dex: 1 }
     },
     {
         name: 'rogue',
         title: 'class-rogue-title',
         desc: 'class-rogue-desc',
-        attrPrio: { str: 1, dex: 3 },
-        startItems: [
-            {
-                title: 'кухонний ніж',
-                quality: ItemQuality.Poor,
-                gear: {
-                    slot: GearSlot.MainHand,
-                    attr: {},
-                    level: 1,
-                    source: GearSource.Drop
-                },
-                price: 1
-            }
-        ]
+        attrPrio: { str: 1, dex: 3 }
     },
     {
         name: 'mage',
         title: 'class-mage-title',
         desc: 'class-mage-desc',
-        attrPrio: { dex: 1, int: 3 },
-        startItems: [
-            {
-                title: 'дерев\'яна паличка',
-                quality: ItemQuality.Poor,
-                gear: {
-                    slot: GearSlot.MainHand,
-                    attr: {},
-                    level: 1,
-                    source: GearSource.Drop
-                },
-                price: 1
-            }
-        ]
+        attrPrio: { dex: 1, int: 3 }
     }
 ]
 
