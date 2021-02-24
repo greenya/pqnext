@@ -1,5 +1,5 @@
 export interface Map<T> {
-    [key: string]: T
+    [_: string]: T
 }
 
 export interface Progress {
@@ -26,10 +26,6 @@ export enum ItemQuality {
 
 export interface ItemQualityMeta {
     name: ItemQuality,
-    title: { m: string, f: string, n: string, x: string }, // [m]asculine, [f]eminine, [n]euter, [x] for multiple
-    templates: readonly string[],
-    prefix?: { m: string, f: string, n: string, x: string },
-    suffix?: string,
     level: number,
     chance: number,
     priceMult: number,
@@ -57,14 +53,7 @@ export interface GearSlotMeta {
     name: GearSlot,
     title: string,
     level: number,
-    priceMult: number,
-    items: readonly {
-        title: string,
-        ggm?: boolean,
-        ggf?: boolean,
-        ggn?: boolean,
-        ggx?: boolean
-    }[]
+    priceMult: number
 }
 
 export enum GearSource {
@@ -129,11 +118,6 @@ export interface Mob {
     name: string,
     level: number,
     trait: Trait,
-    masculine?: string,
-    feminine?: string,
-    neuter?: string,
-    junk: string,
-    gcm: { n: string, r: string } // grammar case: multiple
 }
 
 export interface Race {
@@ -183,4 +167,18 @@ export interface Hero {
     born: number,
     lang: string,
     ver: number
+}
+
+export interface LingoRoll {
+    rollCharName: (lang: string) => string,
+    rollMobTitle: (hero: Hero, mob: Mob, might: MobMight) => string,
+    rollMobJunkItemTitle: (hero: Hero, mob: Mob) => string,
+    rollMobPreciousItemTitle: (hero: Hero, mob: Mob) => string,
+    rollGearItemTitle: (hero: Hero, slot: GearSlot, quality: ItemQuality) => string,
+    rollQuestTitle: (hero: Hero) => string
+}
+
+export interface Lingo extends LingoRoll {
+    meta: { name: string, title: string, icon: string },
+    dict: { readonly [_: string]: string }
 }

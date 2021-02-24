@@ -29,7 +29,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'intro',
-        title: () => 'Дивиться вступний сінематик...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-intro'),
         duration: () => 10,
         next: () => 'accept-quest'
     },
@@ -49,7 +49,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'accept-quest',
-        title: () => 'Ознайомлюється з новим завданням...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-accept-quest'),
         duration: (hero) => 5 + rand.int(hero, 2),
         onFinish: (hero) => {
             acceptQuest(hero)
@@ -66,16 +66,16 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'pass-quest',
-        title: () => 'Завершує завдання...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-pass-quest'),
         duration: (hero) => 5 + rand.int(hero, 2),
         onFinish: (hero) => {
-            passQuest(hero)
+            completeQuest(hero)
         },
         next: () => 'accept-quest'
     },
     {
         name: 'move-to-wilderness',
-        title: () => 'Прямує до дикої місцевості...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-move-to-wilderness'),
         duration: () => 15,
         onStart: (hero) => {
             updateZone(hero, ZoneType.Traveling)
@@ -87,7 +87,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'combat',
-        title: (hero) => 'В бою, ціль: ' + hero.target!.title,
+        title: (hero) => lingo.text(hero.lang, 'hero-action-combat', { target: hero.target!.title }),
         duration: (hero) => 5 + (hero.target!.might == MobMight.Reinforced ? 2 : 0),
         onStart: (hero) => {
             startCombat(hero)
@@ -109,7 +109,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'rest',
-        title: () => 'Відновлює сили...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-rest'),
         duration: () => 15,
         onFinish: (hero) => {
             hero.attr.curMp = hero.attr.maxMp
@@ -118,7 +118,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'move-to-town',
-        title: () => 'Прямує до найближчого поселення...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-move-to-town'),
         duration: () => 15,
         onStart: (hero) => {
             updateZone(hero, ZoneType.Traveling)
@@ -136,7 +136,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'sell-junk',
-        title: () => 'Продає мотлох...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-sell-junk'),
         duration: (hero) => Math.max(1, Math.floor(hero.bag.length / 2)),
         onFinish: (hero) => {
             sellJunk(hero)
@@ -151,7 +151,7 @@ const knownHeroActions: readonly HeroAction[] = [
     },
     {
         name: 'buy-gear',
-        title: () => 'Перевіряє асортимент місцевих крамниць...',
+        title: (hero) => lingo.text(hero.lang, 'hero-action-buy-gear'),
         duration: (hero) => 8,
         onFinish: (hero) => {
             buyGear(hero)
@@ -170,34 +170,15 @@ function buyGear(hero: Hero) {
     rollItemsAndLootSingleBestOne(hero, GearSource.Vendor)
 }
 
-function getHeroTarget(hero: Hero): HeroTarget {
+function rollMobHeroTarget(hero: Hero): HeroTarget {
     const level = hero.level.num
     const mobs = data.mobs.filter(m => (m.trait & hero.zone.biome) == hero.zone.biome && m.level <= level)
     const mob = rand.item(hero, mobs)
-
-    const genders = [
-        mob.masculine,
-        mob.feminine,
-        mob.neuter
-    ].reduce<{ i: number, gen: string }[]>((a, c, i) => {
-        if (c) { a.push({ i, gen: c }) }
-        return a
-    }, [])
-
-    const gender = rand.item(hero, genders)
-    const title = rand.text(hero, gender.gen)
-
-    let might = MobMight.Normal
-    let prefix = ''
-
-    if (level >= mob.level + 10 && rand.dice(hero, 8)) {
-        const prefixes = data.mobReinforcedPrefixes.filter(p => p.trait & mob.trait).map(p => p.gen)
-        prefix = rand.item(hero, prefixes).split('/')[gender.i]
-        might = MobMight.Reinforced
-    }
+    const might = level >= mob.level + 10 && rand.dice(hero, 8) ? MobMight.Reinforced : MobMight.Normal
+    const title = lingo.rollMobTitle(hero, mob, might)
 
     return {
-        title: (prefix ? prefix + ' ' : '') + title,
+        title,
         mob: mob.name,
         might
     }
@@ -209,7 +190,7 @@ function manaNeededForCombat(hero: Hero) {
 }
 
 function startCombat(hero: Hero) {
-    hero.target = getHeroTarget(hero)
+    hero.target = rollMobHeroTarget(hero)
 }
 
 function finishCombat(hero: Hero) {
@@ -231,12 +212,12 @@ function finishCombat(hero: Hero) {
     const items: Item[] = []
 
     if (rand.dice(hero, 14)) {
-        items.push(getGearItem(hero, GearSource.Drop))
+        items.push(rollGearItem(hero, GearSource.Drop))
     } else {
         if (reinforced) {
-            items.push(getMobPreciousItem(hero, mob))
+            items.push(rollMobPreciousItem(hero, mob))
         } else {
-            items.push(getMobJunkItem(hero, mob))
+            items.push(rollMobJunkItem(hero, mob))
         }
     }
 
@@ -249,30 +230,7 @@ function finishCombat(hero: Hero) {
     stats.mobsKilled[target.might]++
 }
 
-function getGearItemTitle(hero: Hero, slot: GearSlot, quality: ItemQuality): string {
-    const slotMeta = data.gearSlots.find(s => s.name == slot)!
-    const availItems = slotMeta.items.filter((i, index) => slotMeta.level + (index * 2) <= hero.level.num)
-    if (availItems.length == 0) {
-        if (slotMeta.items.length > 0) {
-            availItems.push(slotMeta.items[0])
-        } else {
-            return `${quality} ${slot}`
-        }
-    }
-
-    const item = rand.item(hero, availItems)
-    const ggKey = item.ggm ? 'm' : item.ggf ? 'f' : item.ggn ? 'n' : 'x'
-    const qualityMeta = data.itemQualities.find(q => q.name == quality)!
-
-    return rand.item(hero, qualityMeta.templates)
-        .replace('{item-title}', item.title)
-        .replace('{quality-title}', rand.text(hero, qualityMeta.title[ggKey]))
-        .replace('{uncommon-prefix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Uncommon)!.prefix![ggKey]))
-        .replace('{rare-prefix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Rare)!.prefix![ggKey]))
-        .replace('{epic-suffix}', rand.text(hero, data.itemQualities.find(q => q.name == ItemQuality.Epic)!.suffix!))
-}
-
-function getItemQuality(hero: Hero, source: GearSource): ItemQuality {
+function rollItemQuality(hero: Hero, source: GearSource): ItemQuality {
     const level = hero.level.num
     const roll = rand.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0))
     const quality = data.itemQualities.reduce(
@@ -282,7 +240,7 @@ function getItemQuality(hero: Hero, source: GearSource): ItemQuality {
     return quality
 }
 
-function getGearItemAttributes(hero: Hero, quality: ItemQuality, source: GearSource): Map<number> {
+function rollGearItemAttributes(hero: Hero, quality: ItemQuality, source: GearSource): Map<number> {
     const level = hero.level.num
     const attr: Map<number> = {}
 
@@ -298,17 +256,17 @@ function getGearItemAttributes(hero: Hero, quality: ItemQuality, source: GearSou
     return attr
 }
 
-function getGearItem(hero: Hero, source: GearSource, forSlot?: GearSlot): Item {
+function rollGearItem(hero: Hero, source: GearSource, forSlot?: GearSlot): Item {
     const level = hero.level.num
     const availSlots = forSlot
         ? [ forSlot ]
         : data.gearSlots.filter(s => s.level <= level).map(s => s.name)
 
     const slot = rand.item(hero, availSlots)
-    const quality = getItemQuality(hero, source)
-    const title = getGearItemTitle(hero, slot, quality)
+    const quality = rollItemQuality(hero, source)
+    const title = lingo.rollGearItemTitle(hero, slot, quality)
     const price = getItemPrice(hero, title, quality, slot)
-    const attr = getGearItemAttributes(hero, quality, source)
+    const attr = rollGearItemAttributes(hero, quality, source)
 
     return {
         title,
@@ -318,37 +276,38 @@ function getGearItem(hero: Hero, source: GearSource, forSlot?: GearSlot): Item {
     }
 }
 
-function getMobPreciousItem(hero: Hero, mob: Mob): Item {
-    const preciousItems = data.preciousItems.filter(i => (mob.trait & i.trait) == i.trait)
-    const preciousItem = rand.item(hero, preciousItems)
-    const title = rand.text(hero, preciousItem.gen)
+function rollMobPreciousItem(hero: Hero, mob: Mob): Item {
+    const level = hero.level.num
+    const title = lingo.rollMobPreciousItemTitle(hero, mob)
     const quality = ItemQuality.Common
-    const price = getItemPrice(hero, title, quality, undefined, preciousItem.value)
+    const priceDev = getItemPriceDeviation(hero, title)
+    const priceMult = 5 + Math.floor((priceDev % level) / 2)
+    const price = getItemPrice(hero, title, quality, undefined, priceMult)
     return { title, quality, price }
 }
 
-function getMobJunkItem(hero: Hero, mob: Mob): Item {
-    const title = rand.text(hero, mob.junk)
+function rollMobJunkItem(hero: Hero, mob: Mob): Item {
+    const title = lingo.rollMobJunkItemTitle(hero, mob)
     const quality = ItemQuality.Poor
     const price = getItemPrice(hero, title, quality)
     return { title, quality, price }
 }
 
-function getPoorItemPriceDeviation(hero: Hero, title: string): number {
+function getItemPriceDeviation(hero: Hero, title: string): number {
     const level = hero.level.num
     const base = title.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
     const mod = (base % 5) * Math.ceil(level / 3)
     return mod > 0 ? mod : (base % level) * 7
 }
 
-function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: GearSlot, extraMult?: number): number {
+function getItemPrice(hero: Hero, title: string, quality: ItemQuality, slot?: GearSlot, extraMult = 1): number {
     const level = hero.level.num
     const price = Math.floor(
-        (quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0)
+        (quality == ItemQuality.Poor ? getItemPriceDeviation(hero, title) : 0)
         + level
         * data.itemQualities.find(q => q.name == quality)!.priceMult
         * (slot ? (level / 10) * data.gearSlots.find(s => s.name == slot)!.priceMult : 1)
-        * (extraMult ? extraMult : 1)
+        * extraMult
     )
     return Math.max(price, 1)
 }
@@ -359,22 +318,10 @@ function sellJunk(hero: Hero) {
         .forEach(slot => addGold(hero, slot.item.price * slot.count, 'junk'))
 }
 
-function getQuestTitle(hero: Hero): string {
-    const text = rand.text(hero, rand.item(hero, data.questTitles))
-        .replace('{number-5-20}', `${rand.int(hero, 16) + 5}`)
-        .replace('{mob-gcm-n}', rand.item(hero, data.mobs).gcm.n)
-        .replace('{mob-gcm-r}', rand.item(hero, data.mobs).gcm.r)
-        .replace('{mob-flesh-gcm-r}', rand.item(hero, data.mobs.filter(m => m.trait & Trait.Flesh)).gcm.r)
-        .replace('{precious-item-ggmn}', rand.text(hero, rand.item(hero, data.preciousItems.filter(i => i.ggm || i.ggn)).gen))
-        .replace('{precious-item-ggf}', rand.text(hero, rand.item(hero, data.preciousItems.filter(i => i.ggf)).gen))
-
-    return text.charAt(0).toUpperCase() + text.slice(1)
-}
-
 function acceptQuest(hero: Hero) {
     const level = hero.level.num
     hero.quest = {
-        title: getQuestTitle(hero),
+        title: lingo.rollQuestTitle(hero),
         progress: {
             cur: 0,
             max: 5 + Math.ceil(level * 1.5) + rand.int(hero, Math.ceil(level / 5))
@@ -382,7 +329,7 @@ function acceptQuest(hero: Hero) {
     }
 }
 
-function passQuest(hero: Hero) {
+function completeQuest(hero: Hero) {
     if (!hero.quest || hero.quest.progress.cur < hero.quest.progress.max) {
         return
     }
@@ -408,7 +355,7 @@ function rollItemsAndLootSingleBestOne(hero: Hero, source: GearSource.Quest | Ge
     let bestBuyPrice = 0
 
     for (let i = 0; i < amount; i++) {
-        const item = getGearItem(hero, source)
+        const item = rollGearItem(hero, source)
         const buyPrice = source == GearSource.Vendor ? item.price * data.itemBuyPriceMult : 0
         if (hero.gold < buyPrice) {
             continue
@@ -659,18 +606,6 @@ function advanceTime(hero: Hero) {
     }
 }
 
-function rollName(): string {
-    const state = { seed: Math.floor(Math.random() * 1000000) }
-
-    let text = ''
-    for (let i = 0; i < rand.int(state, 5) + 3; i++) {
-        text += rand.item(state, data.characterNameParts[i % data.characterNameParts.length]).trim()
-    }
-
-    data.characterNameProfanity.forEach(s => text = text.replaceAll(s[0], s[1]))
-    return text.charAt(0).toUpperCase() + text.slice(1)
-}
-
 function rollAttr(): Map<number> {
     const keys = data.attributes.filter(e => e.primary).map(e => e.name)
     const attr: Map<number> = {}
@@ -723,7 +658,7 @@ function createHero(lang: string, nickname: string, raceName: string, className:
     }
 
     levelUp(hero)
-    lootItems(hero, [ getGearItem(hero, GearSource.Drop, GearSlot.MainHand) ])
+    lootItems(hero, [ rollGearItem(hero, GearSource.Drop, GearSlot.MainHand) ])
     updateZone(hero, ZoneType.Town)
     advanceAction(hero)
 
@@ -781,10 +716,21 @@ function dump(hero: Hero) {
     console.log('====================================================')
 }
 
-export default {
+const game = {
+    version: `pqnext-${version()}-[BUILDSTAMP]`,
+    languages: () => lingo.languages(),
+    text: (lang: string, key: string, args: { [_: string]: string } = {}) => lingo.text(lang, key, args),
+    races: () => data.races.map(({ name, title, desc }) => { return { name, title, desc } }),
+    classes: () => data.classes.map(({ name, title, desc }) => { return { name, title, desc } }),
+    attributes: () => data.attributes.map(({ name, title, desc, format, primary }) => { return { name, title, desc, format, primary } }),
+    gearSlots: () => data.gearSlots.map(({ name, title }) => { return { name, title } }),
     rollAttr,
-    rollName,
-    createHero,
+    rollName: lingo.rollCharName,
+    create: createHero
+}
+
+export default {
+    ...game,
     advanceTime,
     dump
 }
@@ -817,15 +763,7 @@ declare global {
 if (!window.Deno) {
     let activeIntervalId = 0
     window.game = {
-        version: `pqnext-${version()}-[BUILDSTAMP]`,
-        lingo,
-        races: () => data.races.map(({ name, title, desc }) => { return { name, title, desc } }),
-        classes: () => data.classes.map(({ name, title, desc }) => { return { name, title, desc } }),
-        attributes: () => data.attributes.map(({ name, title, desc, format, primary }) => { return { name, title, desc, format, primary } }),
-        gearSlots: () => data.gearSlots.map(({ name, title }) => { return { name, title } }),
-        rollAttr,
-        rollName,
-        create: createHero,
+        ...game,
         save: (hero: Hero) => {
             if (hero) {
                 window.localStorage.hero = JSON.stringify(hero)

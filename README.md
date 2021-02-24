@@ -24,13 +24,6 @@ php -S localhost:8000
 
 ## Todos and Ideas
 
-- extend lingo to fully support different languages:
-    - [x] client ui (index.html)
-    - [ ] title of the quest
-    - [ ] title of the mob (target)
-    - [ ] title of the item
-    - [ ] title of the action
-
 - add value to attributes:
     - [x] str (more bag slots),
     - [ ] dex (lesser chance to die),

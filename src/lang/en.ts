@@ -1,10 +1,19 @@
+import {
+    GearSlot,
+    Hero,
+    ItemQuality,
+    Lingo,
+    Mob,
+    MobMight
+} from '../type.ts'
+
 const meta = {
     name:   'en',
     title:  'English',
     icon:   'https://www.countryflags.io/gb/shiny/32.png'
 }
 
-const dict: { readonly [key: string]: string } = {
+const dict: { readonly [_: string]: string } = {
 
     // attributes
 
@@ -78,6 +87,18 @@ const dict: { readonly [key: string]: string } = {
     'gear-slot-finger-title':       'Finger',
     'gear-slot-trinket-title':      'Trinket',
 
+    // hero actions
+
+    'hero-action-intro':                'Watching intro cinematic...',
+    'hero-action-accept-quest':         'Obtaining a new quest...',
+    'hero-action-pass-quest':           'Completing the quest...',
+    'hero-action-move-to-wilderness':   'Heading to the killing fields...',
+    'hero-action-combat':               'Executing {target}...',
+    'hero-action-rest':                 'Restoring mana...',
+    'hero-action-move-to-town':         'Heading to the closest town...',
+    'hero-action-sell-junk':            'Selling junk...',
+    'hero-action-buy-gear':             'Negotiating purchase of better equipment...',
+
     // ui
 
     'ui-game-subtitle':         'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
@@ -101,7 +122,39 @@ const dict: { readonly [key: string]: string } = {
 
 }
 
-export default {
-    meta,
-    dict
+function rollCharName(_: string): string {
+    return '[char name]'
 }
+
+function rollMobTitle(hero: Hero, mob: Mob, might: MobMight): string {
+    return `[${might} ${mob.name}]`
+}
+
+function rollMobJunkItemTitle(hero: Hero, mob: Mob): string {
+    return `[junk item from ${mob.name}]`
+}
+
+function rollMobPreciousItemTitle(hero: Hero, mob: Mob): string {
+    return `[precious item from ${mob.name}]`
+}
+
+function rollGearItemTitle(hero: Hero, slot: GearSlot, quality: ItemQuality): string {
+    return `[${quality} ${slot}]`
+}
+
+function rollQuestTitle(hero: Hero): string {
+    return `[quest]`
+}
+
+const lingo: Lingo = {
+    meta,
+    dict,
+    rollCharName,
+    rollMobTitle,
+    rollMobJunkItemTitle,
+    rollMobPreciousItemTitle,
+    rollGearItemTitle,
+    rollQuestTitle
+}
+
+export default lingo
