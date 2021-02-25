@@ -109,6 +109,7 @@ const dict: { readonly [_: string]: string } = {
     'ui-hero-summary':          '{name}, Level {level} {class}',
     'ui-losing-prev-hero-warn': 'Previous hero, <b>{hero}</b>, will be lost in case you create new one.',
     'ui-nickname':              'Nickname',
+    'ui-nickname-hint':         'Type or generate...',
     'ui-attributes':            'Attributes',
     'ui-race':                  'Race',
     'ui-class':                 'Class',

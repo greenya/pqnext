@@ -340,13 +340,13 @@
                 <p class="subtitle is-italic is-size-6" :inner-html.prop="'ui-game-subtitle' | text"></p>
                 <div class="block" :inner-html.prop="'ui-game-desc' | text"></div>
                 <div class="block buttons">
-                    <a class="button" :class="{ 'is-primary': !hero }" @click="state = 'create'">{{ 'ui-new-hero' | text }}</a>
+                    <a class="button" :class="{ 'is-primary': !hero }" @click="newHero">{{ 'ui-new-hero' | text }}</a>
                     <a v-if="hero" class="button is-primary" @click="playHero">{{ 'ui-continue' | text }}: <b class="pl-2">{{ heroSummaryString() }}</b></a>
                     <span v-if="autoStartTimer > 0">...{{ autoStartTimer }}</span>
                 </div>
                 <hr>
                 <div class="block buttons">
-                    <a v-for="l in game.lingo.languages()" class="button" :class="{ 'is-info': l.name == lang }" @click="setLanguage(l.name)">
+                    <a v-for="l in game.languages()" class="button" :class="{ 'is-info': l.name == lang() }" @click="setLang(l.name)">
                         <figure v-if="l.icon" class="image is-32x32"><img :src="l.icon" /></figure>
                         <span :class="{ 'ml-2': l.icon }">{{ l.title }}</span>
                     </a>
@@ -356,7 +356,7 @@
         </section>
     </div>
 
-    <div v-else-if="state == 'create'">
+    <div v-else-if="state == 'new'">
         <section class="hero container">
             <div class="hero-body">
                 <h1 class="title">{{ 'ui-new-hero' | text }}</h1>
@@ -368,10 +368,10 @@
                         <h2 class="title is-size-4">{{ 'ui-nickname' | text }}</h2>
                         <div class="field has-addons">
                             <div class="control is-expanded">
-                                <input class="input is-fullwidth" type="text" placeholder="Введіть або згенеруйте..." v-model="newHeroSetup.nickname">
+                                <input class="input is-fullwidth" type="text" :placeholder="'ui-nickname-hint' | text" v-model="newHeroSetup.nickname">
                             </div>
                             <div class="control">
-                                <button class="button" @click="newHeroSetup.nickname = game.rollName()">
+                                <button class="button" @click="newHeroSetup.nickname = game.rollName(lang())">
                                     <span class="icon"><i class="fas fa-dice"></i></span>
                                 </button>
                             </div>
@@ -428,14 +428,14 @@
                         <a class="button is-primary" @click="createHero" :disabled="!newHeroSetup.nickname">{{ 'ui-create' | text }}</a>
                     </div>
                     <div class="control">
-                        <a class="button" @click="state='menu'">{{ 'ui-cancel' | text }}</a>
+                        <a class="button" @click="state = 'menu'">{{ 'ui-cancel' | text }}</a>
                     </div>
                 </div>
             </div>
         </section>
     </div>
 
-    <div v-else-if="state == 'game'">
+    <div v-else-if="state == 'play'">
         <section class="section container">
             <div class="tile is-ancestor">
                 <div class="tile is-parent is-vertical is-3">
@@ -555,7 +555,7 @@
     Vue.filter('text', function (value, args = {}) {
         if (value) {
             value = value.toString()
-            return window.game.lingo.text(value, args)
+            return window.game.text(sessionStorage.lang ?? 'en', value, args)
         } else {
             return ''
         }
@@ -565,10 +565,9 @@
         el: '#app',
         data: {
             state: 'load',
-            lang: 'en',
             game: undefined,
             hero: undefined,
-            newHeroSetup: { nickname: undefined, race: undefined, class: undefined, attr: undefined },
+            newHeroSetup: undefined,
             autoStartTimer: 0
         },
         created: function () {
@@ -578,10 +577,6 @@
 
                     this.game = window.game
                     this.hero = this.game.load()
-                    this.newHeroSetup.nickname = this.game.rollName()
-                    this.newHeroSetup.class = this.game.classes()[0].name
-                    this.newHeroSetup.race = this.game.races()[0].name
-                    this.newHeroSetup.attr = this.game.rollAttr()
                     this.state = 'menu'
 
                     if (this.hero) {
@@ -599,14 +594,26 @@
             }
         },
         methods: {
-            setLanguage: function (name) {
-                this.game.lingo.setLanguage(name)
-                this.lang = name
+            lang: function () {
+                return sessionStorage.lang ?? 'en'
+            },
+            setLang: function (name) {
+                sessionStorage.lang = name
                 this.$forceUpdate()
+            },
+            newHero: function () {
+                this.newHeroSetup = {
+                    lang: this.lang(),
+                    nickname: this.game.rollName(this.lang()),
+                    race: this.game.races()[0].name,
+                    class: this.game.classes()[0].name,
+                    attr: this.game.rollAttr()
+                }
+                this.state = 'new'
             },
             createHero: function () {
                 this.hero = this.game.create(
-                    this.lang,
+                    this.newHeroSetup.lang,
                     this.newHeroSetup.nickname,
                     this.newHeroSetup.race,
                     this.newHeroSetup.class,
@@ -616,16 +623,16 @@
                 this.playHero()
             },
             playHero: function () {
-                this.setLanguage(this.hero.lang)
+                this.setLang(this.hero.lang)
                 this.game.start(this.hero)
-                this.state = 'game'
+                this.state = 'play'
                 setInterval(() => { this.game.save(this.hero) }, 10000)
             },
             heroSummaryString: function () {
-                return game.lingo.text('ui-hero-summary', {
+                return game.text(this.hero.lang, 'ui-hero-summary', {
                     name: this.hero.nickname,
                     level: this.hero.level.num,
-                    class: game.lingo.text(this.game.classes().find(e => e.name == this.hero.class).title)
+                    class: game.text(this.hero.lang, this.game.classes().find(e => e.name == this.hero.class).title)
                 })
             },
             setupAutoStart: function () {

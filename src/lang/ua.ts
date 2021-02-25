@@ -113,6 +113,7 @@ const dict: { readonly [_: string]: string } = {
     'ui-hero-summary':          '{name}, {class} {level}-го рівня',
     'ui-losing-prev-hero-warn': 'Попередній герой, <b>{hero}</b>, буде втрачений при створенні нового.',
     'ui-nickname':              'Прізвисько',
+    'ui-nickname-hint':         'Введіть або згенеруйте...',
     'ui-attributes':            'Атрибути',
     'ui-race':                  'Раса',
     'ui-class':                 'Клас',
