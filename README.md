@@ -16,11 +16,14 @@ deno run --unstable --allow-read --allow-write bundle.ts
 
 ## Start Web Server
 
-Serve `docs` folder. I use PHP to start it, but if you dont' have it, no need to install, you can use Google Chrome extension like [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en)
+Serve `docs` folder. I use PHP to start it
+
 ```
 cd docs
 php -S localhost:8000
 ```
+
+But if you dont' have it, no need to install, you can use Google Chrome extension like [Web Server for Chrome](https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en) or VSCode extension like [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer).
 
 ## Todos and Ideas
 
