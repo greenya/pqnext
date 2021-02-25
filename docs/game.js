@@ -1,38 +1,236 @@
-const version = ()=>4
-;
-function __int(state, max) {
-    const x = Math.sin(state.seed++) * 1000000;
-    return Math.floor((x - Math.floor(x)) * max);
+var ItemQuality;
+(function(ItemQuality1) {
+    ItemQuality1["Poor"] = 'poor';
+    ItemQuality1["Common"] = 'common';
+    ItemQuality1["Uncommon"] = 'uncommon';
+    ItemQuality1["Rare"] = 'rare';
+    ItemQuality1["Epic"] = 'epic';
+})(ItemQuality || (ItemQuality = {
+}));
+var GearSlot;
+(function(GearSlot1) {
+    GearSlot1["MainHand"] = 'mainhand';
+    GearSlot1["OffHand"] = 'offhand';
+    GearSlot1["Head"] = 'head';
+    GearSlot1["Shoulders"] = 'shoulders';
+    GearSlot1["Chest"] = 'chest';
+    GearSlot1["Back"] = 'back';
+    GearSlot1["Wrist"] = 'wrist';
+    GearSlot1["Hands"] = 'hands';
+    GearSlot1["Waist"] = 'waist';
+    GearSlot1["Legs"] = 'legs';
+    GearSlot1["Feet"] = 'feet';
+    GearSlot1["Neck"] = 'neck';
+    GearSlot1["Finger"] = 'finger';
+    GearSlot1["Trinket"] = 'trinket';
+})(GearSlot || (GearSlot = {
+}));
+var GearSource;
+(function(GearSource1) {
+    GearSource1["Drop"] = 'drop';
+    GearSource1["Vendor"] = 'vendor';
+    GearSource1["Quest"] = 'quest';
+})(GearSource || (GearSource = {
+}));
+const GearSource1 = GearSource;
+var ZoneType;
+(function(ZoneType1) {
+    ZoneType1["Town"] = 'town';
+    ZoneType1["Wilderness"] = 'wilderness';
+    ZoneType1["Traveling"] = 'traveling';
+})(ZoneType || (ZoneType = {
+}));
+const ZoneType1 = ZoneType;
+var MobMight;
+(function(MobMight1) {
+    MobMight1["Normal"] = 'normal';
+    MobMight1["Reinforced"] = 'reinforced';
+})(MobMight || (MobMight = {
+}));
+var Trait;
+(function(Trait1) {
+    Trait1[Trait1["None"] = 0] = "None";
+    Trait1[Trait1["Human"] = 1] = "Human";
+    Trait1[Trait1["Beast"] = 2] = "Beast";
+    Trait1[Trait1["Magic"] = 4] = "Magic";
+    Trait1[Trait1["Flesh"] = 1024] = "Flesh";
+    Trait1[Trait1["Insect"] = 2048] = "Insect";
+    Trait1[Trait1["Bone"] = 4096] = "Bone";
+    Trait1[Trait1["Mech"] = 8192] = "Mech";
+    Trait1[Trait1["Fire"] = 16384] = "Fire";
+    Trait1[Trait1["Ice"] = 32768] = "Ice";
+    Trait1[Trait1["Air"] = 65536] = "Air";
+    Trait1[Trait1["Forest"] = 1048576] = "Forest";
+    Trait1[Trait1["Desert"] = 2097152] = "Desert";
+    Trait1[Trait1["Tundra"] = 4194304] = "Tundra";
+    Trait1[Trait1["Swamp"] = 8388608] = "Swamp";
+    Trait1[Trait1["Water"] = 16777216] = "Water";
+})(Trait || (Trait = {
+}));
+const Trait1 = Trait;
+function number(value) {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-function dice(state, faceCount, targetCap = 1) {
-    const i = __int(state, faceCount) + 1;
-    return targetCap >= i;
-}
-function item(state, arr) {
-    const i = __int(state, arr.length);
-    return arr[i];
-}
-function shuffle(state, arr) {
-    for(let i = arr.length - 1; i > 0; i--){
-        const j = __int(state, arr.length);
-        if (i != j) {
-            const t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
-        }
+function duration(seconds) {
+    if (seconds < 60) {
+        const v = seconds;
+        return Number(v).toFixed(0) + ' s';
+    } else if (seconds < 60 * 60) {
+        const v = seconds / 60;
+        return Number(v).toFixed(0) + ' m';
+    } else if (seconds < 60 * 60 * 24) {
+        const v = seconds / 60 / 60;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' h';
+    } else if (seconds < 60 * 60 * 24 * 30) {
+        const v = seconds / 60 / 60 / 24;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' d';
+    } else if (seconds < 60 * 60 * 24 * 365.25) {
+        const v = seconds / 60 / 60 / 24 / 30;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' M';
+    } else {
+        const v = seconds / 60 / 60 / 24 / 365.25;
+        return Number(v).toFixed(v < 10 ? 1 : 0) + ' Y';
     }
-    return arr;
 }
-function text(state, template) {
-    return template.split('_').map((s)=>s.includes('/') ? item(state, s.split('/')) : s
-    ).join(' ');
+function gold(value) {
+    const c = value % 100;
+    value -= c;
+    value /= 100;
+    const s = value % 100;
+    value -= s;
+    value /= 100;
+    const g = value;
+    const p = [];
+    if (g > 0) {
+        p.push(number(g) + 'g');
+    }
+    if (s > 0) {
+        p.push(s + 's');
+    }
+    if (c > 0) {
+        p.push(c + 'c');
+    }
+    return p.length > 0 ? p.join(' ') : '0c';
+}
+function progress(value, fractionDigits = 0) {
+    return Number(value.cur * 100 / value.max).toFixed(fractionDigits) + '%';
 }
 const __default = {
-    int: __int,
-    dice,
-    item,
-    shuffle,
-    text
+    duration,
+    gold,
+    number,
+    progress
+};
+const meta = {
+    name: 'en',
+    title: 'English',
+    icon: 'https://www.countryflags.io/gb/shiny/32.png'
+};
+const dict = {
+    'attr-str-title': 'Strength',
+    'attr-str-desc': 'Increases bag capacity',
+    'attr-str-format': '+{value} Strength',
+    'attr-dex-title': 'Dexterity',
+    'attr-dex-desc': 'Descreases chance to lose in combat',
+    'attr-dex-format': '+{value} Dexterity',
+    'attr-int-title': 'Intellect',
+    'attr-int-desc': 'Increases maximum mana',
+    'attr-int-format': '+{value} Intellect',
+    'attr-sta-title': 'Stamina',
+    'attr-sta-desc': 'Increases maximum health',
+    'attr-sta-format': '+{value} Stamina',
+    'attr-curHp-title': 'Health',
+    'attr-curHp-desc': 'The higher the better',
+    'attr-maxHp-title': 'Maximum Health',
+    'attr-maxHp-desc': 'Increases with level and _stamina_',
+    'attr-curMp-title': 'Mana',
+    'attr-curMp-desc': 'Consumed in combat',
+    'attr-maxMp-title': 'Maximum Mana',
+    'attr-maxMp-desc': 'Increases with level and _intellect_',
+    'attr-bagCap-title': 'Bag Capacity',
+    'attr-bagCap-desc': 'Increases with _strength_',
+    'race-human-title': 'Human',
+    'race-human-desc': 'Humans can perform any role, able to get used to any conditions. They keep balance, as they never behind in any descipline, but also never truly excel at anything.\n\n[i] Attribute priority is balanced',
+    'race-dwarf-title': 'Dwarf',
+    'race-dwarf-desc': 'The native lands of dwarves are hard and demanding. Natural selection determined the direction of their body development.\n\n[i] _Strength_ and _stamina_ are prioritized',
+    'race-elf-title': 'Elf',
+    'race-elf-desc': 'Elves prefer to develop body and mind.\n\n[i] _Intellect_ and _dexterity_ are prioritized',
+    'class-warrior-title': 'Warrior',
+    'class-warrior-desc': '"Strength is the only power!", a warrior yelled and hit his head with a rusty stick. They always knew how to intimidate their foes.\n\n[i] _Strength_ is prioritized',
+    'class-rogue-title': 'Rogue',
+    'class-rogue-desc': 'The life of foes of a rogue is quite bright and fleeting. Often they notice him when it\'s way too late.\n\n[i] _Dexterity_ is prioritized',
+    'class-mage-title': 'Mage',
+    'class-mage-desc': 'In-depth study of everything a magic wand reaches. Foes are defeated with powerful spells.\n\n[i] _Intellect_ is prioritized',
+    'gear-slot-mainhand-title': 'Main Hand',
+    'gear-slot-offhand-title': 'Off Hand',
+    'gear-slot-head-title': 'Head',
+    'gear-slot-shoulders-title': 'Shoulders',
+    'gear-slot-chest-title': 'Chest',
+    'gear-slot-back-title': 'Back',
+    'gear-slot-wrist-title': 'Wrist',
+    'gear-slot-hands-title': 'Hands',
+    'gear-slot-waist-title': 'Waist',
+    'gear-slot-legs-title': 'Legs',
+    'gear-slot-feet-title': 'Feet',
+    'gear-slot-neck-title': 'Neck',
+    'gear-slot-finger-title': 'Finger',
+    'gear-slot-trinket-title': 'Trinket',
+    'hero-action-intro': 'Watching intro cinematic...',
+    'hero-action-accept-quest': 'Obtaining a new quest...',
+    'hero-action-pass-quest': 'Completing the quest...',
+    'hero-action-move-to-wilderness': 'Heading to the killing fields...',
+    'hero-action-combat': 'Executing {target}...',
+    'hero-action-rest': 'Restoring mana...',
+    'hero-action-move-to-town': 'Heading to the closest town...',
+    'hero-action-sell-junk': 'Selling junk...',
+    'hero-action-buy-gear': 'Negotiating purchase of better equipment...',
+    'ui-game-subtitle': 'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc': 'Create a hero and spectate his adventures in the crazy world of never ending progress bars, dangerous enemies and rare loot.',
+    'ui-language-note': 'Note: created character can only be played in the language it was created.',
+    'ui-new-hero': 'New Hero',
+    'ui-continue': 'Continue',
+    'ui-hero-summary': '{name}, Level {level} {class}',
+    'ui-losing-prev-hero-warn': 'Previous hero, <b>{hero}</b>, will be lost in case you create new one.',
+    'ui-nickname': 'Nickname',
+    'ui-nickname-hint': 'Type or generate...',
+    'ui-attributes': 'Attributes',
+    'ui-race': 'Race',
+    'ui-class': 'Class',
+    'ui-create': 'Create',
+    'ui-cancel': 'Cancel',
+    'ui-level': 'Level',
+    'ui-bag': 'Bag',
+    'ui-item-count': '{count} pcs',
+    'ui-item-level': 'Level {level}',
+    'ui-item-source-quest': 'Quest reward'
+};
+function rollCharName(_) {
+    return '[char name]';
+}
+function rollMobTitle(hero, mob, might) {
+    return `[${might} ${mob.name}]`;
+}
+function rollMobJunkItemTitle(hero, mob) {
+    return `[junk item from ${mob.name}]`;
+}
+function rollMobPreciousItemTitle(hero, mob) {
+    return `[precious item from ${mob.name}]`;
+}
+function rollGearItemTitle(hero, slot, quality) {
+    return `[${quality} ${slot}]`;
+}
+function rollQuestTitle(hero) {
+    return `[quest]`;
+}
+const lingo = {
+    meta,
+    dict,
+    rollCharName,
+    rollMobTitle,
+    rollMobJunkItemTitle,
+    rollMobPreciousItemTitle,
+    rollGearItemTitle,
+    rollQuestTitle
 };
 const attributes = [
     {
@@ -119,73 +317,6 @@ const races = [
         }
     }
 ];
-var ItemQuality;
-(function(ItemQuality1) {
-    ItemQuality1["Poor"] = 'poor';
-    ItemQuality1["Common"] = 'common';
-    ItemQuality1["Uncommon"] = 'uncommon';
-    ItemQuality1["Rare"] = 'rare';
-    ItemQuality1["Epic"] = 'epic';
-})(ItemQuality || (ItemQuality = {
-}));
-var GearSlot;
-(function(GearSlot1) {
-    GearSlot1["MainHand"] = 'mainhand';
-    GearSlot1["OffHand"] = 'offhand';
-    GearSlot1["Head"] = 'head';
-    GearSlot1["Shoulders"] = 'shoulders';
-    GearSlot1["Chest"] = 'chest';
-    GearSlot1["Back"] = 'back';
-    GearSlot1["Wrist"] = 'wrist';
-    GearSlot1["Hands"] = 'hands';
-    GearSlot1["Waist"] = 'waist';
-    GearSlot1["Legs"] = 'legs';
-    GearSlot1["Feet"] = 'feet';
-    GearSlot1["Neck"] = 'neck';
-    GearSlot1["Finger"] = 'finger';
-    GearSlot1["Trinket"] = 'trinket';
-})(GearSlot || (GearSlot = {
-}));
-var GearSource;
-(function(GearSource1) {
-    GearSource1["Drop"] = 'drop';
-    GearSource1["Vendor"] = 'vendor';
-    GearSource1["Quest"] = 'quest';
-})(GearSource || (GearSource = {
-}));
-var ZoneType;
-(function(ZoneType1) {
-    ZoneType1["Town"] = 'town';
-    ZoneType1["Wilderness"] = 'wilderness';
-    ZoneType1["Traveling"] = 'traveling';
-})(ZoneType || (ZoneType = {
-}));
-var MobMight;
-(function(MobMight1) {
-    MobMight1["Normal"] = 'normal';
-    MobMight1["Reinforced"] = 'reinforced';
-})(MobMight || (MobMight = {
-}));
-var Trait;
-(function(Trait1) {
-    Trait1[Trait1["None"] = 0] = "None";
-    Trait1[Trait1["Human"] = 1] = "Human";
-    Trait1[Trait1["Beast"] = 2] = "Beast";
-    Trait1[Trait1["Magic"] = 4] = "Magic";
-    Trait1[Trait1["Flesh"] = 1024] = "Flesh";
-    Trait1[Trait1["Insect"] = 2048] = "Insect";
-    Trait1[Trait1["Bone"] = 4096] = "Bone";
-    Trait1[Trait1["Mech"] = 8192] = "Mech";
-    Trait1[Trait1["Fire"] = 16384] = "Fire";
-    Trait1[Trait1["Ice"] = 32768] = "Ice";
-    Trait1[Trait1["Air"] = 65536] = "Air";
-    Trait1[Trait1["Forest"] = 1048576] = "Forest";
-    Trait1[Trait1["Desert"] = 2097152] = "Desert";
-    Trait1[Trait1["Tundra"] = 4194304] = "Tundra";
-    Trait1[Trait1["Swamp"] = 8388608] = "Swamp";
-    Trait1[Trait1["Water"] = 16777216] = "Water";
-})(Trait || (Trait = {
-}));
 const classes = [
     {
         name: 'warrior',
@@ -194,21 +325,7 @@ const classes = [
         attrPrio: {
             str: 3,
             dex: 1
-        },
-        startItems: [
-            {
-                title: 'іржавий дрин',
-                quality: ItemQuality.Poor,
-                gear: {
-                    slot: GearSlot.MainHand,
-                    attr: {
-                    },
-                    level: 1,
-                    source: GearSource.Drop
-                },
-                price: 1
-            }
-        ]
+        }
     },
     {
         name: 'rogue',
@@ -217,21 +334,7 @@ const classes = [
         attrPrio: {
             str: 1,
             dex: 3
-        },
-        startItems: [
-            {
-                title: 'кухонний ніж',
-                quality: ItemQuality.Poor,
-                gear: {
-                    slot: GearSlot.MainHand,
-                    attr: {
-                    },
-                    level: 1,
-                    source: GearSource.Drop
-                },
-                price: 1
-            }
-        ]
+        }
     },
     {
         name: 'mage',
@@ -240,50 +343,554 @@ const classes = [
         attrPrio: {
             dex: 1,
             int: 3
-        },
-        startItems: [
-            {
-                title: 'дерев\'яна паличка',
-                quality: ItemQuality.Poor,
-                gear: {
-                    slot: GearSlot.MainHand,
-                    attr: {
-                    },
-                    level: 1,
-                    source: GearSource.Drop
-                },
-                price: 1
-            }
-        ]
+        }
     }
 ];
 const biomes = [
     {
-        level: 1,
-        biome: Trait.Forest
+        biome: Trait.Forest,
+        level: 1
     },
     {
-        level: 10,
-        biome: Trait.Desert
+        biome: Trait.Desert,
+        level: 10
     },
     {
-        level: 20,
-        biome: Trait.Tundra
+        biome: Trait.Tundra,
+        level: 20
     },
     {
-        level: 30,
-        biome: Trait.Swamp
+        biome: Trait.Swamp,
+        level: 30
     },
     {
-        level: 40,
-        biome: Trait.Water
+        biome: Trait.Water,
+        level: 40
     }
 ];
 const mobs = [
     {
         name: 'ambusher',
         level: 10,
-        trait: Trait.Human | Trait.Forest | Trait.Desert | Trait.Swamp,
+        trait: Trait.Human | Trait.Forest | Trait.Desert | Trait.Swamp
+    },
+    {
+        name: 'ape',
+        level: 18,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest
+    },
+    {
+        name: 'assassin',
+        level: 16,
+        trait: Trait.Human | Trait.Desert
+    },
+    {
+        name: 'bandit',
+        level: 4,
+        trait: Trait.Human | Trait.Forest | Trait.Swamp
+    },
+    {
+        name: 'bat',
+        level: 10,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Swamp
+    },
+    {
+        name: 'bear',
+        level: 8,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra
+    },
+    {
+        name: 'bee',
+        level: 6,
+        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp
+    },
+    {
+        name: 'boar',
+        level: 4,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra
+    },
+    {
+        name: 'cannibal',
+        level: 28,
+        trait: Trait.Human | Trait.Tundra | Trait.Swamp
+    },
+    {
+        name: 'crab',
+        level: 16,
+        trait: Trait.Beast | Trait.Flesh | Trait.Swamp | Trait.Water
+    },
+    {
+        name: 'crayfish',
+        level: 18,
+        trait: Trait.Beast | Trait.Flesh | Trait.Water
+    },
+    {
+        name: 'crocodile',
+        level: 30,
+        trait: Trait.Beast | Trait.Flesh | Trait.Swamp | Trait.Water
+    },
+    {
+        name: 'cultist',
+        level: 22,
+        trait: Trait.Human | Trait.Desert | Trait.Tundra
+    },
+    {
+        name: 'deer',
+        level: 1,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra
+    },
+    {
+        name: 'desert-turtle',
+        level: 10,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'hawk',
+        level: 22,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra
+    },
+    {
+        name: 'hyena',
+        level: 10,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'jellyfish',
+        level: 30,
+        trait: Trait.Beast | Trait.Water
+    },
+    {
+        name: 'koyote',
+        level: 10,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'lama',
+        level: 16,
+        trait: Trait.Beast | Trait.Flesh | Trait.Tundra
+    },
+    {
+        name: 'lizard',
+        level: 14,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'lynx',
+        level: 18,
+        trait: Trait.Beast | Trait.Flesh | Trait.Tundra
+    },
+    {
+        name: 'mountain-lion',
+        level: 20,
+        trait: Trait.Beast | Trait.Flesh | Trait.Tundra
+    },
+    {
+        name: 'mountain-ram',
+        level: 20,
+        trait: Trait.Beast | Trait.Flesh | Trait.Tundra
+    },
+    {
+        name: 'octopus',
+        level: 40,
+        trait: Trait.Beast | Trait.Flesh | Trait.Water
+    },
+    {
+        name: 'owl',
+        level: 2,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra | Trait.Swamp
+    },
+    {
+        name: 'pirate',
+        level: 22,
+        trait: Trait.Human | Trait.Water
+    },
+    {
+        name: 'raptor',
+        level: 24,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra
+    },
+    {
+        name: 'raven',
+        level: 10,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra | Trait.Swamp
+    },
+    {
+        name: 'renegade',
+        level: 32,
+        trait: Trait.Human | Trait.Swamp
+    },
+    {
+        name: 'robber',
+        level: 6,
+        trait: Trait.Human | Trait.Forest | Trait.Tundra
+    },
+    {
+        name: 'sand-vortex',
+        level: 16,
+        trait: Trait.Magic | Trait.Air | Trait.Desert | Trait.Tundra
+    },
+    {
+        name: 'sand-snake',
+        level: 14,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'scavenger',
+        level: 16,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'scorpion',
+        level: 18,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert
+    },
+    {
+        name: 'sea-giant',
+        level: 36,
+        trait: Trait.Magic | Trait.Water
+    },
+    {
+        name: 'sea-snake',
+        level: 28,
+        trait: Trait.Beast | Trait.Flesh | Trait.Water
+    },
+    {
+        name: 'sea-turtle',
+        level: 26,
+        trait: Trait.Beast | Trait.Flesh | Trait.Tundra | Trait.Water
+    },
+    {
+        name: 'shark',
+        level: 38,
+        trait: Trait.Beast | Trait.Flesh | Trait.Water
+    },
+    {
+        name: 'spider',
+        level: 12,
+        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Desert | Trait.Tundra | Trait.Swamp
+    },
+    {
+        name: 'steppe-lion',
+        level: 12,
+        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra
+    },
+    {
+        name: 'stone-giant',
+        level: 30,
+        trait: Trait.Magic | Trait.Desert | Trait.Tundra
+    },
+    {
+        name: 'thief',
+        level: 14,
+        trait: Trait.Human | Trait.Tundra | Trait.Swamp
+    },
+    {
+        name: 'thug',
+        level: 10,
+        trait: Trait.Human | Trait.Forest | Trait.Desert | Trait.Swamp
+    },
+    {
+        name: 'tiger',
+        level: 22,
+        trait: Trait.Beast | Trait.Flesh | Trait.Tundra | Trait.Swamp
+    },
+    {
+        name: 'walking-tree',
+        level: 18,
+        trait: Trait.Magic | Trait.Forest | Trait.Swamp
+    },
+    {
+        name: 'warlock',
+        level: 26,
+        trait: Trait.Human | Trait.Swamp
+    },
+    {
+        name: 'wizard',
+        level: 20,
+        trait: Trait.Human | Trait.Forest | Trait.Tundra
+    },
+    {
+        name: 'wolf',
+        level: 1,
+        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra
+    },
+    {
+        name: 'wood-lurker',
+        level: 14,
+        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp
+    }, 
+];
+const afkMessages = [
+    'Біо афк',
+    'Секунду/Хвилинку/Хвильку',
+    `Відійшов на_одну/дві/три/чотири/п\'ять_хв`,
+    'Прийшла платіжка за_тепло./світло./газ./воду._Роздивляється',
+    'Побіг_на кухню/до холодильника/у сусідню квартиру/у сусідній будинок_за їжею',
+    'Пішов/Пошкандибав/Побіг/Полетів/Телепортанувся_води/чаю/кофе/вина_налити/націдити/накапати',
+    'Швидко/Квапливо/Нашвидкду/Спішно/Живо/Прискорено_курить/палить/димить/смалить/релогається/ребутається',
+    'Хтось_стукає/грюкає/гатить_в двері,/у вікно,/в стелю,/в підлогу,/по голові,/по мізкам,_відійшов_подивитися/розібратися',
+    'Комп\'ютер припинив відповідати!/Монітор відмовляється змінювати картинку!/Миша не слухається!/Клавіатура не друкує!_Скоро перезавантажується',
+    'Зачарованно_дивиться/таращиться_на героїню, що_танцює/стоїть/сидить/вляглася_на поштовій скринці',
+    'Інет_лагає/тормозить/зупинився_капєєєц! Швидко_перевантажує/б\'є ногою/вмовляє_роутер',
+    'Колупається у налаштуваннях_гри/графіки/аддонів/макросів/вікаур',
+    'Оновлює_батлнет/гру/аддони/вікаури/трасмог'
+];
+const itemQualities = [
+    {
+        name: ItemQuality.Poor,
+        level: 1,
+        chance: -1,
+        priceMult: 1
+    },
+    {
+        name: ItemQuality.Common,
+        level: 1,
+        chance: -1,
+        priceMult: 5
+    },
+    {
+        name: ItemQuality.Uncommon,
+        level: 7,
+        chance: 121,
+        priceMult: 20,
+        attrCount: 1
+    },
+    {
+        name: ItemQuality.Rare,
+        level: 18,
+        chance: 21,
+        priceMult: 150,
+        attrCount: 2
+    },
+    {
+        name: ItemQuality.Epic,
+        level: 39,
+        chance: 1,
+        priceMult: 1800,
+        attrCount: 3
+    }
+];
+const gearSlots = [
+    {
+        name: GearSlot.MainHand,
+        title: 'gear-slot-mainhand-title',
+        level: 1,
+        priceMult: 3.5
+    },
+    {
+        name: GearSlot.OffHand,
+        title: 'gear-slot-offhand-title',
+        level: 1,
+        priceMult: 3.2
+    },
+    {
+        name: GearSlot.Head,
+        title: 'gear-slot-head-title',
+        level: 8,
+        priceMult: 1.7
+    },
+    {
+        name: GearSlot.Shoulders,
+        title: 'gear-slot-shoulders-title',
+        level: 10,
+        priceMult: 1.9
+    },
+    {
+        name: GearSlot.Chest,
+        title: 'gear-slot-chest-title',
+        level: 1,
+        priceMult: 2
+    },
+    {
+        name: GearSlot.Back,
+        title: 'gear-slot-back-title',
+        level: 4,
+        priceMult: 1.2
+    },
+    {
+        name: GearSlot.Wrist,
+        title: 'gear-slot-wrist-title',
+        level: 1,
+        priceMult: 1.3
+    },
+    {
+        name: GearSlot.Hands,
+        title: 'gear-slot-hands-title',
+        level: 1,
+        priceMult: 1.6
+    },
+    {
+        name: GearSlot.Waist,
+        title: 'gear-slot-waist-title',
+        level: 2,
+        priceMult: 1.4
+    },
+    {
+        name: GearSlot.Legs,
+        title: 'gear-slot-legs-title',
+        level: 1,
+        priceMult: 1.8
+    },
+    {
+        name: GearSlot.Feet,
+        title: 'gear-slot-feet-title',
+        level: 1,
+        priceMult: 1.5
+    },
+    {
+        name: GearSlot.Neck,
+        title: 'gear-slot-neck-title',
+        level: 15,
+        priceMult: 2.4
+    },
+    {
+        name: GearSlot.Finger,
+        title: 'gear-slot-finger-title',
+        level: 12,
+        priceMult: 2.2
+    },
+    {
+        name: GearSlot.Trinket,
+        title: 'gear-slot-trinket-title',
+        level: 20,
+        priceMult: 2.6
+    }
+];
+const __default1 = {
+    afkMessages,
+    attributes,
+    biomes,
+    classes,
+    gearSlots,
+    itemBuyPriceMult: 10,
+    itemQualities,
+    itemStackSize: 10,
+    mobs,
+    races
+};
+const data = __default1;
+function __int(state, max) {
+    const x = Math.sin(state.seed++) * 1000000;
+    return Math.floor((x - Math.floor(x)) * max);
+}
+function dice(state, faceCount, targetCap = 1) {
+    const i = __int(state, faceCount) + 1;
+    return targetCap >= i;
+}
+function item(state, arr) {
+    const i = __int(state, arr.length);
+    return arr[i];
+}
+function shuffle(state, arr) {
+    for(let i = arr.length - 1; i > 0; i--){
+        const j = __int(state, arr.length);
+        if (i != j) {
+            const t = arr[i];
+            arr[i] = arr[j];
+            arr[j] = t;
+        }
+    }
+    return arr;
+}
+function text(state, template) {
+    return template.split('_').map((s)=>s.includes('/') ? item(state, s.split('/')) : s
+    ).join(' ');
+}
+const __default2 = {
+    int: __int,
+    dice,
+    item,
+    shuffle,
+    text
+};
+const rand = __default2;
+const rand1 = __default2;
+const meta1 = {
+    name: 'ua',
+    title: 'Українська',
+    icon: 'https://www.countryflags.io/ua/shiny/32.png'
+};
+const dict1 = {
+    'attr-str-title': 'Сила',
+    'attr-str-desc': 'Збільшує ємність сумки',
+    'attr-str-format': '+{value} до сили',
+    'attr-dex-title': 'Спритність',
+    'attr-dex-desc': 'Зменьшує шанс програти бій',
+    'attr-dex-format': '+{value} до спритності',
+    'attr-int-title': 'Інтелект',
+    'attr-int-desc': 'Збільшує максимум мани',
+    'attr-int-format': '+{value} до інтелекту',
+    'attr-sta-title': 'Витривалість',
+    'attr-sta-desc': 'Збільшує максимум здоров\'я',
+    'attr-sta-format': '+{value} до витривалості',
+    'attr-curHp-title': 'Здоров\'я',
+    'attr-curHp-desc': 'Краще коли його більше',
+    'attr-maxHp-title': 'Максимум здоров\'я',
+    'attr-maxHp-desc': 'Зростає з рівнем та _витривалістю_',
+    'attr-curMp-title': 'Мана',
+    'attr-curMp-desc': 'Витрачається в бою',
+    'attr-maxMp-title': 'Максимум мани',
+    'attr-maxMp-desc': 'Зростає з рівнем та _інтелектом_',
+    'attr-bagCap-title': 'Ємність сумки',
+    'attr-bagCap-desc': 'Зростає з _силою_',
+    'race-human-title': 'Людина',
+    'race-human-desc': 'Люди добре почуваються у будь-якій ролі, приживаються до будь-яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів збалансований',
+    'race-dwarf-title': 'Дворф',
+    'race-dwarf-desc': 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
+    'race-elf-title': 'Ельф',
+    'race-elf-desc': 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
+    'class-warrior-title': 'Воїн',
+    'class-warrior-desc': '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
+    'class-rogue-title': 'Пройдисвіт',
+    'class-rogue-desc': 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
+    'class-mage-title': 'Маг',
+    'class-mage-desc': 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
+    'gear-slot-mainhand-title': 'Права рука',
+    'gear-slot-offhand-title': 'Ліва рука',
+    'gear-slot-head-title': 'Голова',
+    'gear-slot-shoulders-title': 'Плечі',
+    'gear-slot-chest-title': 'Груди',
+    'gear-slot-back-title': 'Спина',
+    'gear-slot-wrist-title': 'Зап\'ястя',
+    'gear-slot-hands-title': 'Руки',
+    'gear-slot-waist-title': 'Пояс',
+    'gear-slot-legs-title': 'Ноги',
+    'gear-slot-feet-title': 'Ступні',
+    'gear-slot-neck-title': 'Шия',
+    'gear-slot-finger-title': 'Палець',
+    'gear-slot-trinket-title': 'Дрібничка',
+    'hero-action-intro': 'Дивиться вступний сінематик...',
+    'hero-action-accept-quest': 'Ознайомлюється з новим завданням...',
+    'hero-action-pass-quest': 'Завершує завдання...',
+    'hero-action-move-to-wilderness': 'Прямує до дикої місцевості...',
+    'hero-action-combat': 'В бою, ціль: {target}...',
+    'hero-action-rest': 'Відновлює сили...',
+    'hero-action-move-to-town': 'Прямує до найближчого поселення...',
+    'hero-action-sell-junk': 'Продає мотлох...',
+    'hero-action-buy-gear': 'Перевіряє асортимент місцевих крамниць...',
+    'ui-game-subtitle': 'Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
+    'ui-game-desc': 'Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу, небезпечних ворогів та рідкісних предметів.',
+    'ui-language-note': 'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
+    'ui-new-hero': 'Новий герой',
+    'ui-continue': 'Продовжити',
+    'ui-hero-summary': '{name}, {class} {level}-го рівня',
+    'ui-losing-prev-hero-warn': 'Попередній герой, <b>{hero}</b>, буде втрачений при створенні нового.',
+    'ui-nickname': 'Прізвисько',
+    'ui-nickname-hint': 'Введіть або згенеруйте...',
+    'ui-attributes': 'Атрибути',
+    'ui-race': 'Раса',
+    'ui-class': 'Клас',
+    'ui-create': 'Створити',
+    'ui-cancel': 'Відміна',
+    'ui-level': 'Рівень',
+    'ui-bag': 'Сумка',
+    'ui-item-count': '{count} шт',
+    'ui-item-level': '{level}-го рівня',
+    'ui-item-source-quest': 'Винагорода за завдання'
+};
+const mobMeta = [
+    {
+        name: 'ambusher',
         masculine: 'підступний/нічний/кригоокий/темноволосий_душитель',
         feminine: 'підступна/нічна/кригоока/темноволоса_душителька',
         junk: 'пов\'язка на око/розірваний чобіт/тупий ніж/запальничка_душителя',
@@ -294,8 +901,6 @@ const mobs = [
     },
     {
         name: 'ape',
-        level: 18,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest,
         feminine: 'скажена/криклива/червономорда/довгоп\'ята/мокроноса_мавпа',
         junk: 'облізле вухо/великий палець/зуб мудрості/слина_мавпи',
         gcm: {
@@ -305,8 +910,6 @@ const mobs = [
     },
     {
         name: 'assassin',
-        level: 16,
-        trait: Trait.Human | Trait.Desert,
         masculine: 'хитрий/непомітний/бородатий/зухвалий_душогуб',
         feminine: 'хитра/непомітна/зеленоока/зухвала_душогубка',
         junk: 'відрізане вухо/потертий пасок/вставне око_душогуба',
@@ -317,8 +920,6 @@ const mobs = [
     },
     {
         name: 'bandit',
-        level: 4,
-        trait: Trait.Human | Trait.Forest | Trait.Swamp,
         masculine: 'безстрашний/сірозубий/однорукий/рудоволосий_бандит',
         feminine: 'безстрашна/сірозуба/однорука/рудоволоса_бандитка',
         junk: 'вицвілий гаманець/відсічений палець/вибита щелепа_бандита',
@@ -329,8 +930,6 @@ const mobs = [
     },
     {
         name: 'bat',
-        level: 10,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Swamp,
         masculine: 'бридкий/чорний/нічний/чорнокрилий/сіроокий_кажан',
         junk: 'крило/голова/надщерблений зуб_кажана',
         gcm: {
@@ -340,8 +939,6 @@ const mobs = [
     },
     {
         name: 'bear',
-        level: 8,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra,
         masculine: 'розлючений/лісовий/чорний/тундровий/білий_ведмідь',
         feminine: 'розлючена/лісова/чорна/тундрова/біла_ведмедиця',
         junk: 'обдерте вухо/серце/товсте хутро/вищерблене ікло_ведмедя',
@@ -352,8 +949,6 @@ const mobs = [
     },
     {
         name: 'bee',
-        level: 6,
-        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp,
         feminine: 'яра/смугаста/лісова/польова/болотна_бджола',
         junk: 'вусик/жало/око/райдужне крило_бджоли',
         gcm: {
@@ -363,8 +958,6 @@ const mobs = [
     },
     {
         name: 'boar',
-        level: 4,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra,
         masculine: 'роздратований/твердорилий/сірокопитий/дрючкохвостий_кнур',
         feminine: 'роздратована/твердорила/сірокопита/дрючкохвоста_свиня',
         junk: 'вухо/шлунок/печінка/щерблене копито/сірий бивень_кнура',
@@ -375,8 +968,6 @@ const mobs = [
     },
     {
         name: 'cannibal',
-        level: 28,
-        trait: Trait.Human | Trait.Tundra | Trait.Swamp,
         masculine: 'білозубий/оскаженілий/широкощелепий/бруднопикий_людожер',
         feminine: 'білозуба/оскаженіла/широкощелепа/бруднопика_людожерка',
         junk: 'брудний ніготь/зрізаний скальп/кремезна дубина_людожера',
@@ -387,8 +978,6 @@ const mobs = [
     },
     {
         name: 'crab',
-        level: 16,
-        trait: Trait.Beast | Trait.Flesh | Trait.Swamp | Trait.Water,
         masculine: 'розлючений/береговий/червоновусий/білопанцирний/клацаючий клешнями_краб',
         junk: 'біле м\'ясо/око/потрісканий панцир/відірвана клешня_краба',
         gcm: {
@@ -398,8 +987,6 @@ const mobs = [
     },
     {
         name: 'crayfish',
-        level: 18,
-        trait: Trait.Beast | Trait.Flesh | Trait.Water,
         masculine: 'зловіщий/іловий/плоскохвостий/цокаючий_рак',
         junk: 'міцний вус/зелена луска/пробитий панцир/понівечена клешня_рака',
         gcm: {
@@ -409,8 +996,6 @@ const mobs = [
     },
     {
         name: 'crocodile',
-        level: 30,
-        trait: Trait.Beast | Trait.Flesh | Trait.Swamp | Trait.Water,
         masculine: 'лихий/ненажерливий/широкощелепий/шипований_крокодил',
         junk: 'темна луска/чиста сльоза/пошкоджена лапа/щільний шлунок_крокодила',
         gcm: {
@@ -420,8 +1005,6 @@ const mobs = [
     },
     {
         name: 'cultist',
-        level: 22,
-        trait: Trait.Human | Trait.Desert | Trait.Tundra,
         masculine: 'очманілий/відданий/печерний/довгорясий_культист',
         feminine: 'очманіла/віддана/печерна/довгоряса_культистка',
         junk: 'шматок мантії/сторінка книги/тріснувший посох_культиста',
@@ -432,8 +1015,6 @@ const mobs = [
     },
     {
         name: 'deer',
-        level: 1,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra,
         masculine: 'навіжений/лісовий/подертий/довгорогий/сірочеревий_олень',
         feminine: 'навіжена/лісова/подерта/довгорога/сірочерева_олениця',
         junk: 'товсте ребро/нирка/стерте копито/роги_оленя',
@@ -444,8 +1025,6 @@ const mobs = [
     },
     {
         name: 'desert-turtle',
-        level: 10,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         feminine: 'ошаленіла/плямиста/твердопанцирна/пудова_пустельна черепаха',
         junk: 'яйце/слиз/твердий панцир_черепахи',
         gcm: {
@@ -455,8 +1034,6 @@ const mobs = [
     },
     {
         name: 'hawk',
-        level: 22,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra,
         masculine: 'роз\'ярілий/темнокрилий/срібногрудий/клинодзьобий_яструб',
         junk: 'яйце/довге перо/мутне око/уламки дзьоба_яструба',
         gcm: {
@@ -466,8 +1043,6 @@ const mobs = [
     },
     {
         name: 'hyena',
-        level: 10,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         feminine: 'розлютована/голодна/плямиста/оазисна/кочова_гієна',
         junk: 'окривавлена лапа/облізла шкура/брудний хвіст_гієни',
         gcm: {
@@ -477,8 +1052,6 @@ const mobs = [
     },
     {
         name: 'jellyfish',
-        level: 30,
-        trait: Trait.Beast | Trait.Water,
         feminine: 'люта/велика жовта/прозоро-плямиста/фіолетово-смугаста/мутнотіла/місячна_медуза',
         junk: 'водянисте щупальце/мезоглея_медузи',
         gcm: {
@@ -488,8 +1061,6 @@ const mobs = [
     },
     {
         name: 'koyote',
-        level: 10,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         masculine: 'затятий/спритний/пустельний/смугастий/темнолапий_койот',
         junk: 'видертий кіготь/шлунок/язик_койота',
         gcm: {
@@ -499,8 +1070,6 @@ const mobs = [
     },
     {
         name: 'lama',
-        level: 16,
-        trait: Trait.Beast | Trait.Flesh | Trait.Tundra,
         feminine: 'біснувата/польова/світловуха/довгошия/кучерява_лама',
         junk: 'сухий язик/вухо/розбите копито_лами',
         gcm: {
@@ -510,8 +1079,6 @@ const mobs = [
     },
     {
         name: 'lizard',
-        level: 14,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         feminine: 'пустельна/довгоязика/темносмугаста/леопардова/драконова_ящірка',
         junk: 'яйце/довгий язик/тонка шкіра/хвіст_ящірки',
         gcm: {
@@ -521,8 +1088,6 @@ const mobs = [
     },
     {
         name: 'lynx',
-        level: 18,
-        trait: Trait.Beast | Trait.Flesh | Trait.Tundra,
         feminine: 'пекельна/бродяжна/плямиста/гостровуха/гнилошкура_рись',
         junk: 'плямиста шкура/довгі вуса/зламаний кіготь/лапа_рисі',
         gcm: {
@@ -532,8 +1097,6 @@ const mobs = [
     },
     {
         name: 'mountain-lion',
-        level: 20,
-        trait: Trait.Beast | Trait.Flesh | Trait.Tundra,
         masculine: 'розлючений/обережний/блукаючий/вогнегривий/морозогривий_гірський лев',
         feminine: 'розлючена/обережна/блукаюча/вогнегрива/морозогрива_гірська левиця',
         junk: 'тяжка лапа/міцна шкура/гостре ікло_льва',
@@ -544,8 +1107,6 @@ const mobs = [
     },
     {
         name: 'mountain-ram',
-        level: 20,
-        trait: Trait.Beast | Trait.Flesh | Trait.Tundra,
         masculine: 'злий/шорсткоязикий/круторогий/вузькомордий_гірський баран',
         feminine: 'зла/шорсткоязика/круторога/вузькоморда_гірська вівця',
         junk: 'печінка/хутро/копито_гірського барана',
@@ -556,8 +1117,6 @@ const mobs = [
     },
     {
         name: 'octopus',
-        level: 40,
-        trait: Trait.Beast | Trait.Flesh | Trait.Water,
         masculine: 'глибоководний/чорний древній/іржавоплямистий/дев\'ятиногий_восьминіг',
         junk: 'густий слиз/присоска/рвані зябра/кручене щупальце/отрута_восьминога',
         gcm: {
@@ -567,8 +1126,6 @@ const mobs = [
     },
     {
         name: 'owl',
-        level: 2,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra | Trait.Swamp,
         feminine: 'лісова/нічна/смугаста/довгопера/ширококрила_сова',
         junk: 'пазуриста лапа/довге пір\'я/чорний дзьоб_сови',
         gcm: {
@@ -578,8 +1135,6 @@ const mobs = [
     },
     {
         name: 'pirate',
-        level: 22,
-        trait: Trait.Human | Trait.Water,
         masculine: 'маячний/одноокий/одноногий/золотозубий/мулобородий_пірат',
         junk: 'іржавий крюк/карта скарбів/пов\'язка на око/зламана рапіра_пірата',
         gcm: {
@@ -589,8 +1144,6 @@ const mobs = [
     },
     {
         name: 'raptor',
-        level: 24,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra,
         masculine: 'степовий/ненажерливий/червоноокий/короткохвостий/хлястохвостий_раптор',
         junk: 'ціле яйце/шорохувата шкіра/серце/потуплений кіготь/сутужний хвіст_раптора',
         gcm: {
@@ -600,8 +1153,6 @@ const mobs = [
     },
     {
         name: 'raven',
-        level: 10,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra | Trait.Swamp,
         masculine: 'степовий/чорний/сірий/темночеревий/гостродзьобий_крук',
         junk: 'тріснувше яйце/чорне перо/око/міцний пазур_крука',
         gcm: {
@@ -611,8 +1162,6 @@ const mobs = [
     },
     {
         name: 'renegade',
-        level: 32,
-        trait: Trait.Human | Trait.Swamp,
         masculine: 'зловісний/безжалісний/криваворукий/мовчазний_відступник',
         feminine: 'зловісна/безжалісна/криваворука/мовчазна_відступниця',
         junk: 'зірваний кулон/пробитий шолом/гральна карта/сторінка контракту_відступника',
@@ -623,8 +1172,6 @@ const mobs = [
     },
     {
         name: 'robber',
-        level: 6,
-        trait: Trait.Human | Trait.Forest | Trait.Tundra,
         masculine: 'гнівний/окривавлений/бритоголовий/косоокий_грабіжник',
         feminine: 'гнівна/окривавлена/бритоголова/косоока_грабіжниця',
         junk: 'затуплена сокира/жувальний табак/смердючий жупан/балаклава_грабіжника',
@@ -635,8 +1182,6 @@ const mobs = [
     },
     {
         name: 'sand-vortex',
-        level: 16,
-        trait: Trait.Magic | Trait.Air | Trait.Desert | Trait.Tundra,
         masculine: 'шалений/відлюдний/вітровитий/пекучий_пісчаний вихор',
         junk: 'есенція/камінь/пил_пісчаного вихору',
         gcm: {
@@ -646,8 +1191,6 @@ const mobs = [
     },
     {
         name: 'sand-snake',
-        level: 14,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         masculine: 'прудкий/крапчатий/довжелезний/пилоплямистий/жовтосмугастий_пісчаний змій',
         feminine: 'прудка/крапчата/довжелезна/пилоплямиста/жовтосмугаста_пісчана змія',
         junk: 'видерте ікло/шкіра/хвіст/отрута_змії',
@@ -658,8 +1201,6 @@ const mobs = [
     },
     {
         name: 'scavenger',
-        level: 16,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         masculine: 'пустельний/крикливий/приоазисний/довгодзьобий_падальник',
         junk: 'серце/шлунок/чорне перо/тріснувший дзьоб_падальника',
         gcm: {
@@ -669,8 +1210,6 @@ const mobs = [
     },
     {
         name: 'scorpion',
-        level: 18,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert,
         masculine: 'пустельний/в\'язкочорний/королівський/клацаючий клешнями_скорпіон',
         junk: 'відірвана лапа/гострокінечний хвіст/понівечена клешня/отруйна залоза_скорпіона',
         gcm: {
@@ -680,8 +1219,6 @@ const mobs = [
     },
     {
         name: 'sea-giant',
-        level: 36,
-        trait: Trait.Magic | Trait.Water,
         masculine: 'ярий/мандруючий/голодний/донний/глибоководний_морський велетень',
         junk: 'есенція/щільна луска/слина_морського велетня',
         gcm: {
@@ -691,8 +1228,6 @@ const mobs = [
     },
     {
         name: 'sea-snake',
-        level: 28,
-        trait: Trait.Beast | Trait.Flesh | Trait.Water,
         masculine: 'розшалілий/кручений/напівсмугастий/товстошкірий/глибинний_морський змій',
         feminine: 'розшаліла/кручена/напівсмугаста/товстошкіра/глибинна_морська змія',
         junk: 'видертий зуб/шкіра/хвіст/отрута_змії',
@@ -703,8 +1238,6 @@ const mobs = [
     },
     {
         name: 'sea-turtle',
-        level: 26,
-        trait: Trait.Beast | Trait.Flesh | Trait.Tundra | Trait.Water,
         feminine: 'ошаленіла/зеленоплямиста/твердопанцирна/двоголова_морська черепаха',
         junk: 'яйце/легені/твердий панцир_черепахи',
         gcm: {
@@ -714,8 +1247,6 @@ const mobs = [
     },
     {
         name: 'shark',
-        level: 38,
-        trait: Trait.Beast | Trait.Flesh | Trait.Water,
         feminine: 'заклята/страшна/глибоководна/гострозуба_акула',
         junk: 'велике ікло/зябра/плавник/пожухлий хвіст_акули',
         gcm: {
@@ -725,8 +1256,6 @@ const mobs = [
     },
     {
         name: 'spider',
-        level: 12,
-        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Desert | Trait.Tundra | Trait.Swamp,
         masculine: 'біснуватий/лісовий/чорний/маскований/велетенський/отруйний_павук',
         feminine: 'біснувата/лісова/чорна/маскована/велетенська/отруйна_павучиха',
         junk: 'зламана лапка/довгий вусик/отруйна залоза_павука',
@@ -737,8 +1266,6 @@ const mobs = [
     },
     {
         name: 'steppe-lion',
-        level: 12,
-        trait: Trait.Beast | Trait.Flesh | Trait.Desert | Trait.Tundra,
         masculine: 'озвірілий/голодний/полюючий/хижоокий_степний лев',
         feminine: 'озвіріла/голодна/полююча/хижоока_степна левиця',
         junk: 'серце/дебела лапа/міцна шкура/гостре ікло_льва',
@@ -749,8 +1276,6 @@ const mobs = [
     },
     {
         name: 'stone-giant',
-        level: 30,
-        trait: Trait.Magic | Trait.Desert | Trait.Tundra,
         masculine: 'несамовитий/жорстокий/порослий травою/потрісканий_кам\'яний велетень',
         junk: 'есенція/уламки/пил_кам\'яного велетня',
         gcm: {
@@ -760,8 +1285,6 @@ const mobs = [
     },
     {
         name: 'thief',
-        level: 14,
-        trait: Trait.Human | Trait.Tundra | Trait.Swamp,
         masculine: 'підлий/довговусий/чорноокий/блискозубий_злодій',
         feminine: 'підла/хмуроброва/чорноока/блискозуба_злодійка',
         junk: 'іржавий палаш/погнуте кулко/розірвана пальчатка/пошматовані замітки_злодія',
@@ -772,8 +1295,6 @@ const mobs = [
     },
     {
         name: 'thug',
-        level: 10,
-        trait: Trait.Human | Trait.Forest | Trait.Desert | Trait.Swamp,
         masculine: 'незграбний/густобородий/грубопикий/темнобровий/товстопузий_головоріз',
         junk: 'сталевий різак/заплічний мішок/тріснувша попільничка/намисто з зубів жертв_головоріза',
         gcm: {
@@ -783,8 +1304,6 @@ const mobs = [
     },
     {
         name: 'tiger',
-        level: 22,
-        trait: Trait.Beast | Trait.Flesh | Trait.Tundra | Trait.Swamp,
         masculine: 'розгніваний/укритий/яскраво-смугастий/сталевошкурий_тигр',
         feminine: 'розгнівана/укрита/яскраво-смугаста/сталевошкура_тигриця',
         junk: 'хвіст/цупка шкура/рапате вухо/гострий кіготь/легені_тигра',
@@ -795,8 +1314,6 @@ const mobs = [
     },
     {
         name: 'walking-tree',
-        level: 18,
-        trait: Trait.Magic | Trait.Forest | Trait.Tundra | Trait.Swamp,
         neuter: 'несамовите/пробуджене/порубане/випалене/тріскуче_блукаюче дерево',
         junk: 'есенція/кора/гілля/листя_блукаючого дерева',
         gcm: {
@@ -806,8 +1323,6 @@ const mobs = [
     },
     {
         name: 'warlock',
-        level: 26,
-        trait: Trait.Human | Trait.Swamp,
         masculine: 'темноклятий/шепочучий/кривоносий/шкутильгаючий_чорнокнижник',
         feminine: 'темноклята/шепочуча/кривоноса/шкутильгаюча_чорнокнижниця',
         junk: 'пустий флакон мани/дирява накидка/згаслий кристал_чорнокнижника',
@@ -818,8 +1333,6 @@ const mobs = [
     },
     {
         name: 'wizard',
-        level: 20,
-        trait: Trait.Human | Trait.Forest | Trait.Tundra,
         masculine: 'сліпий/завиваючий/таврований/палаючоокий_чародій',
         feminine: 'сліпа/завиваюча/таврована/палаючоока_чародійка',
         junk: 'обгорілий свиток/фіолетовий каптур/руна знань_чародія',
@@ -830,8 +1343,6 @@ const mobs = [
     },
     {
         name: 'wolf',
-        level: 1,
-        trait: Trait.Beast | Trait.Flesh | Trait.Forest | Trait.Tundra,
         masculine: 'здичавілий/ненаситний/голодний/лісовий/сірий_вовк',
         feminine: 'здичавіла/ненаситна/голодна/лісова/сіра_вовчиця',
         junk: 'понівечена лапа/обдерте хутро/ікло_вовка',
@@ -842,8 +1353,6 @@ const mobs = [
     },
     {
         name: 'wood-lurker',
-        level: 14,
-        trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp,
         masculine: 'розлючений/темнолапий/приозерний/прихований_лісовий скрадач',
         junk: 'павутина/око/сукровиця_лісового скрадача',
         gcm: {
@@ -986,219 +1495,165 @@ const preciousItems = [
     {
         gen: 'лівий/правий_чобіт_42-го/44-го/46-го/48-го_розміру',
         trait: Trait.Human,
-        value: 2,
         ggm: true
     },
     {
         gen: 'випрана_біла/синя/зелена/червона/чорна/смугаста_шкарпетка',
         trait: Trait.Human,
-        value: 3,
         ggf: true
     },
     {
         gen: 'шматок/комір/рукав_брудної/чистої/заляпаної кров\'ю_сорочки',
         trait: Trait.Human,
-        value: 4,
         ggm: true
     },
     {
         gen: 'міцна_червона/зелена/блакитна_мотузка',
         trait: Trait.Human,
-        value: 5,
         ggf: true
     },
     {
         gen: 'рулон_щільної/тонкої/шовкової/бавовняної_тканини',
         trait: Trait.Human,
-        value: 8,
         ggm: true
     },
     {
         gen: 'старий/подертий/вицвілий_наручний_годинник/браслет',
         trait: Trait.Human,
-        value: 12,
         ggm: true
     },
     {
         gen: 'пляшка_білого/червоного_сухого/солодкого/напівсухого/напівсолодкого_вина',
         trait: Trait.Human,
-        value: 18,
         ggf: true
     },
     {
         gen: 'коралі/намисто_з золота/із срібла/із зубів',
         trait: Trait.Human,
-        value: 26,
         ggn: true
     },
     {
         gen: 'кулко_з діамантом/з рубіном/зі смарагдом/з сапфіром',
         trait: Trait.Human,
-        value: 38,
         ggn: true
     },
     {
-        gen: 'свіже_сире/знекровлене_м\'ясо_без запаху/з запахом',
+        gen: 'свіже/сире/знекровлене_м\'ясо_без запаху/з запахом',
         trait: Trait.Flesh,
-        value: 4,
         ggn: true
     },
     {
         gen: 'ідеально/досконало/чудово/прекрасно_оброблена шкіра',
         trait: Trait.Flesh,
-        value: 8,
         ggf: true
     },
     {
         gen: 'бездоганно_ампутований/вирізаний_знебарвлений/знекровлений/пожухлий_язик',
         trait: Trait.Flesh,
-        value: 12,
         ggm: true
     },
     {
         gen: 'блискучий/білий_неушкоджений/міцний_передній/верхній/кутній_зуб',
         trait: Trait.Flesh,
-        value: 15,
         ggm: true
     },
     {
         gen: 'досконале/бездоганне/ідеально нагострене/майстерно видалене_ікло',
         trait: Trait.Flesh,
-        value: 21,
         ggn: true
     },
     {
         gen: 'ідеально відрізана/бездоганно відтята/вціліла/неушкоджена/міцна_чорна/сіра/жовта/темна_лапка',
         trait: Trait.Insect,
-        value: 3,
         ggf: true
     },
     {
         gen: 'довгий_вцілілий/неушкоджений/міцний/тривкий_чутливий вусик',
         trait: Trait.Insect,
-        value: 6,
         ggm: true
     },
     {
         gen: 'вціліле/неушкоджене/міцне_чорне/сіре_жало',
         trait: Trait.Insect,
-        value: 9,
         ggn: true
     },
     {
         gen: 'обережно відібрана_чиста/свіжа/тепла/прозора/густа/слизоподібна_сукровиця',
         trait: Trait.Insect,
-        value: 14,
         ggf: true
     },
     {
         gen: 'неушкоджена/велетенська_отруйна залоза',
         trait: Trait.Insect,
-        value: 22,
         ggf: true
     },
     {
         gen: 'перетерта/дрібна/груба_кістяна сіль',
         trait: Trait.Bone,
-        value: 3,
         ggf: true
     },
     {
         gen: 'білий/сірий/темний/чорний_кістяний пил',
         trait: Trait.Bone,
-        value: 5,
         ggm: true
     },
     {
         gen: 'біла/зламана/порожниста_кістка',
         trait: Trait.Bone,
-        value: 7,
         ggf: true
     },
     {
-        gen: 'скалка/уламок_черепа/гомілки/ребра/тазової кістки_правильної форми',
+        gen: 'скалка/тріска/скіпка_черепа/гомілки/ребра/тазової кістки_правильної форми',
         trait: Trait.Bone,
-        value: 9,
         ggf: true
     },
     {
         gen: 'бездоганний/очищений_прах',
         trait: Trait.Bone,
-        value: 15,
         ggm: true
     },
     {
         gen: 'чиста магічна есенція',
         trait: Trait.Magic,
-        value: 12,
         ggf: true
     },
     {
         gen: 'прозора магічна субстанція',
         trait: Trait.Magic,
-        value: 16,
         ggf: true
     },
     {
         gen: 'крихітний/малий/великий_магічний камінь',
         trait: Trait.Magic,
-        value: 24,
         ggm: true
     },
     {
         gen: 'кришталевий фіал з арканічною есенцією',
         trait: Trait.Magic,
-        value: 36,
         ggm: true
     },
     {
         gen: 'міцний_знебарвлений/пожухлий/закам\'янілий_хітин',
         trait: Trait.Water,
-        value: 8,
         ggm: true
     },
     {
         gen: 'міцний/вцілілий/неушкоджений_гострокістковий хребет',
         trait: Trait.Water,
-        value: 12,
         ggm: true
     },
     {
         gen: 'товста_міцна/блискуча/неушкоджена_луска',
         trait: Trait.Water,
-        value: 16,
         ggf: true
     },
     {
         gen: 'фіал із_прозорою/мутною/чистою/слизоподібною_сумішшю',
         trait: Trait.Water,
-        value: 25,
         ggm: true
     }
 ];
-const afkMessages = [
-    'Біо афк',
-    'Секунду/Хвилинку/Хвильку',
-    `Відійшов на_одну/дві/три/чотири/п\'ять_хв`,
-    'Прийшла платіжка за_тепло./світло./газ./воду._Роздивляється',
-    'Побіг_на кухню/до холодильника/у сусідню квартиру/у сусідній будинок_за їжею',
-    'Пішов/Пошкандибав/Побіг/Полетів/Телепортанувся_води/чаю/кофе/вина_налити/націдити/накапати',
-    'Швидко/Квапливо/Нашвидкду/Спішно/Живо/Прискорено_курить/палить/димить/смалить/релогається/ребутається',
-    'Хтось_стукає/грюкає/гатить_в двері,/у вікно,/в стелю,/в підлогу,/по голові,/по мізкам,_відійшов_подивитися/розібратися',
-    'Комп\'ютер припинив відповідати!/Монітор відмовляється змінювати картинку!/Миша не слухається!/Клавіатура не друкує!_Скоро перезавантажується',
-    'Зачарованно_дивиться/таращиться_на героїню, що_танцює/стоїть/сидить/вляглася_на поштовій скринці',
-    'Інет_лагає/тормозить/зупинився_капєєєц! Швидко_перевантажує/б\'є ногою/вмовляє_роутер',
-    'Колупається у налаштуваннях_гри/графіки/аддонів/макросів/вікаур',
-    'Оновлює_батлнет/гру/аддони/вікаури/трасмог'
-];
-const questTitles = [
-    'зменшити/знизити/вбавити_популяцію {mob-gcm-r}',
-    '{mob-gcm-n}_занадто розплодилися/загрожують нашому врожаю/несуть небезпеку поселенню/перекрили торговий шлях',
-    'принести/зібрати/добути_{number-5-20}_шкур/кликів/ікол/шлунків/нирок/сердець/есенцій_{mob-flesh-gcm-r}',
-    'принести/дістати/добути/знайти/відшукати/доставити_{precious-item-ggmn}',
-    '{precious-item-ggf} має бути_знайдена/повернута/відновлена/знищена'
-];
-const itemQualities = [
+const gearQualities = [
     {
         name: ItemQuality.Poor,
         title: {
@@ -1209,10 +1664,7 @@ const itemQualities = [
         },
         templates: [
             '{quality-title} {item-title}'
-        ],
-        level: 1,
-        chance: -1,
-        priceMult: 1
+        ]
     },
     {
         name: ItemQuality.Common,
@@ -1224,10 +1676,7 @@ const itemQualities = [
         },
         templates: [
             '{quality-title} {item-title}'
-        ],
-        level: 1,
-        chance: -1,
-        priceMult: 5
+        ]
     },
     {
         name: ItemQuality.Uncommon,
@@ -1238,19 +1687,8 @@ const itemQualities = [
             x: 'незвичайні/непрості/неабиякі/неординарні/особливі/неправдоподібні/файні/дивні/чудні/чарівні/гарні/прегарні/подвійні/потрійні'
         },
         templates: [
-            '{quality-title} {item-title}',
-            '{uncommon-prefix} {quality-title} {item-title}'
-        ],
-        prefix: {
-            m: 'магічний/зачарований/очищений/блискучий/сяйливий/сяючий/променистий/розкішний/ясний/шикарний/ефектний/палкий/палахкий/ярий/інтенсивний/завзятий/рясний',
-            f: 'магічна/зачарована/очищена/блискуча/сяйлива/сяюча/промениста/розкішна/ясна/шикарна/ефектна/палка/палахка/яра/інтенсивна/завзята/рясна',
-            n: 'магічне/зачароване/очищене/блискуче/сяйливе/сяюче/променисте/розкішне/ясне/шикарне/ефектне/палке/палахке/яре/інтенсивне/завзяте/рясне',
-            x: 'магічні/зачаровані/очищені/блискучі/сяйливі/сяючі/променисті/розкішні/ясні/шикарні/ефектні/палкі/палахкі/ярі/інтенсивні/завзяті/рясні'
-        },
-        level: 7,
-        chance: 121,
-        priceMult: 20,
-        attrCount: 1
+            '{quality-title} {item-title}'
+        ]
     },
     {
         name: ItemQuality.Rare,
@@ -1265,15 +1703,11 @@ const itemQualities = [
             '{rare-prefix} {quality-title} {item-title}'
         ],
         prefix: {
-            m: 'зоряний/сонячний/місячний/сліпучий/вогняний/полум\'яний/вітровий/водяний/іскристий/ангельский/небесний/божественний/досконалий/ідеальний/безкрайній/бездонний',
-            f: 'зоряна/сонячна/місячна/сліпуча/вогняна/полум\'яна/вітрова/водяна/іскриста/ангельска/небесна/божественна/досконала/ідеальна/безкрайня/бездонна',
-            n: 'зоряне/сонячне/місячне/сліпуче/вогняне/полум\'яне/вітрове/водяне/іскристе/ангельске/небесне/божественне/досконале/ідеальне/безкрайнє/бездонне',
-            x: 'зоряні/сонячні/місячні/сліпучі/вогняні/полум\'яні/вітрові/водяні/іскристі/ангельскі/небесні/божественні/досконалі/ідеальні/безкрайні/бездонні'
-        },
-        level: 18,
-        chance: 21,
-        priceMult: 150,
-        attrCount: 2
+            m: 'магічний/зачарований/очищений/блискучий/сяйливий/сяючий/променистий/розкішний/ясний/шикарний/ефектний/палкий/палахкий/ярий/інтенсивний/завзятий/рясний',
+            f: 'магічна/зачарована/очищена/блискуча/сяйлива/сяюча/промениста/розкішна/ясна/шикарна/ефектна/палка/палахка/яра/інтенсивна/завзята/рясна',
+            n: 'магічне/зачароване/очищене/блискуче/сяйливе/сяюче/променисте/розкішне/ясне/шикарне/ефектне/палке/палахке/яре/інтенсивне/завзяте/рясне',
+            x: 'магічні/зачаровані/очищені/блискучі/сяйливі/сяючі/променисті/розкішні/ясні/шикарні/ефектні/палкі/палахкі/ярі/інтенсивні/завзяті/рясні'
+        }
     },
     {
         name: ItemQuality.Epic,
@@ -1286,22 +1720,23 @@ const itemQualities = [
         templates: [
             '{quality-title} {item-title} {epic-suffix}',
             '{rare-prefix} {item-title} {epic-suffix}',
-            '{rare-prefix} {quality-title} {item-title} {epic-suffix}'
+            '{rare-prefix} {quality-title} {item-title} {epic-suffix}',
+            '{epic-prefix} {item-title} {epic-suffix}',
+            '{epic-prefix} {quality-title} {item-title} {epic-suffix}'
         ],
-        suffix: 'ангела/архангела/зірок/космосу/неба/полум\'я/серця' + '/бійця/воїна/мага/мисливця/паладіна/монаха/друїда/чорнокнижника/шамана/гладіатора/поборника/мародера/вбивці' + '/монстра/чудовиська/страховиська/примари/потвори/демона/елементаля/велетня/хижака/злості/лютощі' + '/природи/життя/дикості/тиранії/руйнування/знищення/стихій/вихорів/торнадо/хвиль/водовороту/виру' + '/сповільнення/прискорення/висушення/затоплення/випалювання/елементів/знань/вмінь/свідомості' + '/мисливця за скарбами/грабіжника гробниць/внутрішнього вогню/сили дворфів/мудрості ельфів',
-        level: 39,
-        chance: 1,
-        priceMult: 1800,
-        attrCount: 3
+        prefix: {
+            m: 'зоряний/сонячний/місячний/сліпучий/вогняний/полум\'яний/вітровий/водяний/іскристий/ангельский/небесний/божественний/досконалий/ідеальний/безкрайній/бездонний',
+            f: 'зоряна/сонячна/місячна/сліпуча/вогняна/полум\'яна/вітрова/водяна/іскриста/ангельска/небесна/божественна/досконала/ідеальна/безкрайня/бездонна',
+            n: 'зоряне/сонячне/місячне/сліпуче/вогняне/полум\'яне/вітрове/водяне/іскристе/ангельске/небесне/божественне/досконале/ідеальне/безкрайнє/бездонне',
+            x: 'зоряні/сонячні/місячні/сліпучі/вогняні/полум\'яні/вітрові/водяні/іскристі/ангельскі/небесні/божественні/досконалі/ідеальні/безкрайні/бездонні'
+        },
+        suffix: 'ангела/архангела/зірок/космосу/неба/полум\'я/серця' + '/бійця/воїна/мага/мисливця/паладіна/монаха/друїда/чорнокнижника/шамана/гладіатора/поборника/мародера/вбивці' + '/монстра/чудовиська/страховиська/примари/потвори/демона/елементаля/велетня/хижака/злості/лютощі' + '/природи/життя/дикості/тиранії/руйнування/знищення/стихій/вихорів/торнадо/хвиль/водовороту/виру' + '/сповільнення/прискорення/висушення/затоплення/випалювання/елементів/знань/вмінь/свідомості' + '/мисливця за скарбами/грабіжника гробниць/внутрішнього вогню/сили дворфів/мудрості ельфів'
     }
 ];
-const gearSlots = [
+const gearSlots1 = [
     {
         name: GearSlot.MainHand,
-        title: 'gear-slot-mainhand-title',
-        level: 1,
-        priceMult: 3.5,
-        items: [
+        options: [
             {
                 title: 'дубина',
                 ggf: true
@@ -1482,10 +1917,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.OffHand,
-        title: 'gear-slot-offhand-title',
-        level: 1,
-        priceMult: 3.2,
-        items: [
+        options: [
             {
                 title: 'парасолька',
                 ggf: true
@@ -1618,10 +2050,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Head,
-        title: 'gear-slot-head-title',
-        level: 8,
-        priceMult: 1.7,
-        items: [
+        options: [
             {
                 title: 'пов\'язка',
                 ggf: true
@@ -1734,10 +2163,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Shoulders,
-        title: 'gear-slot-shoulders-title',
-        level: 10,
-        priceMult: 1.9,
-        items: [
+        options: [
             {
                 title: 'підкладки',
                 ggx: true
@@ -1774,10 +2200,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Chest,
-        title: 'gear-slot-chest-title',
-        level: 1,
-        priceMult: 2,
-        items: [
+        options: [
             {
                 title: 'лейбик',
                 ggm: true
@@ -1870,10 +2293,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Back,
-        title: 'gear-slot-back-title',
-        level: 4,
-        priceMult: 1.2,
-        items: [
+        options: [
             {
                 title: 'фіранка',
                 ggf: true
@@ -1954,10 +2374,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Wrist,
-        title: 'gear-slot-wrist-title',
-        level: 1,
-        priceMult: 1.3,
-        items: [
+        options: [
             {
                 title: 'браслети',
                 ggx: true
@@ -1990,10 +2407,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Hands,
-        title: 'gear-slot-hands-title',
-        level: 1,
-        priceMult: 1.6,
-        items: [
+        options: [
             {
                 title: 'рукавиці',
                 ggx: true
@@ -2014,16 +2428,21 @@ const gearSlots = [
     },
     {
         name: GearSlot.Waist,
-        title: 'gear-slot-waist-title',
-        level: 2,
-        priceMult: 1.4,
-        items: [
+        options: [
             {
                 title: 'пасок',
                 ggm: true
             },
             {
                 title: 'пояс',
+                ggm: true
+            },
+            {
+                title: 'поясина',
+                ggf: true
+            },
+            {
+                title: 'опасок',
                 ggm: true
             },
             {
@@ -2038,10 +2457,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Legs,
-        title: 'gear-slot-legs-title',
-        level: 1,
-        priceMult: 1.8,
-        items: [
+        options: [
             {
                 title: 'штани',
                 ggx: true
@@ -2098,10 +2514,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Feet,
-        title: 'gear-slot-feet-title',
-        level: 1,
-        priceMult: 1.5,
-        items: [
+        options: [
             {
                 title: 'бахили',
                 ggx: true
@@ -2206,10 +2619,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Neck,
-        title: 'gear-slot-neck-title',
-        level: 15,
-        priceMult: 2.4,
-        items: [
+        options: [
             {
                 title: 'ланцюжок',
                 ggm: true
@@ -2266,10 +2676,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Finger,
-        title: 'gear-slot-finger-title',
-        level: 12,
-        priceMult: 2.2,
-        items: [
+        options: [
             {
                 title: 'обідок',
                 ggm: true
@@ -2298,10 +2705,7 @@ const gearSlots = [
     },
     {
         name: GearSlot.Trinket,
-        title: 'gear-slot-trinket-title',
-        level: 20,
-        priceMult: 2.6,
-        items: [
+        options: [
             {
                 title: 'сережка',
                 ggf: true
@@ -2356,7 +2760,7 @@ const gearSlots = [
             },
             {
                 title: 'знамено',
-                ggf: true
+                ggx: true
             },
             {
                 title: 'прикраса',
@@ -2385,41 +2789,203 @@ const gearSlots = [
         ]
     }
 ];
-const characterNameParts = [
-    'б,б,б,бр,бл,бс,\\n    в,в,в,в,вк,вн,вр,вл,вт,вс,\\n    г,г,гр,гн,гл,\\n    ґ,ґ,ґр,ґн,ґл,\\n    д,д,дл,дн,дв,\\n    з,з,зр,зн,зг,зґ,зт,зв,зм,\\n    к,к,к,к,кр,кн,кв,км,кл,кт,\\n    м,м,м,м,мн,мр,мл,мс,мт,\\n    н,н,н,н,нк,нн,нз,нх,нф,нв,\\n    п,п,п,п,пр,пл,\\n    с,с,с,с,ст,сц,ск,сн,сг,сґ,сх,сф,св,сп,ср,сл,сд,см,сс,\\n    т,т,т,т,тр,тв,тл,тс,тм,\\n    х,х,х,х,хр,хв,хл,хс,хм,хт,\\n    ш,ш,ш,ш,шр,шк,шн,шв,шп,шл,шм,шт'.split(','),
-    'а,а,а,а,ай,аа,ау,ае,ає,аі,аї,ао,аю,ая,\\n    е,е,е,е,ей,ее,еу,ео,еі,еї,ею,ея,\\n    є,є,є,є,єй,єу,єі,єю,єя,\\n    і,і,і,і,ій,іу,ії,іа,іо,ія,\\n    и,и,и,и,ий,иу,ие,иє,иі,иї,иа,ио,ию,ия,\\n    о,о,о,о,ой,оо,оу,ое,оє,оі,ої,оа,ою,оя,\\n    у,у,у,у,уу,уе,ує,уі,уї,уа,уо,ую,уя,\\n    ю,ю,ю,ю,юй,ює,юі,юї,юа,юо,юя,\\n    я,я,я,я,яй,яу,яе,яє,яі,яї,яа,яо,яю,яя'.split(',')
+const quests = [
+    'зменшити/знизити/вбавити_популяцію {mob-gcm-r}',
+    '{mob-gcm-n}_занадто розплодилися/загрожують нашому врожаю/несуть небезпеку поселенню/перекрили торговий шлях',
+    'принести/зібрати/добути_{number-5-20}_шкур/кликів/ікол/шлунків/нирок/сердець/есенцій_{mob-flesh-gcm-r}',
+    'принести/дістати/добути/знайти/відшукати/доставити_{precious-item-ggmn}',
+    '{precious-item-ggf} має бути_знайдена/повернута/відновлена/знищена'
 ];
-const characterNameProfanity = [
+const charNameParts = [
+    'б,б,б,бр,бл,бс,\
+    в,в,в,в,вк,вн,вр,вл,вт,вс,\
+    г,г,гр,гн,гл,\
+    ґ,ґ,ґр,ґн,ґл,\
+    д,д,дл,дн,дв,\
+    з,з,зр,зн,зг,зґ,зт,зв,зм,\
+    к,к,к,к,кр,кн,кв,км,кл,кт,\
+    м,м,м,м,мн,мр,мл,мс,мт,\
+    н,н,н,н,нк,нн,нз,нх,нф,нв,\
+    п,п,п,п,пр,пл,\
+    с,с,с,с,ст,сц,ск,сн,сг,сґ,сх,сф,св,сп,ср,сл,сд,см,сс,\
+    т,т,т,т,тр,тв,тл,тс,тм,\
+    х,х,х,х,хр,хв,хл,хс,хм,хт,\
+    ш,ш,ш,ш,шр,шк,шн,шв,шп,шл,шм,шт'.split(','),
+    'а,а,а,а,ай,аа,ау,ае,ає,аі,аї,ао,аю,ая,\
+    е,е,е,е,ей,ее,еу,ео,еі,еї,ею,ея,\
+    є,є,є,є,єй,єу,єі,єю,єя,\
+    і,і,і,і,ій,іу,ії,іа,іо,ія,\
+    и,и,и,и,ий,иу,ие,иє,иі,иї,иа,ио,ию,ия,\
+    о,о,о,о,ой,оо,оу,ое,оє,оі,ої,оа,ою,оя,\
+    у,у,у,у,уу,уе,ує,уі,уї,уа,уо,ую,уя,\
+    ю,ю,ю,ю,юй,ює,юі,юї,юа,юо,юя,\
+    я,я,я,я,яй,яу,яе,яє,яі,яї,яа,яо,яю,яя'.split(',')
+];
+const charNameProfanity = [
     [
-        'хуй',
-        'хор'
+        'бля',
+        'блу'
+    ],
+    [
+        'гєй',
+        'гай'
+    ],
+    [
+        'єб',
+        'уб'
+    ],
+    [
+        'йоб',
+        'мон'
     ],
     [
         'пізд',
         'под'
     ],
     [
-        'бля',
-        'блу'
+        'сук',
+        'сок'
+    ],
+    [
+        'хуй',
+        'хор'
+    ],
+    [
+        'шлюх',
+        'шліс'
     ]
 ];
-const __default1 = {
-    afkMessages,
-    attributes,
-    biomes,
-    characterNameParts,
-    characterNameProfanity,
-    classes,
-    gearSlots,
-    itemBuyPriceMult: 10,
-    itemQualities,
-    itemStackSize: 10,
-    questTitles,
-    mobReinforcedPrefixes,
-    mobs,
-    preciousItems,
-    races
+function rollCharName1(_) {
+    const state = {
+        seed: Math.floor(Math.random() * 1000000)
+    };
+    let text1 = '';
+    for(let i = 0; i < __default2.int(state, 4) + 2; i++){
+        text1 += rand1.item(state, charNameParts[i % charNameParts.length]).trim();
+    }
+    charNameProfanity.forEach((s)=>text1 = text1.replaceAll(s[0], s[1])
+    );
+    return text1.charAt(0).toUpperCase() + text1.slice(1);
+}
+function rollMobTitle1(hero, mob, might) {
+    const meta2 = mobMeta.find((e)=>e.name == mob.name
+    );
+    const genders = [
+        meta2.masculine,
+        meta2.feminine,
+        meta2.neuter
+    ].reduce((a, c, i)=>{
+        if (c) {
+            a.push({
+                i,
+                gen: c
+            });
+        }
+        return a;
+    }, []);
+    const gender = __default2.item(hero, genders);
+    const title = __default2.text(hero, gender.gen);
+    let prefix = '';
+    if (might == MobMight.Reinforced) {
+        const prefixes = mobReinforcedPrefixes.filter((p)=>p.trait & mob.trait
+        ).map((p)=>p.gen
+        );
+        prefix = rand1.item(hero, prefixes).split('/')[gender.i];
+    }
+    return `${prefix} ${title}`.trim();
+}
+function rollMobJunkItemTitle1(hero, mob) {
+    const meta2 = mobMeta.find((e)=>e.name == mob.name
+    );
+    return __default2.text(hero, meta2.junk);
+}
+function rollMobPreciousItemTitle1(hero, mob) {
+    const items = preciousItems.filter((i)=>(mob.trait & i.trait) == i.trait
+    );
+    const item1 = __default2.item(hero, items);
+    return __default2.text(hero, item1.gen);
+}
+function rollGearItemTitle1(hero, slot, quality) {
+    const options = gearSlots1.find((e)=>e.name == slot
+    ).options;
+    const option = __default2.item(hero, options);
+    const ggKey = option.ggm ? 'm' : option.ggf ? 'f' : option.ggn ? 'n' : 'x';
+    const qualityMeta = gearQualities.find((e)=>e.name == quality
+    );
+    return __default2.item(hero, qualityMeta.templates).replace('{item-title}', option.title).replace('{quality-title}', __default2.text(hero, qualityMeta.title[ggKey])).replace('{rare-prefix}', __default2.text(hero, gearQualities.find((e)=>e.name == ItemQuality.Rare
+    ).prefix[ggKey])).replace('{epic-prefix}', __default2.text(hero, gearQualities.find((e)=>e.name == ItemQuality.Epic
+    ).prefix[ggKey])).replace('{epic-suffix}', __default2.text(hero, gearQualities.find((e)=>e.name == ItemQuality.Epic
+    ).suffix));
+}
+function rollQuestTitle1(hero) {
+    const fleshMobName = __default2.item(hero, __default1.mobs.filter((m)=>m.trait & Trait.Flesh
+    )).name;
+    const fleshMobMeta = mobMeta.find((e)=>e.name == fleshMobName
+    );
+    const text1 = __default2.text(hero, __default2.item(hero, quests)).replace('{number-5-20}', `${__default2.int(hero, 16) + 5}`).replace('{mob-gcm-n}', __default2.item(hero, mobMeta).gcm.n).replace('{mob-gcm-r}', __default2.item(hero, mobMeta).gcm.r).replace('{mob-flesh-gcm-r}', fleshMobMeta.gcm.r).replace('{precious-item-ggmn}', __default2.text(hero, __default2.item(hero, preciousItems.filter((i)=>i.ggm || i.ggn
+    )).gen)).replace('{precious-item-ggf}', __default2.text(hero, __default2.item(hero, preciousItems.filter((i)=>i.ggf
+    )).gen));
+    return text1.charAt(0).toUpperCase() + text1.slice(1);
+}
+const lingo1 = {
+    meta: meta1,
+    dict: dict1,
+    rollCharName: rollCharName1,
+    rollMobTitle: rollMobTitle1,
+    rollMobJunkItemTitle: rollMobJunkItemTitle1,
+    rollMobPreciousItemTitle: rollMobPreciousItemTitle1,
+    rollGearItemTitle: rollGearItemTitle1,
+    rollQuestTitle: rollQuestTitle1
 };
+const lingos = [
+    lingo,
+    lingo1
+];
+function lingo2(lang) {
+    return lingos.find((e)=>e.meta.name == lang
+    ) || lingos[0];
+}
+function languages() {
+    return lingos.map((e)=>({
+            name: e.meta.name,
+            title: e.meta.title,
+            icon: e.meta.icon
+        })
+    );
+}
+function text1(lang, key, args = {
+}) {
+    let result = lingo2(lang).dict[key] || lingo.dict[key];
+    if (result) {
+        for(const arg in args){
+            result = result.replace('{' + arg + '}', args[arg]);
+        }
+        return result;
+    } else {
+        return `[${key}]`;
+    }
+}
+const gen = {
+    rollCharName: (lang)=>lingo2(lang).rollCharName(lang)
+    ,
+    rollMobTitle: (hero, ...args)=>lingo2(hero.lang).rollMobTitle(hero, ...args)
+    ,
+    rollMobJunkItemTitle: (hero, ...args)=>lingo2(hero.lang).rollMobJunkItemTitle(hero, ...args)
+    ,
+    rollMobPreciousItemTitle: (hero, ...args)=>lingo2(hero.lang).rollMobPreciousItemTitle(hero, ...args)
+    ,
+    rollGearItemTitle: (hero, ...args)=>lingo2(hero.lang).rollGearItemTitle(hero, ...args)
+    ,
+    rollQuestTitle: (hero)=>lingo2(hero.lang).rollQuestTitle(hero)
+};
+const __default3 = {
+    languages,
+    text: text1,
+    ...gen
+};
+const lingo3 = __default3;
+const version = ()=>4
+;
 const knownHeroActions = [
     {
         name: '?',
@@ -2431,7 +2997,7 @@ const knownHeroActions = [
     },
     {
         name: 'intro',
-        title: ()=>'Дивиться вступний сінематик...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-intro')
         ,
         duration: ()=>10
         ,
@@ -2439,12 +3005,12 @@ const knownHeroActions = [
     },
     {
         name: 'afk',
-        title: (hero)=>'[AFK] ' + __default.text(hero, __default.item(hero, __default1.afkMessages)) + '...'
+        title: (hero)=>'[AFK] ' + __default2.text(hero, __default2.item(hero, __default1.afkMessages)) + '...'
         ,
-        duration: (hero)=>8 + __default.int(hero, 2)
+        duration: (hero)=>8 + __default2.int(hero, 2)
         ,
         next: (hero)=>{
-            if (__default.dice(hero, 5)) {
+            if (__default2.dice(hero, 5)) {
                 return 'afk';
             } else if (hero.bag.length > 0) {
                 return 'sell-junk';
@@ -2455,15 +3021,15 @@ const knownHeroActions = [
     },
     {
         name: 'accept-quest',
-        title: ()=>'Ознайомлюється з новим завданням...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-accept-quest')
         ,
-        duration: (hero)=>5 + __default.int(hero, 2)
+        duration: (hero)=>5 + __default2.int(hero, 2)
         ,
         onFinish: (hero)=>{
             acceptQuest(hero);
         },
         next: (hero)=>{
-            if (__default.dice(hero, 4)) {
+            if (__default2.dice(hero, 4)) {
                 return 'afk';
             } else if (hero.bag.length > 0) {
                 return 'sell-junk';
@@ -2474,18 +3040,18 @@ const knownHeroActions = [
     },
     {
         name: 'pass-quest',
-        title: ()=>'Завершує завдання...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-pass-quest')
         ,
-        duration: (hero)=>5 + __default.int(hero, 2)
+        duration: (hero)=>5 + __default2.int(hero, 2)
         ,
         onFinish: (hero)=>{
-            passQuest(hero);
+            completeQuest(hero);
         },
         next: ()=>'accept-quest'
     },
     {
         name: 'move-to-wilderness',
-        title: ()=>'Прямує до дикої місцевості...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-move-to-wilderness')
         ,
         duration: ()=>15
         ,
@@ -2499,7 +3065,9 @@ const knownHeroActions = [
     },
     {
         name: 'combat',
-        title: (hero)=>'В бою, ціль: ' + hero.target.title
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-combat', {
+                target: hero.target.title
+            })
         ,
         duration: (hero)=>5 + (hero.target.might == MobMight.Reinforced ? 2 : 0)
         ,
@@ -2523,7 +3091,7 @@ const knownHeroActions = [
     },
     {
         name: 'rest',
-        title: ()=>'Відновлює сили...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-rest')
         ,
         duration: ()=>15
         ,
@@ -2534,7 +3102,7 @@ const knownHeroActions = [
     },
     {
         name: 'move-to-town',
-        title: ()=>'Прямує до найближчого поселення...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-move-to-town')
         ,
         duration: ()=>15
         ,
@@ -2548,7 +3116,7 @@ const knownHeroActions = [
             if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
                 return 'pass-quest';
             } else {
-                return __default.item(hero, [
+                return __default2.item(hero, [
                     'afk',
                     'sell-junk'
                 ]);
@@ -2557,7 +3125,7 @@ const knownHeroActions = [
     },
     {
         name: 'sell-junk',
-        title: ()=>'Продає мотлох...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-sell-junk')
         ,
         duration: (hero)=>Math.max(1, Math.floor(hero.bag.length / 2))
         ,
@@ -2568,20 +3136,20 @@ const knownHeroActions = [
             if (haveEnoughGoldToGoShopping(hero)) {
                 return 'buy-gear';
             } else {
-                return __default.dice(hero, 4) ? 'afk' : 'move-to-wilderness';
+                return __default2.dice(hero, 4) ? 'afk' : 'move-to-wilderness';
             }
         }
     },
     {
         name: 'buy-gear',
-        title: ()=>'Перевіряє асортимент місцевих крамниць...'
+        title: (hero)=>__default3.text(hero.lang, 'hero-action-buy-gear')
         ,
         duration: (hero)=>8
         ,
         onFinish: (hero)=>{
             buyGear(hero);
         },
-        next: (hero)=>__default.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
+        next: (hero)=>__default2.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
     }
 ];
 function haveEnoughGoldToGoShopping(hero) {
@@ -2593,37 +3161,15 @@ function haveEnoughGoldToGoShopping(hero) {
 function buyGear(hero) {
     rollItemsAndLootSingleBestOne(hero, GearSource.Vendor);
 }
-function getHeroTarget(hero) {
+function rollMobHeroTarget(hero) {
     const level = hero.level.num;
     const mobs1 = __default1.mobs.filter((m)=>(m.trait & hero.zone.biome) == hero.zone.biome && m.level <= level
     );
-    const mob = __default.item(hero, mobs1);
-    const genders = [
-        mob.masculine,
-        mob.feminine,
-        mob.neuter
-    ].reduce((a, c, i)=>{
-        if (c) {
-            a.push({
-                i,
-                gen: c
-            });
-        }
-        return a;
-    }, []);
-    const gender = __default.item(hero, genders);
-    const title = __default.text(hero, gender.gen);
-    let might = MobMight.Normal;
-    let prefix = '';
-    if (level >= mob.level + 10 && __default.dice(hero, 8)) {
-        const prefixes = __default1.mobReinforcedPrefixes.filter((p)=>p.trait & mob.trait
-        ).map((p)=>p.gen
-        );
-        prefix = __default.item(hero, prefixes).split('/')[gender.i];
-        might = MobMight.Reinforced;
-    }
+    const mob = __default2.item(hero, mobs1);
+    const might = level >= mob.level + 10 && __default2.dice(hero, 8) ? MobMight.Reinforced : MobMight.Normal;
+    const title = __default3.rollMobTitle(hero, mob, might);
     return {
-        title: (prefix ? prefix + ' ' : '') + title,
+        title,
         mob: mob.name,
         might
     };
@@ -2633,7 +3179,7 @@ function manaNeededForCombat(hero) {
     return Math.min(20 + level, hero.attr.maxMp);
 }
 function startCombat(hero) {
-    hero.target = getHeroTarget(hero);
+    hero.target = rollMobHeroTarget(hero);
 }
 function finishCombat(hero) {
     const level = hero.level.num;
@@ -2643,19 +3189,19 @@ function finishCombat(hero) {
     const reinforced = target.might == MobMight.Reinforced;
     addExp(hero, level + 1 + (reinforced ? 1 : 0), 'mob');
     if ((mob.trait & Trait.Human) == Trait.Human) {
-        addGold(hero, __default.int(hero, 3) + level * 2 + (reinforced ? level * 10 : 0), 'mob');
+        addGold(hero, __default2.int(hero, 3) + level * 2 + (reinforced ? level * 10 : 0), 'mob');
     }
-    if (__default.dice(hero, 2)) {
+    if (__default2.dice(hero, 2)) {
         progressQuest(hero);
     }
     const items = [];
-    if (__default.dice(hero, 14)) {
-        items.push(getGearItem(hero, GearSource.Drop));
+    if (__default2.dice(hero, 14)) {
+        items.push(rollGearItem(hero, GearSource.Drop));
     } else {
         if (reinforced) {
-            items.push(getMobPreciousItem(hero, mob));
+            items.push(rollMobPreciousItem(hero, mob));
         } else {
-            items.push(getMobJunkItem(hero, mob));
+            items.push(rollMobJunkItem(hero, mob));
         }
     }
     if (items.length > 0) {
@@ -2665,35 +3211,14 @@ function finishCombat(hero) {
     hero.attr.curMp -= manaNeededForCombat(hero);
     stats.mobsKilled[target.might]++;
 }
-function getGearItemTitle(hero, slot, quality) {
-    const slotMeta = __default1.gearSlots.find((s)=>s.name == slot
-    );
-    const availItems = slotMeta.items.filter((i, index)=>slotMeta.level + index * 2 <= hero.level.num
-    );
-    if (availItems.length == 0) {
-        if (slotMeta.items.length > 0) {
-            availItems.push(slotMeta.items[0]);
-        } else {
-            return `${quality} ${slot}`;
-        }
-    }
-    const item1 = __default.item(hero, availItems);
-    const ggKey = item1.ggm ? 'm' : item1.ggf ? 'f' : item1.ggn ? 'n' : 'x';
-    const qualityMeta = __default1.itemQualities.find((q)=>q.name == quality
-    );
-    return __default.item(hero, qualityMeta.templates).replace('{item-title}', item1.title).replace('{quality-title}', __default.text(hero, qualityMeta.title[ggKey])).replace('{uncommon-prefix}', __default.text(hero, __default1.itemQualities.find((q)=>q.name == ItemQuality.Uncommon
-    ).prefix[ggKey])).replace('{rare-prefix}', __default.text(hero, __default1.itemQualities.find((q)=>q.name == ItemQuality.Rare
-    ).prefix[ggKey])).replace('{epic-suffix}', __default.text(hero, __default1.itemQualities.find((q)=>q.name == ItemQuality.Epic
-    ).suffix));
-}
-function getItemQuality(hero, source) {
+function rollItemQuality(hero, source) {
     const level = hero.level.num;
-    const roll = __default.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0));
+    const roll = __default2.int(hero, 1000 - (source == GearSource.Quest ? 500 : 0));
     const quality = __default1.itemQualities.reduce((a, c)=>c.chance > 0 && c.chance > roll && c.level <= level ? c.name : a
-    , level < 20 && __default.dice(hero, 1 + Math.floor(level / 4)) ? ItemQuality.Poor : ItemQuality.Common);
+    , level < 20 && __default2.dice(hero, 1 + Math.floor(level / 4)) ? ItemQuality.Poor : ItemQuality.Common);
     return quality;
 }
-function getGearItemAttributes(hero, quality, source) {
+function rollGearItemAttributes(hero, quality, source) {
     const level = hero.level.num;
     const attr = {
     };
@@ -2701,25 +3226,27 @@ function getGearItemAttributes(hero, quality, source) {
     ).attrCount;
     if (count) {
         const bonus = Math.floor(level / 5);
-        const stat = __default.shuffle(hero, __default1.attributes.filter((e)=>e.primary
+        const stat = __default2.shuffle(hero, __default1.attributes.filter((e)=>e.primary
         ).map((e)=>e.name
         ));
         for(let i = 0; i < count; i++){
-            attr[stat[i]] = bonus + (i == 0 && source == GearSource.Quest ? 1 : 0);
+            attr[stat[i]] = bonus + (i == 0 && source == GearSource1.Quest ? 1 : 0);
         }
     }
     return attr;
 }
-function getGearItem(hero, source) {
+function rollGearItem(hero, source, forSlot) {
     const level = hero.level.num;
-    const availSlots = __default1.gearSlots.filter((s)=>s.level <= level
+    const availSlots = forSlot ? [
+        forSlot
+    ] : __default1.gearSlots.filter((s)=>s.level <= level
     ).map((s)=>s.name
     );
-    const slot = __default.item(hero, availSlots);
-    const quality = getItemQuality(hero, source);
-    const title = getGearItemTitle(hero, slot, quality);
+    const slot = __default2.item(hero, availSlots);
+    const quality = rollItemQuality(hero, source);
+    const title = __default3.rollGearItemTitle(hero, slot, quality);
     const price = getItemPrice(hero, title, quality, slot);
-    const attr = getGearItemAttributes(hero, quality, source);
+    const attr = rollGearItemAttributes(hero, quality, source);
     return {
         title,
         quality,
@@ -2732,21 +3259,21 @@ function getGearItem(hero, source) {
         price
     };
 }
-function getMobPreciousItem(hero, mob) {
-    const preciousItems1 = __default1.preciousItems.filter((i)=>(mob.trait & i.trait) == i.trait
-    );
-    const preciousItem = __default.item(hero, preciousItems1);
-    const title = __default.text(hero, preciousItem.gen);
+function rollMobPreciousItem(hero, mob) {
+    const level = hero.level.num;
+    const title = __default3.rollMobPreciousItemTitle(hero, mob);
     const quality = ItemQuality.Common;
-    const price = getItemPrice(hero, title, quality, undefined, preciousItem.value);
+    const priceDev = getItemPriceDeviation(hero, title);
+    const priceMult = 5 + Math.floor(priceDev % level / 2);
+    const price = getItemPrice(hero, title, quality, undefined, priceMult);
     return {
         title,
         quality,
         price
     };
 }
-function getMobJunkItem(hero, mob) {
-    const title = __default.text(hero, mob.junk);
+function rollMobJunkItem(hero, mob) {
+    const title = __default3.rollMobJunkItemTitle(hero, mob);
     const quality = ItemQuality.Poor;
     const price = getItemPrice(hero, title, quality);
     return {
@@ -2755,48 +3282,41 @@ function getMobJunkItem(hero, mob) {
         price
     };
 }
-function getPoorItemPriceDeviation(hero, title) {
+function getItemPriceDeviation(hero, title) {
     const level = hero.level.num;
     const base = title.split('').reduce((a, c)=>a + c.charCodeAt(0)
     , 0);
     const mod = base % 5 * Math.ceil(level / 3);
     return mod > 0 ? mod : base % level * 7;
 }
-function getItemPrice(hero, title, quality, slot, extraMult) {
+function getItemPrice(hero, title, quality, slot, extraMult = 1) {
     const level = hero.level.num;
-    const price = Math.floor((quality == ItemQuality.Poor ? getPoorItemPriceDeviation(hero, title) : 0) + level * __default1.itemQualities.find((q)=>q.name == quality
+    const price = Math.floor((quality == ItemQuality.Poor ? getItemPriceDeviation(hero, title) : 0) + level * __default1.itemQualities.find((q)=>q.name == quality
     ).priceMult * (slot ? level / 10 * __default1.gearSlots.find((s)=>s.name == slot
-    ).priceMult : 1) * (extraMult ? extraMult : 1));
+    ).priceMult : 1) * extraMult);
     return Math.max(price, 1);
 }
 function sellJunk(hero) {
     hero.bag.splice(0).forEach((slot)=>addGold(hero, slot.item.price * slot.count, 'junk')
     );
 }
-function getQuestTitle(hero) {
-    const text1 = __default.text(hero, __default.item(hero, __default1.questTitles)).replace('{number-5-20}', `${__default.int(hero, 16) + 5}`).replace('{mob-gcm-n}', __default.item(hero, __default1.mobs).gcm.n).replace('{mob-gcm-r}', __default.item(hero, __default1.mobs).gcm.r).replace('{mob-flesh-gcm-r}', __default.item(hero, __default1.mobs.filter((m)=>m.trait & Trait.Flesh
-    )).gcm.r).replace('{precious-item-ggmn}', __default.text(hero, __default.item(hero, __default1.preciousItems.filter((i)=>i.ggm || i.ggn
-    )).gen)).replace('{precious-item-ggf}', __default.text(hero, __default.item(hero, __default1.preciousItems.filter((i)=>i.ggf
-    )).gen));
-    return text1.charAt(0).toUpperCase() + text1.slice(1);
-}
 function acceptQuest(hero) {
     const level = hero.level.num;
     hero.quest = {
-        title: getQuestTitle(hero),
+        title: lingo3.rollQuestTitle(hero),
         progress: {
             cur: 0,
-            max: 5 + Math.ceil(level * 1.5) + __default.int(hero, Math.ceil(level / 5))
+            max: 5 + Math.ceil(level * 1.5) + rand.int(hero, Math.ceil(level / 5))
         }
     };
 }
-function passQuest(hero) {
+function completeQuest(hero) {
     if (!hero.quest || hero.quest.progress.cur < hero.quest.progress.max) {
         return;
     }
     const level = hero.level.num;
     addExp(hero, Math.ceil(hero.level.progress.max / (10 + level / 10)) + level * 4 + 3, 'quest');
-    addGold(hero, __default.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest');
+    addGold(hero, __default2.int(hero, 10) + Math.ceil(Math.pow(level, 3) / 8) + 20, 'quest');
     rollItemsAndLootSingleBestOne(hero, GearSource.Quest);
     hero.quest = undefined;
     stats.questsPassed++;
@@ -2807,7 +3327,7 @@ function rollItemsAndLootSingleBestOne(hero, source) {
     let bestDeltaValue = 0;
     let bestBuyPrice = 0;
     for(let i = 0; i < amount; i++){
-        const item1 = getGearItem(hero, source);
+        const item1 = rollGearItem(hero, source);
         const buyPrice = source == GearSource.Vendor ? item1.price * __default1.itemBuyPriceMult : 0;
         if (hero.gold < buyPrice) {
             continue;
@@ -2834,8 +3354,8 @@ function rollItemsAndLootSingleBestOne(hero, source) {
 }
 function updateZone(hero, newType) {
     hero.zone.type = newType;
-    hero.zone.biome = newType == ZoneType.Wilderness ? __default.item(hero, __default1.biomes.filter((b)=>b.level <= hero.level.num
-    )).biome : Trait.None;
+    hero.zone.biome = newType == ZoneType1.Wilderness ? rand.item(hero, data.biomes.filter((b)=>b.level <= hero.level.num
+    )).biome : Trait1.None;
     if (newType == ZoneType.Town) {
         hero.attr.curMp = hero.attr.maxMp;
     }
@@ -2880,7 +3400,7 @@ function levelUp(hero) {
     if (level > 1) {
         const prio = hero.attrPrio;
         for(let i = 0; i < 4; i++){
-            const roll = __default.int(hero, prio.str + prio.dex + prio.int + prio.sta);
+            const roll = __default2.int(hero, prio.str + prio.dex + prio.int + prio.sta);
             if (roll < prio.str) {
                 attr.str++;
             } else if (roll < prio.str + prio.dex) {
@@ -2919,13 +3439,13 @@ function getGearItemValue(hero, item1) {
     if (item1.gear) {
         const attr = item1.gear.attr;
         const prio = hero.attrPrio;
-        value = __default1.attributes.filter((e)=>e.primary
+        value = data.attributes.filter((e)=>e.primary
         ).map((e)=>e.name
         ).reduce((a, c)=>a + prio[c] * (attr[c] ?? 0)
         , 0);
     }
     if (value < 1) {
-        value = __default1.itemQualities.findIndex((q)=>q.name == item1.quality
+        value = data.itemQualities.findIndex((q)=>q.name == item1.quality
         );
     }
     return value;
@@ -3021,7 +3541,7 @@ function advanceAction(hero) {
     hero.action.progress.max = nextAction.duration(hero);
 }
 function advanceTime(hero) {
-    hero.seed = __default.int(hero, 2000000000);
+    hero.seed = rand.int(hero, 2000000000);
     advanceAction(hero);
     stats.time++;
     switch(hero.action.name){
@@ -3057,18 +3577,6 @@ function advanceTime(hero) {
             break;
     }
 }
-function rollName() {
-    const state = {
-        seed: Math.floor(Math.random() * 1000000)
-    };
-    let text1 = '';
-    for(let i = 0; i < __default.int(state, 5) + 3; i++){
-        text1 += __default.item(state, __default1.characterNameParts[i % __default1.characterNameParts.length]).trim();
-    }
-    __default1.characterNameProfanity.forEach((s)=>text1 = text1.replaceAll(s[0], s[1])
-    );
-    return text1.charAt(0).toUpperCase() + text1.slice(1);
-}
 function rollAttr() {
     const keys = __default1.attributes.filter((e)=>e.primary
     ).map((e)=>e.name
@@ -3081,208 +3589,17 @@ function rollAttr() {
         seed: Math.floor(Math.random() * 1000000)
     };
     for(let t = 0; t < 8; t++){
-        const k1 = __default.item(state, keys);
+        const k1 = __default2.item(state, keys);
         let k2 = k1;
         while(k2 == k1){
-            k2 = __default.item(state, keys);
+            k2 = rand.item(state, keys);
         }
         attr[k1]--;
         attr[k2]++;
     }
     return attr;
 }
-const meta = {
-    name: 'en',
-    title: 'English',
-    icon: 'https://www.countryflags.io/gb/shiny/32.png'
-};
-const dict = {
-    'attr-str-title': 'Strength',
-    'attr-str-desc': 'Increases bag capacity',
-    'attr-str-format': '+{value} Strength',
-    'attr-dex-title': 'Dexterity',
-    'attr-dex-desc': 'Descreases chance to lose in combat',
-    'attr-dex-format': '+{value} Dexterity',
-    'attr-int-title': 'Intellect',
-    'attr-int-desc': 'Increases maximum mana',
-    'attr-int-format': '+{value} Intellect',
-    'attr-sta-title': 'Stamina',
-    'attr-sta-desc': 'Increases maximum health',
-    'attr-sta-format': '+{value} Stamina',
-    'attr-curHp-title': 'Health',
-    'attr-curHp-desc': 'The higher the better',
-    'attr-maxHp-title': 'Maximum Health',
-    'attr-maxHp-desc': 'Increases with level and _stamina_',
-    'attr-curMp-title': 'Mana',
-    'attr-curMp-desc': 'Consumed in combat',
-    'attr-maxMp-title': 'Maximum Mana',
-    'attr-maxMp-desc': 'Increases with level and _intellect_',
-    'attr-bagCap-title': 'Bag Capacity',
-    'attr-bagCap-desc': 'Increases with _strength_',
-    'race-human-title': 'Human',
-    'race-human-desc': 'Humans can perform any role, able to get used to any conditions. They keep balance, as they never behind in any descipline, but also never truly excel at anything.\n\n[i] Attribute priority is balanced',
-    'race-dwarf-title': 'Dwarf',
-    'race-dwarf-desc': 'The native lands of dwarves are hard and demanding. Natural selection determined the direction of their body development.\n\n[i] _Strength_ and _stamina_ are prioritized',
-    'race-elf-title': 'Elf',
-    'race-elf-desc': 'Elves prefer to develop body and mind.\n\n[i] _Intellect_ and _dexterity_ are prioritized',
-    'class-warrior-title': 'Warrior',
-    'class-warrior-desc': '"Strength is the only power!", a warrior yelled and hit his head with a rusty stick. They always knew how to intimidate their foes.\n\n[i] _Strength_ is prioritized',
-    'class-rogue-title': 'Rogue',
-    'class-rogue-desc': 'The life of foes of a rogue is quite bright and fleeting. Often they notice him when it\'s way too late.\n\n[i] _Dexterity_ is prioritized',
-    'class-mage-title': 'Mage',
-    'class-mage-desc': 'In-depth study of everything a magic wand reaches. Foes are defeated with powerful spells.\n\n[i] _Intellect_ is prioritized',
-    'gear-slot-mainhand-title': 'Main Hand',
-    'gear-slot-offhand-title': 'Off Hand',
-    'gear-slot-head-title': 'Head',
-    'gear-slot-shoulders-title': 'Shoulders',
-    'gear-slot-chest-title': 'Chest',
-    'gear-slot-back-title': 'Back',
-    'gear-slot-wrist-title': 'Wrist',
-    'gear-slot-hands-title': 'Hands',
-    'gear-slot-waist-title': 'Waist',
-    'gear-slot-legs-title': 'Legs',
-    'gear-slot-feet-title': 'Feet',
-    'gear-slot-neck-title': 'Neck',
-    'gear-slot-finger-title': 'Finger',
-    'gear-slot-trinket-title': 'Trinket',
-    'ui-game-subtitle': 'Original idea from <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
-    'ui-game-desc': 'Create a hero and spectate his adventures in the crazy world of never ending progress bars, dangerous enemies and rare loot.',
-    'ui-language-note': 'Note: created character can only be played in the language it was created.',
-    'ui-new-hero': 'New Hero',
-    'ui-continue': 'Continue',
-    'ui-hero-summary': '{name}, Level {level} {class}',
-    'ui-losing-prev-hero-warn': 'Previous hero, <b>{hero}</b>, will be lost in case you create new one.',
-    'ui-nickname': 'Nickname',
-    'ui-attributes': 'Attributes',
-    'ui-race': 'Race',
-    'ui-class': 'Class',
-    'ui-create': 'Create',
-    'ui-cancel': 'Cancel',
-    'ui-level': 'Level',
-    'ui-bag': 'Bag',
-    'ui-item-count': '{count} pcs',
-    'ui-item-level': 'Level {level}',
-    'ui-item-source-quest': 'Quest reward'
-};
-const __default2 = {
-    meta,
-    dict
-};
-const meta1 = {
-    name: 'ua',
-    title: 'Українська',
-    icon: 'https://www.countryflags.io/ua/shiny/32.png'
-};
-const dict1 = {
-    'attr-str-title': 'Сила',
-    'attr-str-desc': 'Збільшує ємність сумки',
-    'attr-str-format': '+{value} до сили',
-    'attr-dex-title': 'Спритність',
-    'attr-dex-desc': 'Зменьшує шанс програти бій',
-    'attr-dex-format': '+{value} до спритності',
-    'attr-int-title': 'Інтелект',
-    'attr-int-desc': 'Збільшує максимум мани',
-    'attr-int-format': '+{value} до інтелекту',
-    'attr-sta-title': 'Витривалість',
-    'attr-sta-desc': 'Збільшує максимум здоров\'я',
-    'attr-sta-format': '+{value} до витривалості',
-    'attr-curHp-title': 'Здоров\'я',
-    'attr-curHp-desc': 'Краще коли його більше',
-    'attr-maxHp-title': 'Максимум здоров\'я',
-    'attr-maxHp-desc': 'Зростає з рівнем та _витривалістю_',
-    'attr-curMp-title': 'Мана',
-    'attr-curMp-desc': 'Витрачається в бою',
-    'attr-maxMp-title': 'Максимум мани',
-    'attr-maxMp-desc': 'Зростає з рівнем та _інтелектом_',
-    'attr-bagCap-title': 'Ємність сумки',
-    'attr-bagCap-desc': 'Зростає з _силою_',
-    'race-human-title': 'Людина',
-    'race-human-desc': 'Люди добре почуваються у будь-якій ролі, приживаються до будь-яких умов. Утримують баланс, не відстають в жодній дисципліні, але й не хватають зірок.\n\n[i] Пріорітет атрибутів збалансований',
-    'race-dwarf-title': 'Дворф',
-    'race-dwarf-desc': 'Рідні краї дворфів жорсткі та вимогливі. Природний добір визначив напрямок розвитку їхнього тіла.\n\n[i] _Сила_ та _витривалість_ в пріорітеті',
-    'race-elf-title': 'Ельф',
-    'race-elf-desc': 'Ельфи одночасно розвивають тіло та розум.\n\n[i] _Інтелект_ і _спритність_ в пріорітеті',
-    'class-warrior-title': 'Воїн',
-    'class-warrior-desc': '"Сила наше всьо!", скаже воїн і вдарить іржавим дрином себе по голові. Він завжди вмів залякувати своїх ворогів.\n\n[i] _Сила_ в пріорітеті',
-    'class-rogue-title': 'Пройдисвіт',
-    'class-rogue-desc': 'Життя ворогів пройдисвіта яскраве й швидкоплинне. Вони часто помічають його тоді коли вже запізно.\n\n[i] _Спритність_ в пріорітеті',
-    'class-mage-title': 'Маг',
-    'class-mage-desc': 'Поглибленне вивчення всього до чого дістає магічна паличка. Ворогів перемагають словом і ділом одночасно.\n\n[i] _Інтелект_ в пріорітеті',
-    'gear-slot-mainhand-title': 'Права рука',
-    'gear-slot-offhand-title': 'Ліва рука',
-    'gear-slot-head-title': 'Голова',
-    'gear-slot-shoulders-title': 'Плечі',
-    'gear-slot-chest-title': 'Груди',
-    'gear-slot-back-title': 'Спина',
-    'gear-slot-wrist-title': 'Зап\'ястя',
-    'gear-slot-hands-title': 'Руки',
-    'gear-slot-waist-title': 'Пояс',
-    'gear-slot-legs-title': 'Ноги',
-    'gear-slot-feet-title': 'Ступні',
-    'gear-slot-neck-title': 'Шия',
-    'gear-slot-finger-title': 'Палець',
-    'gear-slot-trinket-title': 'Дрібничка',
-    'ui-game-subtitle': 'Оригінальна ідея від <a href="http://progressquest.com/" target="_blank">Progress Quest</a>',
-    'ui-game-desc': 'Створіть героя та спостерігайте за його пригодами у шаленомі світі нескінчених смуг прогресу, небезпечних ворогів та рідкісних предметів.',
-    'ui-language-note': 'Примітка: гра за створеного героя можлива буде лише на мові в якій він був створений.',
-    'ui-new-hero': 'Новий герой',
-    'ui-continue': 'Продовжити',
-    'ui-hero-summary': '{name}, {class} {level}-го рівня',
-    'ui-losing-prev-hero-warn': 'Попередній герой, <b>{hero}</b>, буде втрачений при створенні нового.',
-    'ui-nickname': 'Прізвисько',
-    'ui-attributes': 'Атрибути',
-    'ui-race': 'Раса',
-    'ui-class': 'Клас',
-    'ui-create': 'Створити',
-    'ui-cancel': 'Відміна',
-    'ui-level': 'Рівень',
-    'ui-bag': 'Сумка',
-    'ui-item-count': '{count} шт',
-    'ui-item-level': '{level}-го рівня',
-    'ui-item-source-quest': 'Винагорода за завдання'
-};
-const __default3 = {
-    meta: meta1,
-    dict: dict1
-};
-const langs = [
-    __default2,
-    __default3
-];
-let lang = __default2;
-function languages() {
-    return langs.map((e)=>({
-            name: e.meta.name,
-            title: e.meta.title,
-            icon: e.meta.icon
-        })
-    );
-}
-function setLanguage(name) {
-    const found = langs.find((e)=>e.meta.name == name
-    );
-    if (found) {
-        lang = found;
-    }
-}
-function text1(key, args = {
-}) {
-    let result = lang.dict[key] || __default2.dict[key];
-    if (result) {
-        for(const arg in args){
-            result = result.replace('{' + arg + '}', args[arg]);
-        }
-        return result;
-    } else {
-        return key;
-    }
-}
-const __default4 = {
-    languages,
-    setLanguage,
-    text: text1
-};
-function createHero(lang1, nickname, raceName, className, attrRoll) {
+function createHero(lang, nickname, raceName, className, attrRoll) {
     const race = __default1.races.find((r)=>r.name == raceName
     );
     const clazz = __default1.classes.find((c)=>c.name == className
@@ -3291,8 +3608,8 @@ function createHero(lang1, nickname, raceName, className, attrRoll) {
         ver: version(),
         born: Math.floor(Date.now() / 1000),
         seed: Math.floor(70000000 + Math.random() * 2000000000),
-        lang: __default4.languages().find((l)=>l.name == lang1
-        ) ? lang1 : __default4.languages()[0].name,
+        lang: __default3.languages().find((l)=>l.name == lang
+        ) ? lang : __default3.languages()[0].name,
         nickname,
         race: raceName,
         class: className,
@@ -3331,7 +3648,9 @@ function createHero(lang1, nickname, raceName, className, attrRoll) {
         bag: []
     };
     levelUp(hero);
-    lootItems(hero, clazz.startItems);
+    lootItems(hero, [
+        rollGearItem(hero, GearSource.Drop, GearSlot.MainHand)
+    ]);
     updateZone(hero, ZoneType.Town);
     advanceAction(hero);
     return hero;
@@ -3396,61 +3715,8 @@ const stats = {
         0
     ]
 };
-function number(value) {
-    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-function duration(seconds) {
-    if (seconds < 60) {
-        const v = seconds;
-        return Number(seconds).toFixed(0) + ' s';
-    } else if (seconds < 60 * 60) {
-        const v = seconds / 60;
-        return Number(v).toFixed(0) + ' m';
-    } else if (seconds < 60 * 60 * 24) {
-        const v = seconds / 60 / 60;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' h';
-    } else if (seconds < 60 * 60 * 24 * 30) {
-        const v = seconds / 60 / 60 / 24;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' d';
-    } else if (seconds < 60 * 60 * 24 * 365.25) {
-        const v = seconds / 60 / 60 / 24 / 30;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' M';
-    } else {
-        const v = seconds / 60 / 60 / 24 / 365.25;
-        return Number(v).toFixed(v < 10 ? 1 : 0) + ' Y';
-    }
-}
-function gold(value) {
-    const c = value % 100;
-    value -= c;
-    value /= 100;
-    const s = value % 100;
-    value -= s;
-    value /= 100;
-    const g = value;
-    const p = [];
-    if (value > 0) {
-        p.push(number(value) + 'g');
-    }
-    if (s > 0) {
-        p.push(s + 's');
-    }
-    if (c > 0) {
-        p.push(c + 'c');
-    }
-    return p.length > 0 ? p.join(' ') : '0c';
-}
-function progress(value, fractionDigits = 0) {
-    return Number(value.cur * 100 / value.max).toFixed(fractionDigits) + '%';
-}
-const __default5 = {
-    duration,
-    gold,
-    number,
-    progress
-};
 function dump(hero) {
-    console.log('==================================================== TIME:', __default5.duration(stats.time), '==== GOLD:', __default5.gold(hero.gold));
+    console.log('==================================================== TIME:', __default.duration(stats.time), '==== GOLD:', __default.gold(hero.gold));
     console.log('#### HERO', hero);
     console.log('#### STATS', stats);
     console.log('#### TIME SPENT BREAKDOWN');
@@ -3459,7 +3725,7 @@ function dump(hero) {
         return {
             k,
             v,
-            '%': __default5.progress({
+            '%': __default.progress({
                 cur: v,
                 max: stats.time
             }, 1)
@@ -3484,9 +3750,9 @@ function dump(hero) {
     const totalGoldCollected = Object.values(stats.goldCollected).reduce((a, c)=>a + c
     , 0);
     console.table(stats.levelUpTimestamps.map((e, i, a)=>{
-        const et = __default5.duration(e);
-        const dt = __default5.duration((i < a.length - 1 ? a[i + 1] : stats.time) - e);
-        const dg = __default5.gold((i < a.length - 1 ? stats.levelUpGoldstamps[i + 1] : totalGoldCollected) - stats.levelUpGoldstamps[i]);
+        const et = __default.duration(e);
+        const dt = __default.duration((i < a.length - 1 ? a[i + 1] : stats.time) - e);
+        const dg = __default.gold((i < a.length - 1 ? stats.levelUpGoldstamps[i + 1] : totalGoldCollected) - stats.levelUpGoldstamps[i]);
         return [
             et,
             dt,
@@ -3495,6 +3761,56 @@ function dump(hero) {
     }));
     console.log('====================================================');
 }
+const game = {
+    version: `pqnext-${version()}-210225`,
+    languages: ()=>__default3.languages()
+    ,
+    text: (lang, key, args = {
+    })=>__default3.text(lang, key, args)
+    ,
+    races: ()=>__default1.races.map(({ name , title , desc  })=>{
+            return {
+                name,
+                title,
+                desc
+            };
+        })
+    ,
+    classes: ()=>__default1.classes.map(({ name , title , desc  })=>{
+            return {
+                name,
+                title,
+                desc
+            };
+        })
+    ,
+    attributes: ()=>__default1.attributes.map(({ name , title , desc , format , primary  })=>{
+            return {
+                name,
+                title,
+                desc,
+                format,
+                primary
+            };
+        })
+    ,
+    gearSlots: ()=>__default1.gearSlots.map(({ name , title  })=>{
+            return {
+                name,
+                title
+            };
+        })
+    ,
+    rollAttr,
+    rollName: __default3.rollCharName,
+    create: createHero
+};
+const __default4 = {
+    ...game,
+    advanceTime,
+    dump
+};
+export { __default4 as default };
 function migrate(obj) {
     if (obj.ver == 1) {
         obj.gear = Object.values(obj.gear);
@@ -3516,44 +3832,7 @@ function migrate(obj) {
 if (!window.Deno) {
     let activeIntervalId = 0;
     window.game = {
-        version: `pqnext-${version()}-210121`,
-        lingo: __default4,
-        races: ()=>__default1.races.map(({ name , title , desc  })=>{
-                return {
-                    name,
-                    title,
-                    desc
-                };
-            })
-        ,
-        classes: ()=>__default1.classes.map(({ name , title , desc  })=>{
-                return {
-                    name,
-                    title,
-                    desc
-                };
-            })
-        ,
-        attributes: ()=>__default1.attributes.map(({ name , title , desc , format , primary  })=>{
-                return {
-                    name,
-                    title,
-                    desc,
-                    format,
-                    primary
-                };
-            })
-        ,
-        gearSlots: ()=>__default1.gearSlots.map(({ name , title  })=>{
-                return {
-                    name,
-                    title
-                };
-            })
-        ,
-        rollAttr,
-        rollName,
-        create: createHero,
+        ...game,
         save: (hero)=>{
             if (hero) {
                 window.localStorage.hero = JSON.stringify(hero);
@@ -3593,11 +3872,3 @@ if (!window.Deno) {
         playing: ()=>activeIntervalId > 0
     };
 }
-const __default6 = {
-    rollAttr,
-    rollName,
-    createHero,
-    advanceTime,
-    dump
-};
-export { __default6 as default };
