@@ -249,7 +249,11 @@ function rollGearItemAttributes(hero: Hero, quality: ItemQuality, source: GearSo
         const bonus = Math.floor(level / 5)
         const stat = rand.shuffle(hero, data.attributes.filter(e => e.primary).map(e => e.name))
         for (let i = 0; i < count; i++) {
-            attr[stat[i]] = bonus + (i == 0 && source == GearSource.Quest ? 1 : 0)
+            let value = bonus
+            if (i == 0 && source == GearSource.Quest) {
+                value += Math.ceil(level / 50)
+            }
+            attr[stat[i]] = value
         }
     }
 
