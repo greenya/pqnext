@@ -3,6 +3,7 @@ import {
     GearSource,
     Hero,
     HeroAction,
+    HeroActionMeta,
     HeroTarget,
     Item,
     ItemQuality,
@@ -18,127 +19,136 @@ import format from './format.ts'
 import lingo from './lingo.ts'
 import rand from './rand.ts'
 
-const knownHeroActions: readonly HeroAction[] = [
+const knownHeroActions: readonly HeroActionMeta[] = [
     {
-        name: '?',
-        title: () => '?',
-        duration: () => 0,
-        next: () => 'intro'
+        name: HeroAction.Init,
+        start: () => [ '', 0 ],
+        finish: () => HeroAction.Intro
     },
     {
-        name: 'intro',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-intro'),
-        duration: () => 10,
-        next: () => 'accept-quest'
+        name: HeroAction.Intro,
+        start: (hero) => [
+            lingo.text(hero.lang, 'hero-action-intro'),
+            10
+        ],
+        finish: () => HeroAction.AcceptQuest
     },
     {
-        name: 'accept-quest',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-accept-quest'),
-        duration: (hero) => 5 + rand.int(hero, 2),
-        onFinish: (hero) => {
+        name: HeroAction.AcceptQuest,
+        start: (hero) => [
+            lingo.text(hero.lang, 'hero-action-accept-quest'),
+            5 + rand.int(hero, 2)
+        ],
+        finish: (hero) => {
             acceptQuest(hero)
-        },
-        next: (hero) => {
             if (hero.bag.length > 0) {
-                return 'sell-junk'
+                return HeroAction.SellJunk
             } else {
-                return 'move-to-wilderness'
+                return HeroAction.MoveToWilderness
             }
         }
     },
     {
-        name: 'pass-quest',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-pass-quest'),
-        duration: (hero) => 5 + rand.int(hero, 2),
-        onFinish: (hero) => {
+        name: HeroAction.PassQuest,
+        start: (hero) => [
+            lingo.text(hero.lang, 'hero-action-pass-quest'),
+            5 + rand.int(hero, 2)
+        ],
+        finish: (hero) => {
             completeQuest(hero)
-        },
-        next: () => 'accept-quest'
+            return HeroAction.AcceptQuest
+        }
     },
     {
-        name: 'move-to-wilderness',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-move-to-wilderness'),
-        duration: () => 15,
-        onStart: (hero) => {
+        name: HeroAction.MoveToWilderness,
+        start: (hero) => {
             updateZone(hero, ZoneType.Traveling)
+            return [
+                lingo.text(hero.lang, 'hero-action-move-to-wilderness'),
+                15
+            ]
         },
-        onFinish: (hero) => {
+        finish: (hero) => {
             updateZone(hero, ZoneType.Wilderness)
-        },
-        next: () => 'combat'
+            return HeroAction.Combat
+        }
     },
     {
-        name: 'combat',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-combat', { target: hero.target!.title }),
-        duration: (hero) => 5 + (hero.target!.might == MobMight.Reinforced ? 2 : 0),
-        onStart: (hero) => {
+        name: HeroAction.Combat,
+        start: (hero) => {
             startCombat(hero)
+            return [
+                lingo.text(hero.lang, 'hero-action-combat', { target: hero.target!.title }),
+                5 + (hero.target!.might == MobMight.Reinforced ? 2 : 0)
+            ]
         },
-        onFinish: (hero) => {
+        finish: (hero) => {
             finishCombat(hero)
-        },
-        next: (hero) => {
             if (hero.bag.length == hero.attr.bagCap) {
-                return 'move-to-town'
+                return HeroAction.MoveToTown
             } else if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
-                return 'move-to-town'
+                return HeroAction.MoveToTown
             } else if (hero.attr.curMp < manaNeededForCombat(hero)) {
-                return 'rest'
+                return HeroAction.Rest
             } else {
-                return 'combat'
+                return HeroAction.Combat
             }
         }
     },
     {
-        name: 'rest',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-rest'),
-        duration: () => 15,
-        onFinish: (hero) => {
+        name: HeroAction.Rest,
+        start: (hero) => [
+            lingo.text(hero.lang, 'hero-action-rest'),
+            15
+        ],
+        finish: (hero) => {
             hero.attr.curMp = hero.attr.maxMp
-        },
-        next: () => 'combat'
+            return HeroAction.Combat
+        }
     },
     {
-        name: 'move-to-town',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-move-to-town'),
-        duration: () => 15,
-        onStart: (hero) => {
+        name: HeroAction.MoveToTown,
+        start: (hero) => {
             updateZone(hero, ZoneType.Traveling)
+            return [
+                lingo.text(hero.lang, 'hero-action-move-to-town'),
+                15
+            ]
         },
-        onFinish: (hero) => {
+        finish: (hero) => {
             updateZone(hero, ZoneType.Town)
-        },
-        next: (hero) => {
             if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
-                return 'pass-quest'
+                return HeroAction.PassQuest
             } else {
-                return 'sell-junk'
+                return HeroAction.SellJunk
             }
         }
     },
     {
-        name: 'sell-junk',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-sell-junk'),
-        duration: (hero) => Math.max(1, Math.floor(hero.bag.length / 2)),
-        onFinish: (hero) => {
+        name: HeroAction.SellJunk,
+        start: (hero) => [
+            lingo.text(hero.lang, 'hero-action-sell-junk'),
+            Math.max(1, Math.floor(hero.bag.length / 2))
+        ],
+        finish: (hero) => {
             sellJunk(hero)
-        },
-        next: (hero) => {
             if (haveEnoughGoldToGoShopping(hero)) {
-                return 'buy-gear'
+                return HeroAction.BuyGear
             } else {
-                return 'move-to-wilderness'
+                return HeroAction.MoveToWilderness
             }
         }
     },
     {
-        name: 'buy-gear',
-        title: (hero) => lingo.text(hero.lang, 'hero-action-buy-gear'),
-        duration: () => 8,
-        onFinish: (hero) => {
+        name: HeroAction.BuyGear,
+        start: (hero) => [
+            lingo.text(hero.lang, 'hero-action-buy-gear'),
+            8
+        ],
+        finish: (hero) => {
             buyGear(hero)
-        },
-        next: () => 'move-to-wilderness'
+            return HeroAction.MoveToWilderness
+        }
     }
 ]
 
@@ -553,20 +563,15 @@ function advanceAction(hero: Hero) {
     }
 
     const curAction = knownHeroActions.find(a => a.name == hero.action.name)!
-    if (curAction.onFinish) {
-        curAction.onFinish(hero)
-    }
+    const nextName = curAction.finish(hero)
 
-    const nextActionName = curAction.next(hero)
-    const nextAction = knownHeroActions.find(a => a.name == nextActionName)!
-    if (nextAction.onStart) {
-        nextAction.onStart(hero)
-    }
+    const nextAction = knownHeroActions.find(a => a.name == nextName)!
+    const [ nextTitle, nextDuration ] = nextAction.start(hero)
 
-    hero.action.name = nextAction.name
-    hero.action.title = nextAction.title(hero)
+    hero.action.name = nextName
+    hero.action.title = nextTitle
     hero.action.progress.cur = 0
-    hero.action.progress.max = nextAction.duration(hero)
+    hero.action.progress.max = nextDuration
 }
 
 function advanceTime(hero: Hero) {
@@ -576,18 +581,18 @@ function advanceTime(hero: Hero) {
     stats.time++
 
     switch (hero.action.name) {
-        case 'combat': stats.timeSpent.combat++; break
-        case 'rest': stats.timeSpent.resting++; break
-        case 'sell-junk': stats.timeSpent.selling++; break
-        case 'buy-gear': stats.timeSpent.buying++; break
-        case 'accept-quest':
-        case 'pass-quest': stats.timeSpent.quest++; break
+        case HeroAction.Combat:         stats.timeSpent.combat++; break
+        case HeroAction.Rest:           stats.timeSpent.resting++; break
+        case HeroAction.SellJunk:       stats.timeSpent.selling++; break
+        case HeroAction.BuyGear:        stats.timeSpent.buying++; break
+        case HeroAction.AcceptQuest:
+        case HeroAction.PassQuest:      stats.timeSpent.quest++; break
     }
 
     switch (hero.zone.type) {
-        case ZoneType.Town: stats.timeSpent.town++; break
-        case ZoneType.Wilderness: stats.timeSpent.wilderness++; break
-        case ZoneType.Traveling: stats.timeSpent.traveling++; break
+        case ZoneType.Town:         stats.timeSpent.town++; break
+        case ZoneType.Wilderness:   stats.timeSpent.wilderness++; break
+        case ZoneType.Traveling:    stats.timeSpent.traveling++; break
     }
 }
 
@@ -635,7 +640,7 @@ function createHero(lang: string, nickname: string, raceName: string, className:
                 return a
             }, {}),
         level: { num: 0, progress: { cur: 0, max: 0 } },
-        action: { name: knownHeroActions[0].name, title: '?', progress: { cur: 0, max: 0 } },
+        action: { name: HeroAction.Init, title: '', progress: { cur: 0, max: 0 } },
         zone: { type: ZoneType.Town, biome: Trait.None },
         gold: 0,
         gear: [],
@@ -744,7 +749,7 @@ function migrate(obj: any): boolean {
 
     if (obj.ver == 4) { // v4 => v5 // 210301
         if (obj.action.name == 'afk') {
-            obj.action.name = 'sell-junk'
+            obj.action.name = HeroAction.SellJunk
         }
         obj.ver = 5
         return true

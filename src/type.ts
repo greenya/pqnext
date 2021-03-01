@@ -140,13 +140,23 @@ export interface HeroTarget {
     might: MobMight
 }
 
-export interface HeroAction {
-    name: string,
-    title: (hero: Hero) => string,
-    duration: (hero: Hero) => number,
-    onStart?: (hero: Hero) => void,
-    onFinish?: (hero: Hero) => void,
-    next: (hero: Hero) => string
+export enum HeroAction {
+    Init                = 'init',
+    Intro               = 'intro',
+    AcceptQuest         = 'accept-quest',
+    PassQuest           = 'pass-quest',
+    MoveToWilderness    = 'move-to-wilderness',
+    Combat              = 'combat',
+    Rest                = 'rest',
+    MoveToTown          = 'move-to-town',
+    SellJunk            = 'sell-junk',
+    BuyGear             = 'buy-gear'
+}
+
+export interface HeroActionMeta {
+    name: HeroAction,
+    start: (hero: Hero) => [ string, number ], // returns title and duration of the action
+    finish: (hero: Hero) => HeroAction // returns next action
 }
 
 export interface Hero {
@@ -156,7 +166,7 @@ export interface Hero {
     attr: Map<number>,
     attrPrio: Map<number>,
     level: { num: number, progress: Progress },
-    action: { name: string, title: string, progress: Progress },
+    action: { name: HeroAction, title: string, progress: Progress },
     quest?: { title: string, progress: Progress },
     target?: HeroTarget,
     zone: { type: ZoneType, biome: Trait },
