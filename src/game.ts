@@ -18,8 +18,6 @@ import format from './format.ts'
 import lingo from './lingo.ts'
 import rand from './rand.ts'
 
-const version = () => 4
-
 const knownHeroActions: readonly HeroAction[] = [
     {
         name: '?',
@@ -34,20 +32,6 @@ const knownHeroActions: readonly HeroAction[] = [
         next: () => 'accept-quest'
     },
     {
-        name: 'afk',
-        title: (hero) => '[AFK] ' + rand.text(hero, rand.item(hero, data.afkMessages)) + '...',
-        duration: (hero) => 8 + rand.int(hero, 2),
-        next: (hero) => {
-            if (rand.dice(hero, 5)) {
-                return 'afk'
-            } else if (hero.bag.length > 0) {
-                return 'sell-junk'
-            } else {
-                return 'move-to-wilderness'
-            }
-        }
-    },
-    {
         name: 'accept-quest',
         title: (hero) => lingo.text(hero.lang, 'hero-action-accept-quest'),
         duration: (hero) => 5 + rand.int(hero, 2),
@@ -55,9 +39,7 @@ const knownHeroActions: readonly HeroAction[] = [
             acceptQuest(hero)
         },
         next: (hero) => {
-            if (rand.dice(hero, 4)) {
-                return 'afk'
-            } else if (hero.bag.length > 0) {
+            if (hero.bag.length > 0) {
                 return 'sell-junk'
             } else {
                 return 'move-to-wilderness'
@@ -130,7 +112,7 @@ const knownHeroActions: readonly HeroAction[] = [
             if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
                 return 'pass-quest'
             } else {
-                return rand.item(hero, [ 'afk', 'sell-junk' ])
+                return 'sell-junk'
             }
         }
     },
@@ -145,18 +127,18 @@ const knownHeroActions: readonly HeroAction[] = [
             if (haveEnoughGoldToGoShopping(hero)) {
                 return 'buy-gear'
             } else {
-                return rand.dice(hero, 4) ? 'afk' : 'move-to-wilderness'
+                return 'move-to-wilderness'
             }
         }
     },
     {
         name: 'buy-gear',
         title: (hero) => lingo.text(hero.lang, 'hero-action-buy-gear'),
-        duration: (hero) => 8,
+        duration: () => 8,
         onFinish: (hero) => {
             buyGear(hero)
         },
-        next: (hero) => rand.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
+        next: () => 'move-to-wilderness'
     }
 ]
 
@@ -594,7 +576,6 @@ function advanceTime(hero: Hero) {
     stats.time++
 
     switch (hero.action.name) {
-        case 'afk': stats.timeSpent.afk++; break
         case 'combat': stats.timeSpent.combat++; break
         case 'rest': stats.timeSpent.resting++; break
         case 'sell-junk': stats.timeSpent.selling++; break
@@ -671,7 +652,7 @@ function createHero(lang: string, nickname: string, raceName: string, className:
 
 const stats = {
     time: 0,
-    timeSpent: <Map<number>>{ town: 0, wilderness: 0, traveling: 0, combat: 0, resting: 0, afk: 0, selling: 0, buying: 0, quest: 0 },
+    timeSpent: <Map<number>>{ town: 0, wilderness: 0, traveling: 0, combat: 0, resting: 0, selling: 0, buying: 0, quest: 0 },
     expGained: { mob: 0, quest: 0 },
     goldCollected: { mob: 0, quest: 0, junk: 0 },
     goldSpent: { gear: 0 },
@@ -720,6 +701,8 @@ function dump(hero: Hero) {
     console.log('====================================================')
 }
 
+const version = () => 5
+
 const game = {
     version: `pqnext-${version()}-[BUILDSTAMP]`,
     languages: () => lingo.languages(),
@@ -746,16 +729,27 @@ function migrate(obj: any): boolean {
         obj.ver = 2
         return true
     }
+
     if (obj.ver == 2) { // v2 => v3 // 210111
         obj.attr.curMp = obj.attr.maxMp
         obj.ver = 3
         return true
     }
+
     if (obj.ver == 3) { // v3 => v4 // 210121
         obj.lang = 'ua'
         obj.ver = 4
         return true
     }
+
+    if (obj.ver == 4) { // v4 => v5 // 210301
+        if (obj.action.name == 'afk') {
+            obj.action.name = 'sell-junk'
+        }
+        obj.ver = 5
+        return true
+    }
+
     return false
 }
 
