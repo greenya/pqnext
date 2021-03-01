@@ -32,7 +32,6 @@ var GearSource;
     GearSource1["Quest"] = 'quest';
 })(GearSource || (GearSource = {
 }));
-const GearSource1 = GearSource;
 var ZoneType;
 (function(ZoneType1) {
     ZoneType1["Town"] = 'town';
@@ -620,21 +619,6 @@ const mobs = [
         trait: Trait.Beast | Trait.Insect | Trait.Forest | Trait.Swamp
     }, 
 ];
-const afkMessages = [
-    'Біо афк',
-    'Секунду/Хвилинку/Хвильку',
-    `Відійшов на_одну/дві/три/чотири/п\'ять_хв`,
-    'Прийшла платіжка за_тепло./світло./газ./воду._Роздивляється',
-    'Побіг_на кухню/до холодильника/у сусідню квартиру/у сусідній будинок_за їжею',
-    'Пішов/Пошкандибав/Побіг/Полетів/Телепортанувся_води/чаю/кофе/вина_налити/націдити/накапати',
-    'Швидко/Квапливо/Нашвидкду/Спішно/Живо/Прискорено_курить/палить/димить/смалить/релогається/ребутається',
-    'Хтось_стукає/грюкає/гатить_в двері,/у вікно,/в стелю,/в підлогу,/по голові,/по мізкам,_відійшов_подивитися/розібратися',
-    'Комп\'ютер припинив відповідати!/Монітор відмовляється змінювати картинку!/Миша не слухається!/Клавіатура не друкує!_Скоро перезавантажується',
-    'Зачарованно_дивиться/таращиться_на героїню, що_танцює/стоїть/сидить/вляглася_на поштовій скринці',
-    'Інет_лагає/тормозить/зупинився_капєєєц! Швидко_перевантажує/б\'є ногою/вмовляє_роутер',
-    'Колупається у налаштуваннях_гри/графіки/аддонів/макросів/вікаур',
-    'Оновлює_батлнет/гру/аддони/вікаури/трасмог'
-];
 const itemQualities = [
     {
         name: ItemQuality.Poor,
@@ -757,7 +741,6 @@ const gearSlots = [
     }
 ];
 const __default1 = {
-    afkMessages,
     attributes,
     biomes,
     classes,
@@ -2984,8 +2967,6 @@ const __default3 = {
     ...gen
 };
 const lingo3 = __default3;
-const version = ()=>4
-;
 const knownHeroActions = [
     {
         name: '?',
@@ -3004,22 +2985,6 @@ const knownHeroActions = [
         next: ()=>'accept-quest'
     },
     {
-        name: 'afk',
-        title: (hero)=>'[AFK] ' + __default2.text(hero, __default2.item(hero, __default1.afkMessages)) + '...'
-        ,
-        duration: (hero)=>8 + __default2.int(hero, 2)
-        ,
-        next: (hero)=>{
-            if (__default2.dice(hero, 5)) {
-                return 'afk';
-            } else if (hero.bag.length > 0) {
-                return 'sell-junk';
-            } else {
-                return 'move-to-wilderness';
-            }
-        }
-    },
-    {
         name: 'accept-quest',
         title: (hero)=>__default3.text(hero.lang, 'hero-action-accept-quest')
         ,
@@ -3029,9 +2994,7 @@ const knownHeroActions = [
             acceptQuest(hero);
         },
         next: (hero)=>{
-            if (__default2.dice(hero, 4)) {
-                return 'afk';
-            } else if (hero.bag.length > 0) {
+            if (hero.bag.length > 0) {
                 return 'sell-junk';
             } else {
                 return 'move-to-wilderness';
@@ -3116,10 +3079,7 @@ const knownHeroActions = [
             if (hero.quest && hero.quest.progress.cur == hero.quest.progress.max) {
                 return 'pass-quest';
             } else {
-                return __default2.item(hero, [
-                    'afk',
-                    'sell-junk'
-                ]);
+                return 'sell-junk';
             }
         }
     },
@@ -3136,7 +3096,7 @@ const knownHeroActions = [
             if (haveEnoughGoldToGoShopping(hero)) {
                 return 'buy-gear';
             } else {
-                return __default2.dice(hero, 4) ? 'afk' : 'move-to-wilderness';
+                return 'move-to-wilderness';
             }
         }
     },
@@ -3144,12 +3104,12 @@ const knownHeroActions = [
         name: 'buy-gear',
         title: (hero)=>__default3.text(hero.lang, 'hero-action-buy-gear')
         ,
-        duration: (hero)=>8
+        duration: ()=>8
         ,
         onFinish: (hero)=>{
             buyGear(hero);
         },
-        next: (hero)=>__default2.dice(hero, 3) ? 'afk' : 'move-to-wilderness'
+        next: ()=>'move-to-wilderness'
     }
 ];
 function haveEnoughGoldToGoShopping(hero) {
@@ -3230,7 +3190,11 @@ function rollGearItemAttributes(hero, quality, source) {
         ).map((e)=>e.name
         ));
         for(let i = 0; i < count; i++){
-            attr[stat[i]] = bonus + (i == 0 && source == GearSource1.Quest ? 1 : 0);
+            let value = bonus;
+            if (i == 0 && source == GearSource.Quest) {
+                value += Math.ceil(level / 50);
+            }
+            attr[stat[i]] = value;
         }
     }
     return attr;
@@ -3545,9 +3509,6 @@ function advanceTime(hero) {
     advanceAction(hero);
     stats.time++;
     switch(hero.action.name){
-        case 'afk':
-            stats.timeSpent.afk++;
-            break;
         case 'combat':
             stats.timeSpent.combat++;
             break;
@@ -3663,7 +3624,6 @@ const stats = {
         traveling: 0,
         combat: 0,
         resting: 0,
-        afk: 0,
         selling: 0,
         buying: 0,
         quest: 0
@@ -3761,8 +3721,10 @@ function dump(hero) {
     }));
     console.log('====================================================');
 }
+const version = ()=>5
+;
 const game = {
-    version: `pqnext-${version()}-210225`,
+    version: `pqnext-${version()}-210301`,
     languages: ()=>__default3.languages()
     ,
     text: (lang, key, args = {
@@ -3825,6 +3787,13 @@ function migrate(obj) {
     if (obj.ver == 3) {
         obj.lang = 'ua';
         obj.ver = 4;
+        return true;
+    }
+    if (obj.ver == 4) {
+        if (obj.action.name == 'afk') {
+            obj.action.name = 'sell-junk';
+        }
+        obj.ver = 5;
         return true;
     }
     return false;
