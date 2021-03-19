@@ -4,8 +4,12 @@ import {
     ItemQuality,
     Lingo,
     Mob,
-    MobMight
+    MobMight,
+    // Trait
 } from '../type.ts'
+
+// import data from '../data.ts'
+// import rand from '../rand.ts'
 
 const meta = {
     name:   'en',
@@ -122,6 +126,63 @@ const dict: { readonly [_: string]: string } = {
     'ui-item-source-quest':     'Quest reward',
 
 }
+
+const mobMeta: readonly {
+    name: string,
+    single: string,
+    junk: string
+}[] = [
+    {
+        name: 'ambusher',
+        single: 'insidious/moonlight/frost-eyed/blackhair_ambusher',
+        junk: 'ambusher\'s_eye patch/torn boot/dull knife/cigarette lighter'
+    },
+    {
+        name: 'ape',
+        single: 'crazy/screaming/red-faced/long heel/wet nose_ape',
+        junk: 'ape\'s_peeled off ear/big_finger/wisdom tooth/saliva',
+    },
+    {
+        name: 'assassin',
+        single: 'cunning/obscured/bearded/cocky_assassin',
+        junk: 'assassin\'s_cut off ear/frayed belt/false eye',
+    },
+    {
+        name: 'bandit',
+        single: 'fearless/grey-toothed/one-armed/red-head_bandit',
+        junk: 'bandit\'s_faded wallet/cut off finger/broken jaw',
+    },
+    {
+        name: 'bat',
+        single: 'nasty/black/night/black-eyed/grey-eyed_bat',
+        junk: 'bat\'s_wing/head/chipped tooth',
+    },
+    {
+        name: 'bear',
+        single: 'furious/forest/black/tundra/mad_bear',
+        junk: 'bear\'s_peeled off ear/heart/thick fur/chipped fang',
+    },
+    {
+        name: 'bee',
+        single: 'spring/striped/forest/field/swamp_bee',
+        junk: 'bee\'s_antenna/sting/oculus/iridescent wing_бджоли',
+    },
+    {
+        name: 'boar',
+        single: 'irritated/bold snout/grey heel/curly tail_boar',
+        junk: 'boar\'s_ear/stomach/liver/chipped hoof/grey tusk',
+    },
+    {
+        name: 'cannibal',
+        single: 'white-toothed/enraged/wide-jawed/filthy-faced_cannibal',
+        junk: 'cannibal\'s_dirty nail/cut scalp/chunky club',
+    },
+    {
+        name: 'crab',
+        single: 'irritated/coastal/red-striped/white-shelled/clicking claws_crab',
+        junk: 'crab\'s_white meat/eye/cracky shell/torn claw',
+    },
+]
 
 function rollCharName(_: string): string {
     return '[char name]'
